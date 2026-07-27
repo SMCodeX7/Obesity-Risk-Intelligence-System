@@ -216,3 +216,7 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Raw datasets are stored locally
+data/raw/*
+!data/raw/.gitkeep
