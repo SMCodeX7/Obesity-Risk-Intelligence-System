@@ -220,3 +220,10 @@ __marimo__/
 # Raw datasets are stored locally
 data/raw/*
 !data/raw/.gitkeep
+
+# Python cache files
+__pycache__/
+*.py[cod]
+
+# Pytest cache
+.pytest_cache/
