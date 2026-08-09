@@ -1,0 +1,8 @@
+,Predicted: Insufficient_Weight,Predicted: Normal_Weight,Predicted: Overweight_Level_I,Predicted: Overweight_Level_II,Predicted: Obesity_Type_I,Predicted: Obesity_Type_II,Predicted: Obesity_Type_III
+Actual: Insufficient_Weight,356,22,0,0,0,0,0
+Actual: Normal_Weight,28,400,24,7,3,0,0
+Actual: Overweight_Level_I,5,31,281,41,6,0,0
+Actual: Overweight_Level_II,0,4,38,314,22,1,0
+Actual: Obesity_Type_I,0,3,7,22,391,12,2
+Actual: Obesity_Type_II,0,0,0,1,6,480,0
+Actual: Obesity_Type_III,1,0,0,0,2,0,604
