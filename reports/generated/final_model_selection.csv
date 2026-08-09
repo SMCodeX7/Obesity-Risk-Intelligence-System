@@ -1,0 +1,2 @@
+Selected Candidate,Model Family,Configuration,Selection Validation Macro F1,Development Records,Reserved Test Records,Random State
+Tuned Gradient Boosting,Gradient Boosting,Tuned,0.8977760050085329,17644,3114,42
