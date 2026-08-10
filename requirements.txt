@@ -6,3 +6,5 @@ jupyterlab
 scikit-learn==1.8.0
 pytest
 shap
+joblib
+Flask==3.1.3
