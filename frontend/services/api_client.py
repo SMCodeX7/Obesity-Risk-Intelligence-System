@@ -49,15 +49,49 @@ class APIClient:
 
         except requests.RequestException as error:
             raise APIClientError(
-                f"Unable to communicate "
-                f"with the backend API: "
+                "Unable to communicate "
+                "with the backend API: "
                 f"{error}"
             ) from error
 
         except ValueError as error:
             raise APIClientError(
                 "Backend returned an "
-                "invalid JSON response."
+                "invalid JSON response"
+            ) from error
+
+    def _post(
+        self,
+        endpoint,
+        payload,
+    ):
+        url = (
+            f"{self.base_url}"
+            f"{endpoint}"
+        )
+
+        try:
+            response = requests.post(
+                url,
+                json=payload,
+                timeout=self.timeout,
+            )
+
+            response.raise_for_status()
+
+            return response.json()
+
+        except requests.RequestException as error:
+            raise APIClientError(
+                "Unable to complete "
+                "the API request: "
+                f"{error}"
+            ) from error
+
+        except ValueError as error:
+            raise APIClientError(
+                "Backend returned an "
+                "invalid JSON response"
             ) from error
 
     def get_health(self):
@@ -68,4 +102,13 @@ class APIClient:
     def get_model_info(self):
         return self._get(
             "/model-info"
+        )
+
+    def predict(
+        self,
+        payload,
+    ):
+        return self._post(
+            "/predict",
+            payload,
         )

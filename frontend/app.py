@@ -1,5 +1,8 @@
 import streamlit as st
 
+from frontend.components.assessment_form import (
+    render_assessment_form,
+)
 from frontend.services.api_client import (
     APIClient,
     APIClientError,
@@ -32,11 +35,6 @@ st.caption(
 st.divider()
 
 
-st.subheader(
-    "System Status"
-)
-
-
 try:
     health_data = (
         api_client.get_health()
@@ -46,26 +44,40 @@ try:
         api_client.get_model_info()
     )
 
-    if (
-        health_data.get(
-            "status"
-        )
-        == "ok"
-    ):
-        st.success(
-            "Backend API connected"
-        )
-
-    else:
-        st.warning(
-            "Backend API returned "
-            "an unexpected status"
-        )
-
-    st.subheader(
-        "Model Information"
+except APIClientError as error:
+    st.error(
+        "Backend API is unavailable"
     )
 
+    st.info(
+        "Start the Flask backend "
+        "and refresh this page"
+    )
+
+    with st.expander(
+        "Technical details"
+    ):
+        st.code(
+            str(error)
+        )
+
+    st.stop()
+
+
+if (
+    health_data.get(
+        "status"
+    )
+    == "ok"
+):
+    st.success(
+        "Backend API connected"
+    )
+
+
+with st.expander(
+    "Model Information"
+):
     col1, col2, col3 = (
         st.columns(3)
     )
@@ -97,12 +109,6 @@ try:
                 f"{accuracy * 100:.2f}%",
             )
 
-        else:
-            st.metric(
-                "Test Accuracy",
-                "Unavailable",
-            )
-
     with col3:
         macro_f1 = (
             model_info
@@ -121,86 +127,55 @@ try:
                 f"{macro_f1:.4f}",
             )
 
-        else:
-            st.metric(
-                "Macro F1",
-                "Unavailable",
-            )
 
-    with st.expander(
-        "View model details"
-    ):
-        st.write(
-            "Model family:",
-            model_info.get(
-                "model_family",
-                "Unknown",
-            ),
-        )
+st.divider()
 
-        st.write(
-            "Configuration:",
-            model_info.get(
-                "configuration",
-                "Unknown",
-            ),
-        )
 
-        st.write(
-            "Input features:",
-            model_info.get(
-                "predictive_feature_count",
-                "Unknown",
-            ),
-        )
+payload = (
+    render_assessment_form()
+)
 
-        st.write(
-            "Target classes:",
-            model_info.get(
-                "target_class_count",
-                "Unknown",
-            ),
-        )
 
-        st.write(
-            "Scikit-learn:",
-            model_info.get(
-                "scikit_learn_version",
-                "Unknown",
-            ),
-        )
+if payload is not None:
 
-        st.write(
-            "Classes:"
-        )
-
-        for class_name in (
-            model_info.get(
-                "target_classes",
-                [],
-            )
+    try:
+        with st.spinner(
+            "Running obesity risk "
+            "assessment..."
         ):
-            st.write(
-                f"- {class_name}"
+            prediction_result = (
+                api_client.predict(
+                    payload
+                )
             )
 
+        st.session_state[
+            "prediction_result"
+        ] = prediction_result
 
-except APIClientError as error:
-    st.error(
-        "Backend API is unavailable"
-    )
-
-    st.info(
-        "Start the Flask backend "
-        "and refresh this page"
-    )
-
-    with st.expander(
-        "Technical details"
-    ):
-        st.code(
-            str(error)
+        st.success(
+            "Prediction received "
+            "successfully."
         )
+
+        with st.expander(
+            "Temporary API response verification"
+        ):
+            st.json(
+                prediction_result
+            )
+
+    except APIClientError as error:
+        st.error(
+            "Prediction request failed."
+        )
+
+        with st.expander(
+            "Technical details"
+        ):
+            st.code(
+                str(error)
+            )
 
 
 st.divider()
