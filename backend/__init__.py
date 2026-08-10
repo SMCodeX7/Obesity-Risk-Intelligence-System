@@ -10,6 +10,9 @@ from backend.error_handlers import (
 from backend.routes.health import (
     health_bp,
 )
+from backend.routes.history import (
+    history_bp,
+)
 from backend.routes.model_info import (
     model_info_bp,
 )
@@ -57,6 +60,10 @@ def create_app(
 
     app.register_blueprint(
         prediction_bp
+    )
+
+    app.register_blueprint(
+        history_bp
     )
 
     register_error_handlers(

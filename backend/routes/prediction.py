@@ -4,6 +4,9 @@ from flask import (
     request,
 )
 
+from backend.repositories.prediction_repository import (
+    save_prediction,
+)
 from backend.services.input_validator import (
     validate_prediction_payload,
 )
@@ -30,8 +33,7 @@ def predict():
     )
 
     model_service = (
-        current_app
-        .extensions[
+        current_app.extensions[
             "obesity_risk_model"
         ]
     )
@@ -41,5 +43,23 @@ def predict():
             validated_features
         )
     )
+
+    prediction_id = (
+        save_prediction(
+            features=(
+                validated_features
+            ),
+            prediction_result=(
+                result
+            ),
+            model_metadata=(
+                model_service.metadata
+            ),
+        )
+    )
+
+    result[
+        "prediction_id"
+    ] = prediction_id
 
     return result, 200

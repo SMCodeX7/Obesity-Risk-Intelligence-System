@@ -1,6 +1,9 @@
 from backend import (
     create_app,
 )
+from backend.database import (
+    init_db,
+)
 
 
 VALID_PAYLOAD = {
@@ -15,19 +18,44 @@ VALID_PAYLOAD = {
     "CAEC": "Sometimes",
     "CALC": "no",
     "Gender": "Male",
-    "family_history_with_overweight": "yes",
+    "family_history_with_overweight":
+        "yes",
     "FAVC": "yes",
     "SMOKE": "no",
     "SCC": "no",
-    "MTRANS": "Public_Transportation",
+    "MTRANS":
+        "Public_Transportation",
 }
 
 
-def test_prediction_endpoint():
+def create_database_app(
+    tmp_path,
+):
+    database_path = (
+        tmp_path
+        / "prediction_test.db"
+    )
+
     app = create_app(
         {
             "TESTING": True,
+            "DATABASE": str(
+                database_path
+            ),
         }
+    )
+
+    with app.app_context():
+        init_db()
+
+    return app
+
+
+def test_prediction_endpoint(
+    tmp_path,
+):
+    app = create_database_app(
+        tmp_path
     )
 
     client = (
@@ -46,6 +74,16 @@ def test_prediction_endpoint():
 
     data = (
         response.get_json()
+    )
+
+    assert (
+        "prediction_id"
+        in data
+    )
+
+    assert (
+        data["prediction_id"]
+        >= 1
     )
 
     assert (
@@ -76,9 +114,7 @@ def test_prediction_endpoint():
     )
 
     assert (
-        data[
-            "predicted_class"
-        ]
+        data["predicted_class"]
         in target_classes
     )
 
@@ -88,10 +124,15 @@ def test_prediction_endpoint():
         <= 1.0
     )
 
-    assert set(
-        data["probabilities"]
-    ) == set(
-        target_classes
+    assert (
+        set(
+            data[
+                "probabilities"
+            ]
+        )
+        == set(
+            target_classes
+        )
     )
 
     probability_sum = sum(
@@ -100,17 +141,20 @@ def test_prediction_endpoint():
         ].values()
     )
 
-    assert abs(
-        probability_sum
-        - 1.0
-    ) < 1e-8
+    assert (
+        abs(
+            probability_sum
+            - 1.0
+        )
+        < 1e-8
+    )
 
 
-def test_prediction_rejects_missing_features():
-    app = create_app(
-        {
-            "TESTING": True,
-        }
+def test_prediction_rejects_missing_features(
+    tmp_path,
+):
+    app = create_database_app(
+        tmp_path
     )
 
     client = (
@@ -120,7 +164,7 @@ def test_prediction_rejects_missing_features():
     response = client.post(
         "/predict",
         json={
-            "Age": 25.0,
+            "Age": 25.0
         },
     )
 
