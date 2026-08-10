@@ -227,3 +227,13 @@ __pycache__/
 
 # Pytest cache
 .pytest_cache/
+
+# SQLite database files
+database/*.db
+database/*.db-shm
+database/*.db-wal
+database/*.sqlite
+database/*.sqlite3
+
+!database/.gitkeep
+!database/schema.sql

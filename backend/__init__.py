@@ -1,5 +1,9 @@
 from flask import Flask
 
+from backend.database import (
+    DEFAULT_DATABASE_PATH,
+    init_app as init_database_app,
+)
 from backend.error_handlers import (
     register_error_handlers,
 )
@@ -22,6 +26,12 @@ def create_app(
 ):
     app = Flask(
         __name__
+    )
+
+    app.config.from_mapping(
+        DATABASE=str(
+            DEFAULT_DATABASE_PATH
+        )
     )
 
     if test_config is not None:
@@ -50,6 +60,10 @@ def create_app(
     )
 
     register_error_handlers(
+        app
+    )
+
+    init_database_app(
         app
     )
 
