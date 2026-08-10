@@ -5,6 +5,9 @@ from frontend.components.prediction_result import (
     format_class_name,
     render_prediction_result,
 )
+from frontend.components.report_download import (
+    render_pdf_download,
+)
 from frontend.services.api_client import (
     APIClientError,
 )
@@ -197,8 +200,10 @@ def render_prediction_history(
         )
     )
 
-    total_predictions = len(
-        predictions
+    total_predictions = (
+        len(
+            predictions
+        )
     )
 
     st.metric(
@@ -223,7 +228,8 @@ def render_prediction_history(
 
     prediction_ids = [
         prediction["id"]
-        for prediction in predictions
+        for prediction
+        in predictions
     ]
 
     selected_prediction_id = (
@@ -334,4 +340,23 @@ def render_prediction_history(
 
     render_prediction_result(
         prediction_detail
+    )
+
+    st.markdown(
+        "### Assessment Report"
+    )
+
+    st.write(
+        "Download a PDF copy of "
+        "this saved assessment."
+    )
+
+    render_pdf_download(
+        api_client=api_client,
+        prediction_id=(
+            prediction_detail[
+                "id"
+            ]
+        ),
+        key_prefix="history",
     )

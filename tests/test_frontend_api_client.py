@@ -43,6 +43,11 @@ def test_get_health(
         == "ok"
     )
 
+    assert (
+        result["service"]
+        == "obesity-risk-api"
+    )
+
     mock_get.assert_called_once_with(
         "http://127.0.0.1:5000/health",
         timeout=5,
@@ -63,23 +68,32 @@ def test_predict(
 
     mock_response.json.return_value = {
         "prediction_id": 1,
+
         "predicted_class":
             "Normal_Weight",
+
         "confidence":
             0.85,
+
         "probabilities": {
             "Insufficient_Weight":
                 0.02,
+
             "Normal_Weight":
                 0.85,
+
             "Overweight_Level_I":
                 0.08,
+
             "Overweight_Level_II":
                 0.03,
+
             "Obesity_Type_I":
                 0.01,
+
             "Obesity_Type_II":
                 0.005,
+
             "Obesity_Type_III":
                 0.005,
         },
@@ -95,8 +109,10 @@ def test_predict(
 
     client = APIClient()
 
-    result = client.predict(
-        payload
+    result = (
+        client.predict(
+            payload
+        )
     )
 
     assert (
@@ -107,6 +123,20 @@ def test_predict(
     assert (
         result["predicted_class"]
         == "Normal_Weight"
+    )
+
+    assert (
+        result["confidence"]
+        == 0.85
+    )
+
+    assert (
+        len(
+            result[
+                "probabilities"
+            ]
+        )
+        == 7
     )
 
     mock_post.assert_called_once_with(
@@ -130,17 +160,23 @@ def test_get_predictions(
 
     mock_response.json.return_value = {
         "count": 1,
+
         "predictions": [
             {
                 "id": 1,
+
                 "predicted_class":
                     "Normal_Weight",
+
                 "confidence":
                     0.85,
+
                 "model_name":
                     "Tuned Gradient Boosting",
+
                 "scikit_learn_version":
                     "1.8.0",
+
                 "created_at":
                     "2026-08-10 12:00:00",
             }
@@ -163,8 +199,19 @@ def test_get_predictions(
     )
 
     assert (
-        result["predictions"][0]["id"]
+        result[
+            "predictions"
+        ][0]["id"]
         == 1
+    )
+
+    assert (
+        result[
+            "predictions"
+        ][0][
+            "predicted_class"
+        ]
+        == "Normal_Weight"
     )
 
     mock_get.assert_called_once_with(
@@ -187,18 +234,46 @@ def test_get_prediction_detail(
 
     mock_response.json.return_value = {
         "id": 7,
+
         "inputs": {
             "Age": 25.0,
         },
+
         "predicted_class":
             "Normal_Weight",
+
         "confidence":
             0.85,
-        "probabilities": {},
+
+        "probabilities": {
+            "Insufficient_Weight":
+                0.02,
+
+            "Normal_Weight":
+                0.85,
+
+            "Overweight_Level_I":
+                0.08,
+
+            "Overweight_Level_II":
+                0.03,
+
+            "Obesity_Type_I":
+                0.01,
+
+            "Obesity_Type_II":
+                0.005,
+
+            "Obesity_Type_III":
+                0.005,
+        },
+
         "model_name":
             "Tuned Gradient Boosting",
+
         "scikit_learn_version":
             "1.8.0",
+
         "created_at":
             "2026-08-10 12:00:00",
     }
@@ -225,8 +300,16 @@ def test_get_prediction_detail(
         == 25.0
     )
 
+    assert (
+        result["predicted_class"]
+        == "Normal_Weight"
+    )
+
     mock_get.assert_called_once_with(
-        "http://127.0.0.1:5000/predictions/7",
+        (
+            "http://127.0.0.1:5000/"
+            "predictions/7"
+        ),
         timeout=5,
     )
 
@@ -246,6 +329,7 @@ def test_predict_surfaces_backend_error(
     mock_response.json.return_value = {
         "error":
             "validation_error",
+
         "message":
             "Age must be numeric.",
     }
@@ -263,7 +347,8 @@ def test_predict_surfaces_backend_error(
 
         client.predict(
             {
-                "Age": "twenty",
+                "Age":
+                    "twenty",
             }
         )
 
@@ -302,3 +387,51 @@ def test_invalid_json_response(
         match="invalid JSON",
     ):
         client.get_health()
+
+
+@patch(
+    "frontend.services."
+    "api_client.requests.get"
+)
+def test_get_prediction_report(
+    mock_get,
+):
+    mock_response = Mock()
+
+    mock_response.ok = True
+    mock_response.status_code = 200
+
+    mock_response.content = (
+        b"%PDF-1.4 test content"
+    )
+
+    mock_get.return_value = (
+        mock_response
+    )
+
+    client = APIClient()
+
+    result = (
+        client.get_prediction_report(
+            7
+        )
+    )
+
+    assert isinstance(
+        result,
+        bytes,
+    )
+
+    assert (
+        result.startswith(
+            b"%PDF"
+        )
+    )
+
+    mock_get.assert_called_once_with(
+        (
+            "http://127.0.0.1:5000/"
+            "predictions/7/report"
+        ),
+        timeout=5,
+    )

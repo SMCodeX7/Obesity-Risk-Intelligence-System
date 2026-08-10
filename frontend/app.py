@@ -10,6 +10,9 @@ from frontend.components.prediction_history import (
 from frontend.components.prediction_result import (
     render_prediction_result,
 )
+from frontend.components.report_download import (
+    render_pdf_download,
+)
 from frontend.services.api_client import (
     APIClient,
     APIClientError,
@@ -75,12 +78,12 @@ except APIClientError as error:
     st.write(
         "The Streamlit interface "
         "could not connect to the "
-        "Flask API"
+        "Flask API."
     )
 
     st.info(
         "Start the Flask backend "
-        "and refresh this page"
+        "and refresh this page."
     )
 
     with st.expander(
@@ -202,7 +205,7 @@ if page == "New Assessment":
         "information below. The "
         "assessment is processed by "
         "the trained machine "
-        "learning pipeline"
+        "learning pipeline."
     )
 
     payload = (
@@ -264,11 +267,50 @@ if page == "New Assessment":
         ]
         is not None
     ):
-        render_prediction_result(
+        current_result = (
             st.session_state[
                 "prediction_result"
             ]
         )
+
+        render_prediction_result(
+            current_result
+        )
+
+        current_prediction_id = (
+            current_result.get(
+                "prediction_id"
+            )
+        )
+
+        if (
+            current_prediction_id
+            is not None
+        ):
+            st.markdown(
+                "### Assessment Report"
+            )
+
+            st.write(
+                "Download a PDF copy "
+                "of this assessment."
+            )
+
+            render_pdf_download(
+                api_client=api_client,
+                prediction_id=(
+                    current_prediction_id
+                ),
+                key_prefix="current",
+            )
+
+        else:
+            st.warning(
+                "No prediction ID was "
+                "returned, so a PDF "
+                "report cannot be "
+                "generated."
+            )
 
         st.button(
             "Start New Assessment",
@@ -295,5 +337,5 @@ st.caption(
     "Predictions are not medical "
     "diagnoses and should not "
     "replace professional health "
-    "assessment"
+    "assessment."
 )

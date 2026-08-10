@@ -159,3 +159,68 @@ class APIClient:
             f"/predictions/"
             f"{prediction_id}",
         )
+
+    def get_prediction_report(
+        self,
+        prediction_id,
+    ):
+        url = (
+            f"{self.base_url}"
+            f"/predictions/"
+            f"{prediction_id}"
+            f"/report"
+        )
+
+        try:
+            response = requests.get(
+                url,
+                timeout=self.timeout,
+            )
+
+        except requests.RequestException as error:
+            raise APIClientError(
+                "Unable to download "
+                "the PDF report."
+            ) from error
+
+        if not response.ok:
+
+            try:
+                response_data = (
+                    response.json()
+                )
+
+                if isinstance(
+                    response_data,
+                    dict,
+                ):
+                    message = (
+                        response_data.get(
+                            "message"
+                        )
+                        or response_data.get(
+                            "error"
+                        )
+                    )
+
+                else:
+                    message = None
+
+            except ValueError:
+                message = None
+
+            if not message:
+                message = (
+                    "PDF report request "
+                    f"failed with HTTP "
+                    f"{response.status_code}."
+                )
+
+            raise APIClientError(
+                message,
+                status_code=(
+                    response.status_code
+                ),
+            )
+
+        return response.content
