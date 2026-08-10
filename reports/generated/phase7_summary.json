@@ -1,0 +1,24 @@
+{
+    "model": "Tuned Gradient Boosting",
+    "test_macro_f1": 0.8973281823370796,
+    "top_tree_features": [
+        "Weight",
+        "Gender",
+        "FCVC",
+        "Height",
+        "Age"
+    ],
+    "top_shap_features": [
+        "Weight",
+        "FCVC",
+        "Height",
+        "Gender",
+        "Age"
+    ],
+    "mean_ordinal_distance": 0.10918432883750803,
+    "exact_prediction_rate": 0.9075144508670521,
+    "adjacent_error_rate": 0.0789980732177264,
+    "severe_error_rate": 0.01348747591522158,
+    "bmi_macro_f1_delta": -0.003162276706815015,
+    "gender_macro_f1_gap": 0.018603861671558697
+}
