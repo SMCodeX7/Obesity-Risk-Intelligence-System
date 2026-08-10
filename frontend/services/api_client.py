@@ -65,13 +65,13 @@ class APIClient:
             else:
                 raise APIClientError(
                     "Unsupported API client "
-                    "request method"
+                    "request method."
                 )
 
         except requests.RequestException as error:
             raise APIClientError(
                 "Unable to communicate "
-                "with the backend API"
+                "with the backend API."
             ) from error
 
         try:
@@ -142,4 +142,20 @@ class APIClient:
             "POST",
             "/predict",
             payload=payload,
+        )
+
+    def get_predictions(self):
+        return self._request(
+            "GET",
+            "/predictions",
+        )
+
+    def get_prediction(
+        self,
+        prediction_id,
+    ):
+        return self._request(
+            "GET",
+            f"/predictions/"
+            f"{prediction_id}",
         )
