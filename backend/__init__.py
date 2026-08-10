@@ -6,6 +6,9 @@ from backend.routes.health import (
 from backend.routes.model_info import (
     model_info_bp,
 )
+from backend.routes.prediction import (
+    prediction_bp,
+)
 from backend.services.model_service import (
     ModelService,
 )
@@ -37,6 +40,10 @@ def create_app(
 
     app.register_blueprint(
         model_info_bp
+    )
+
+    app.register_blueprint(
+        prediction_bp
     )
 
     return app

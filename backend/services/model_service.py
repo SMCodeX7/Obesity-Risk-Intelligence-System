@@ -2,6 +2,8 @@ from pathlib import Path
 import json
 
 import joblib
+import numpy as np
+import pandas as pd
 import sklearn
 
 
@@ -81,10 +83,8 @@ class ModelService:
         ):
             raise RuntimeError(
                 "scikit-learn version mismatch. "
-                f"Current="
-                f"{current_sklearn_version}, "
-                f"Model="
-                f"{saved_sklearn_version}"
+                f"Current={current_sklearn_version}, "
+                f"Model={saved_sklearn_version}"
             )
 
         self.model = joblib.load(
@@ -167,4 +167,76 @@ class ModelService:
 
             "model_loaded":
                 self.model is not None,
+        }
+
+    def predict(
+        self,
+        features,
+    ):
+        feature_order = (
+            self.metadata[
+                "predictive_features"
+            ]
+        )
+
+        input_frame = pd.DataFrame(
+            [
+                features
+            ],
+            columns=feature_order,
+        )
+
+        prediction = (
+            self.model.predict(
+                input_frame
+            )[0]
+        )
+
+        probability_values = (
+            self.model.predict_proba(
+                input_frame
+            )[0]
+        )
+
+        classifier = (
+            self.model.named_steps[
+                "classifier"
+            ]
+        )
+
+        model_classes = [
+            str(class_name)
+            for class_name
+            in classifier.classes_
+        ]
+
+        probabilities = {
+            class_name: float(
+                probability
+            )
+            for (
+                class_name,
+                probability,
+            )
+            in zip(
+                model_classes,
+                probability_values,
+            )
+        }
+
+        confidence = float(
+            np.max(
+                probability_values
+            )
+        )
+
+        return {
+            "predicted_class":
+                str(prediction),
+
+            "confidence":
+                confidence,
+
+            "probabilities":
+                probabilities,
         }
