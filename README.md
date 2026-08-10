@@ -1,41 +1,49 @@
 # Obesity Risk Intelligence System
 
-A machine learning-based obesity risk classification system that predicts an individual's obesity-risk category using demographic, physical, dietary, lifestyle, and activity-related information.
+A full-stack machine learning application that predicts an individual's obesity-risk category using demographic, physical, dietary, lifestyle, and activity-related information.
 
-The project follows a complete machine learning workflow from data understanding and exploratory analysis through model development, hyperparameter tuning, final evaluation, explainability, REST API development, and eventually a user-facing application.
+The project follows a complete machine learning workflow covering:
 
-## Current Status
+- Data understanding
+- Exploratory data analysis
+- Feature preprocessing
+- Baseline model development
+- Hyperparameter tuning
+- Final model evaluation
+- Model explainability
+- Advanced error analysis
+- Flask REST API development
+- Streamlit frontend development
+- Automated testing
+- Future database integration and deployment
 
-**Phases 1–8 completed**
-
-The machine learning model has been developed, evaluated, explained, saved, and exposed through a Flask REST API.
-
-The next development stage is:
-
-**Phase 9 — Streamlit Frontend**
+The final machine learning model is exposed through a Flask REST API and consumed by a Streamlit frontend.
 
 ---
 
-# Project Objectives
+# Current Project Status
 
-The main objectives of this project are to:
+## Phases 1–9 Complete
 
-- Analyse obesity-related demographic and lifestyle data.
-- Build a reliable multiclass obesity-risk classifier.
-- Develop reusable preprocessing logic.
-- Compare multiple machine learning algorithms.
-- Tune the strongest models using cross-validation.
-- Evaluate the selected model on a reserved test set.
-- Explain model behaviour using feature importance and SHAP.
-- Analyse ordinal prediction errors.
-- Compare model performance with and without an explicit BMI feature.
-- Perform descriptive subgroup performance analysis.
-- Save the complete trained machine learning pipeline.
-- Expose the trained model through a Flask REST API.
-- Validate incoming prediction requests.
-- Return predicted class, confidence, and class probabilities.
-- Provide structured API error responses.
-- Later provide a user-friendly Streamlit interface and prediction history.
+The project currently includes:
+
+```text
+Machine Learning Pipeline        ✅
+Final Trained Model              ✅
+Model Explainability             ✅
+Flask REST API                   ✅
+Input Validation                 ✅
+Prediction Endpoint              ✅
+Streamlit Frontend               ✅
+Prediction Visualization         ✅
+Automated Tests                  ✅
+SQLite Integration               ⏳ Next
+Deployment                       ⬜ Planned
+```
+
+The next phase is:
+
+# Phase 10 — SQLite and Full Integration
 
 ---
 
@@ -51,29 +59,63 @@ The main objectives of this project are to:
 | Phase 6 | Final Model Selection and Evaluation | ✅ Complete |
 | Phase 7 | Explainability and Advanced Evaluation | ✅ Complete |
 | Phase 8 | Flask REST API | ✅ Complete |
-| Phase 9 | Streamlit Frontend | ⏳ Next |
-| Phase 10 | SQLite and Full Integration | ⬜ Planned |
+| Phase 9 | Streamlit Frontend | ✅ Complete |
+| Phase 10 | SQLite and Full Integration | ⏳ Next |
 | Phase 11 | Deployment and Final Documentation | ⬜ Planned |
+
+---
+
+# Project Objectives
+
+The main objectives of the Obesity Risk Intelligence System are to:
+
+- Analyse obesity-related lifestyle and demographic information.
+- Build a reliable multiclass machine learning classifier.
+- Develop reusable preprocessing logic.
+- Prevent data leakage during model development.
+- Compare multiple classification algorithms.
+- Tune the strongest candidate models.
+- Evaluate the final model using a reserved test set.
+- Analyse class-level performance.
+- Explain global model behaviour.
+- Explain individual predictions.
+- Analyse ordinal classification errors.
+- Compare models with and without an explicit BMI feature.
+- Perform descriptive subgroup performance analysis.
+- Persist the final preprocessing and prediction pipeline.
+- Expose the model through a REST API.
+- Validate prediction requests before inference.
+- Develop a user-facing assessment interface.
+- Display predicted class, confidence, and probabilities.
+- Add persistent prediction history using SQLite.
+- Prepare the complete application for deployment.
 
 ---
 
 # Dataset
 
-The project uses the generated obesity dataset associated with the Kaggle Playground Series Season 4 Episode 2 competition.
+The project uses the generated obesity dataset associated with:
 
-The local dataset is expected at:
+```text
+Kaggle Playground Series
+Season 4 Episode 2
+```
+
+The local dataset is stored at:
 
 ```text
 data/raw/obesity.csv
 ```
 
-The raw dataset is intentionally excluded from Git version control.
+The raw dataset is excluded from Git version control.
 
-## Dataset Size
+---
+
+# Dataset Dimensions
 
 ```text
-20,758 records
-18 columns
+Rows:    20,758
+Columns: 18
 ```
 
 The dataset contains:
@@ -84,19 +126,25 @@ The dataset contains:
 1 target column
 ```
 
-The `id` column is excluded from model training.
+The identifier column:
+
+```text
+id
+```
+
+is excluded from machine learning training.
 
 ---
 
 # Target Variable
 
-The prediction target is:
+The target variable is:
 
 ```text
 NObeyesdad
 ```
 
-The model predicts one of seven classes:
+The model predicts one of seven obesity-related classes:
 
 ```text
 Insufficient_Weight
@@ -118,7 +166,7 @@ This is therefore a:
 
 # Predictive Features
 
-The final model uses 16 original predictive features.
+The final model uses 16 original input features.
 
 ## Numerical Features
 
@@ -142,18 +190,18 @@ TUE
 | NCP | Number of main meals |
 | CH2O | Daily water consumption |
 | FAF | Physical activity frequency |
-| TUE | Time using technological devices |
+| TUE | Time spent using technological devices |
 
 ---
 
-## Ordinal Features
+# Ordinal Features
 
 ```text
 CAEC
 CALC
 ```
 
-### CAEC
+## CAEC
 
 Food consumption between meals:
 
@@ -164,7 +212,7 @@ Frequently
 Always
 ```
 
-### CALC
+## CALC
 
 Alcohol consumption:
 
@@ -174,11 +222,11 @@ Sometimes
 Frequently
 ```
 
-These values contain an inherent ordering and are encoded using an ordinal encoder.
+These categories have meaningful ordering and are processed with ordinal encoding.
 
 ---
 
-## Nominal Features
+# Nominal Features
 
 ```text
 Gender
@@ -189,7 +237,7 @@ SCC
 MTRANS
 ```
 
-These variables do not have a meaningful numerical ordering and are processed using one-hot encoding.
+These variables do not have meaningful numerical ordering and are processed using one-hot encoding.
 
 ---
 
@@ -216,17 +264,28 @@ Obesity-Risk-Intelligence-System/
 │
 ├── data/
 │   └── raw/
+│       ├── .gitkeep
 │       └── obesity.csv
 │
 ├── database/
 │   └── .gitkeep
 │
 ├── frontend/
-│   └── .gitkeep
+│   ├── __init__.py
+│   ├── app.py
+│   │
+│   ├── components/
+│   │   ├── __init__.py
+│   │   ├── assessment_form.py
+│   │   └── prediction_result.py
+│   │
+│   └── services/
+│       ├── __init__.py
+│       └── api_client.py
 │
 ├── models/
-│   ├── model_metadata.json
-│   └── obesity_risk_pipeline.joblib
+│   ├── obesity_risk_pipeline.joblib
+│   └── model_metadata.json
 │
 ├── notebooks/
 │   ├── 01_data_understanding.ipynb
@@ -249,7 +308,9 @@ Obesity-Risk-Intelligence-System/
 │   ├── test_model_service.py
 │   ├── test_model_info_api.py
 │   ├── test_prediction_api.py
-│   └── test_api_errors.py
+│   ├── test_api_errors.py
+│   ├── test_frontend_api_client.py
+│   └── test_prediction_result.py
 │
 ├── .env.example
 ├── .gitignore
@@ -262,7 +323,7 @@ Obesity-Risk-Intelligence-System/
 
 # Phase 1 — Data Understanding
 
-The first phase focused on understanding the dataset before performing any modelling.
+Phase 1 focused on understanding the dataset before building machine learning models.
 
 The analysis included:
 
@@ -272,9 +333,9 @@ The analysis included:
 - Target classes
 - Missing values
 - Duplicate records
-- Numerical-variable inspection
-- Categorical-variable inspection
-- Target-class distribution
+- Numerical variables
+- Categorical variables
+- Class distribution
 
 Notebook:
 
@@ -295,30 +356,30 @@ No major missing-value or duplicate-record problems were identified.
 
 # Phase 2 — Exploratory Data Analysis
 
-Exploratory Data Analysis was performed to better understand patterns within the dataset.
+Exploratory Data Analysis was performed to understand relationships between obesity categories and available features.
 
 The analysis included:
 
-- Obesity-class distribution
-- Numerical feature distributions
-- Categorical feature distributions
-- Age patterns
-- Height patterns
-- Weight patterns
-- Food-consumption behaviour
-- Physical-activity behaviour
+- Target distribution
+- Numerical distributions
+- Categorical distributions
+- Age analysis
+- Height analysis
+- Weight analysis
+- Vegetable consumption
+- Meal patterns
 - Water consumption
-- Transportation methods
+- Physical activity
+- Technology usage
+- Transportation
 - Correlation analysis
-- Class-level feature comparisons
+- Class-level comparisons
 
 Notebook:
 
 ```text
 notebooks/02_eda.ipynb
 ```
-
-The EDA stage helped identify relationships between physical measurements, eating behaviour, activity levels, and obesity categories.
 
 ---
 
@@ -330,7 +391,7 @@ Reusable preprocessing logic is implemented in:
 src/preprocessing.py
 ```
 
-The preprocessing system uses Scikit-learn's:
+The preprocessing system uses:
 
 ```text
 ColumnTransformer
@@ -351,8 +412,11 @@ StandardScaler()
 
 This provides:
 
-- Missing-value handling
-- Consistent feature scaling
+```text
+Missing-value handling
+        +
+Feature scaling
+```
 
 ---
 
@@ -365,26 +429,22 @@ SimpleImputer(strategy="most_frequent")
 OrdinalEncoder()
 ```
 
-Unknown categories are handled using:
+Unknown categories are represented using:
 
 ```text
 unknown_value = -1
 ```
 
-This prevents unseen ordinal values from automatically crashing the preprocessing pipeline.
-
 ---
 
 ## Nominal Pipeline
 
-Nominal variables use:
+Nominal features use:
 
 ```text
 SimpleImputer(strategy="most_frequent")
 OneHotEncoder(handle_unknown="ignore")
 ```
-
-This allows previously unseen nominal categories to be safely handled during transformation.
 
 ---
 
@@ -393,48 +453,24 @@ This allows previously unseen nominal categories to be safely handled during tra
 The application accepts:
 
 ```text
-16 raw predictive features
+16 original input features
 ```
 
-After preprocessing, the final pipeline produces:
+After preprocessing:
 
 ```text
 25 transformed features
 ```
 
-These transformed features are passed to the Gradient Boosting classifier.
+are passed to the classifier.
 
 ---
 
-# Preprocessing Tests
+# Phase 4 — Baseline Model Development
 
-Automated preprocessing tests are located in:
+Several machine learning algorithms were evaluated.
 
-```text
-tests/test_preprocessing.py
-```
-
-The tests verify:
-
-- Correct feature grouping
-- Independent preprocessor creation
-- Successful feature transformation
-- Missing-value handling
-- Unknown-category handling
-
-Tests can be run using:
-
-```bash
-python -m pytest
-```
-
----
-
-# Phase 4 — Baseline Models
-
-Several machine learning classifiers were trained and compared.
-
-The baseline models included:
+Models included:
 
 ```text
 Dummy Classifier
@@ -444,7 +480,7 @@ Random Forest
 Gradient Boosting
 ```
 
-## Validation Performance
+## Validation Results
 
 | Model | Accuracy | Macro F1 |
 |---|---:|---:|
@@ -466,35 +502,45 @@ notebooks/04_baseline_models.ipynb
 
 # Generalization Analysis
 
-Training and validation Macro F1 scores were also compared.
+Training and validation Macro F1 scores were compared.
 
 ```text
 Logistic Regression
 Train Macro F1      ≈ 0.8443
 Validation Macro F1 ≈ 0.8418
+Gap                ≈ 0.0025
+```
 
+```text
 Gradient Boosting
 Train Macro F1      ≈ 0.9126
 Validation Macro F1 ≈ 0.8930
+Gap                ≈ 0.0196
+```
 
+```text
 Random Forest
 Train Macro F1      ≈ 1.0000
 Validation Macro F1 ≈ 0.8849
+Gap                ≈ 0.1151
+```
 
+```text
 Decision Tree
 Train Macro F1      ≈ 1.0000
 Validation Macro F1 ≈ 0.8308
+Gap                ≈ 0.1692
 ```
 
-Random Forest and Decision Tree showed larger train-validation gaps.
+Random Forest and Decision Tree demonstrated substantially larger train-validation gaps.
 
-Gradient Boosting and Random Forest were selected for hyperparameter tuning.
+Gradient Boosting and Random Forest were selected for tuning.
 
 ---
 
 # Phase 5 — Hyperparameter Tuning
 
-The strongest baseline models were:
+The following candidate models were tuned:
 
 ```text
 Gradient Boosting
@@ -510,20 +556,18 @@ RandomizedSearchCV
 with:
 
 ```text
-5-fold Stratified Cross Validation
+5-fold StratifiedKFold cross-validation
 ```
 
-The main refit metric was:
+The primary selection metric was:
 
 ```text
 Macro F1
 ```
 
-Macro F1 was used because each obesity class should contribute equally to the overall evaluation.
-
 ---
 
-## Tuned Model Performance
+# Model Tuning Results
 
 | Candidate | Validation Macro F1 |
 |---|---:|
@@ -532,42 +576,34 @@ Macro F1 was used because each obesity class should contribute equally to the ov
 | Baseline Gradient Boosting | 0.8930 |
 | Baseline Random Forest | 0.8849 |
 
-The final selected candidate was:
+The selected model was:
 
 ```text
 Tuned Gradient Boosting
-```
-
-Notebook:
-
-```text
-notebooks/05_model_tuning.ipynb
 ```
 
 ---
 
 # Selected Gradient Boosting Configuration
 
-The selected model uses:
-
 ```text
-n_estimators = 100
-learning_rate = 0.15
-max_depth = 3
-min_samples_split = 5
-min_samples_leaf = 2
-subsample = 0.8
-max_features = 0.8
-random_state = 42
+n_estimators       = 100
+learning_rate      = 0.15
+max_depth          = 3
+min_samples_split  = 5
+min_samples_leaf   = 2
+subsample          = 0.8
+max_features       = 0.8
+random_state       = 42
 ```
 
 ---
 
 # Phase 6 — Final Model Evaluation
 
-After model selection, the chosen configuration was refitted using the development data and evaluated on the reserved test set.
+The selected Gradient Boosting configuration was refitted using development data and evaluated on the reserved test set.
 
-The final saved object contains:
+The final persisted object contains:
 
 ```text
 Preprocessing Pipeline
@@ -575,7 +611,7 @@ Preprocessing Pipeline
 Gradient Boosting Classifier
 ```
 
-Therefore, application code can provide the original 16 features directly to the model pipeline.
+Therefore, raw application features can be passed directly to the saved pipeline.
 
 ---
 
@@ -594,75 +630,74 @@ The model correctly classified approximately:
 90.75%
 ```
 
-of final test examples.
+of the final test examples.
 
 ---
 
-# Final Class Performance
+# Class-Level F1 Scores
 
-The strongest-performing obesity categories included:
+| Class | F1 Score |
+|---|---:|
+| Insufficient Weight | 0.9271 |
+| Normal Weight | 0.8677 |
+| Overweight Level I | 0.7871 |
+| Overweight Level II | 0.8220 |
+| Obesity Type I | 0.9020 |
+| Obesity Type II | 0.9796 |
+| Obesity Type III | 0.9959 |
+
+The most difficult classes were:
 
 ```text
-Obesity_Type_III
-Obesity_Type_II
-Insufficient_Weight
+Overweight Level I
+Overweight Level II
 ```
-
-The more difficult categories included:
-
-```text
-Overweight_Level_I
-Overweight_Level_II
-```
-
-This is consistent with the fact that neighbouring weight-status classes can have overlapping characteristics.
 
 ---
 
-# Saved Model
+# Saved Machine Learning Pipeline
 
-The trained pipeline is stored at:
+The trained model is stored at:
 
 ```text
 models/obesity_risk_pipeline.joblib
 ```
 
-Metadata is stored at:
+Model metadata is stored at:
 
 ```text
 models/model_metadata.json
 ```
 
-The metadata includes:
+The metadata contains:
 
 - Project name
 - Selected model
 - Model family
-- Configuration
+- Model configuration
 - Random state
-- Predictive feature list
-- Number of raw features
-- Number of transformed features
+- Predictive feature count
+- Transformed feature count
+- Target class count
+- Feature names
 - Target classes
 - Development record count
 - Test record count
 - Validation Macro F1
-- Final test metrics
+- Final evaluation metrics
 - Scikit-learn version
 
-The saved pipeline was produced using:
+The persisted model was produced using:
 
 ```text
 scikit-learn 1.8.0
 ```
 
-The same version should therefore be used when loading the serialized model.
-
 ---
 
 # Phase 7 — Explainability and Advanced Evaluation
 
-Phase 7 investigated how the frozen final model makes predictions and how prediction errors behave.
+Phase 7 investigated how the final frozen model behaves.
 
 Notebook:
 
@@ -670,23 +705,22 @@ Notebook:
 notebooks/06_explainability.ipynb
 ```
 
-Phase 7 includes:
+Analysis included:
 
 ```text
-Final model verification
-Global tree-based feature importance
+Global feature importance
 Global SHAP analysis
 Local SHAP explanations
 Ordinal error analysis
-BMI ablation experiment
-Gender subgroup performance analysis
+BMI ablation
+Gender subgroup analysis
 ```
 
 ---
 
 # Global Tree Feature Importance
 
-The five most important raw features according to the Gradient Boosting feature-importance calculation were:
+The five strongest raw features according to the Gradient Boosting model were:
 
 ```text
 1. Weight
@@ -698,9 +732,9 @@ The five most important raw features according to the Gradient Boosting feature-
 
 ---
 
-# Global SHAP Feature Importance
+# Global SHAP Importance
 
-SHAP identified the following leading raw features:
+The leading features according to SHAP were:
 
 ```text
 1. Weight
@@ -710,17 +744,7 @@ SHAP identified the following leading raw features:
 5. Age
 ```
 
-Both approaches therefore highlighted a similar group of highly influential features.
-
-Important recurring variables included:
-
-```text
-Weight
-Height
-FCVC
-Gender
-Age
-```
+Both techniques identified a similar group of influential variables.
 
 ---
 
@@ -729,25 +753,19 @@ Age
 Local SHAP analysis was performed on:
 
 ```text
-3 correctly classified test examples
-3 incorrectly classified test examples
+3 correctly classified examples
+3 incorrectly classified examples
 ```
 
-For each example, the strongest feature contributions to the predicted class were identified.
+For each example, the strongest signed feature contributions toward the predicted class were analysed.
 
-Generated local explanation files are stored under:
+Outputs are stored under:
 
 ```text
 reports/figures/
 ```
 
-with names such as:
-
-```text
-local_shap_<sample_id>.png
-```
-
-The corresponding explanation data is stored in:
+and:
 
 ```text
 reports/generated/local_shap_explanations.csv
@@ -757,49 +775,53 @@ reports/generated/local_shap_explanations.csv
 
 # Ordinal Error Analysis
 
-The obesity classes can be interpreted in an increasing weight-status order:
+The target classes follow an approximate obesity-status ordering:
 
 ```text
-Insufficient_Weight
+Insufficient Weight
         ↓
-Normal_Weight
+Normal Weight
         ↓
-Overweight_Level_I
+Overweight Level I
         ↓
-Overweight_Level_II
+Overweight Level II
         ↓
-Obesity_Type_I
+Obesity Type I
         ↓
-Obesity_Type_II
+Obesity Type II
         ↓
-Obesity_Type_III
+Obesity Type III
 ```
 
-Prediction errors were therefore analysed according to the distance between the true class and predicted class.
-
-## Ordinal Error Results
+## Results
 
 ```text
-Mean ordinal distance:
+Mean Ordinal Distance:
 0.1092
+```
 
-Exact prediction rate:
+```text
+Exact Prediction Rate:
 90.75%
+```
 
-Adjacent-class error rate:
+```text
+Adjacent-Class Error Rate:
 7.90%
+```
 
-Severe error rate:
+```text
+Severe Error Rate:
 1.35%
 ```
 
 A severe error is defined as:
 
 ```text
-Ordinal distance >= 2 classes
+Ordinal distance >= 2
 ```
 
-Most prediction errors therefore occur between neighbouring classes rather than between widely separated obesity-risk categories.
+Most errors therefore occur between neighbouring classes.
 
 ---
 
@@ -811,70 +833,57 @@ BMI was calculated using:
 BMI = Weight / Height²
 ```
 
-Two configurations were compared using development/validation data:
-
-```text
-Original 16 features
-```
-
-and:
-
-```text
-Original 16 features + BMI
-```
-
-## Results
+Two validation configurations were compared.
 
 | Configuration | Validation Macro F1 |
 |---|---:|
 | Original 16 Features | **0.8978** |
-| Original + BMI | **0.8946** |
+| Original 16 Features + BMI | **0.8946** |
 
 Difference:
 
 ```text
-BMI Macro F1 delta = -0.00316
+BMI Macro F1 Delta:
+-0.00316
 ```
 
-Adding BMI did not improve validation performance.
+Adding explicit BMI did not improve model performance.
 
 Therefore, the original 16-feature model was retained.
 
 ---
 
-# Gender Subgroup Analysis
+# Gender Subgroup Evaluation
 
-The final model was also evaluated across gender subgroups.
+Descriptive model performance was evaluated across gender subgroups.
 
-The observed Macro F1 gap was approximately:
+Observed Macro F1 gap:
 
 ```text
 0.0186
 ```
 
-The dataset's obesity-class distributions differ substantially between gender groups.
+However, class-support distributions differ substantially between gender groups.
 
-Therefore, these subgroup results are interpreted as:
+Therefore, subgroup results are treated as:
 
 ```text
-Descriptive diagnostic analysis
+Descriptive diagnostics
 ```
 
-rather than definitive evidence that the model is fair or unfair.
-
-Further fairness evaluation would require more balanced and representative subgroup data.
+rather than proof that the model is fair or unfair.
 
 ---
 
 # Phase 7 Summary
 
-The Phase 7 summary is stored at:
+Important results are stored in:
 
 ```text
 reports/generated/phase7_summary.json
 ```
 
-Key results:
+Summary:
 
 ```text
 Selected Model:
@@ -920,27 +929,19 @@ Gender Macro F1 Gap:
 
 # Phase 8 — Flask REST API
 
-Phase 8 converts the trained machine learning model into a reusable REST API.
+Phase 8 exposed the trained machine learning pipeline through a Flask REST API.
 
-The backend is implemented using:
+The backend uses an application-factory architecture.
 
-```text
-Flask
-```
-
-and follows an application-factory architecture.
-
-The API separates:
+Backend responsibilities are separated into:
 
 ```text
 Routes
 Services
-Input validation
+Validation
 Model loading
 Error handling
 ```
-
-instead of placing the entire application inside one Python file.
 
 ---
 
@@ -950,43 +951,31 @@ instead of placing the entire application inside one Python file.
 Client
    │
    ▼
-Flask Application
+Flask REST API
    │
    ├── GET /health
-   │
    ├── GET /model-info
-   │
    └── POST /predict
-   │
-   ▼
-Input Validation
-   │
-   ▼
-ModelService
-   │
-   ├── Load model metadata
-   ├── Verify Scikit-learn version
-   └── Load saved ML pipeline
-   │
-   ▼
-Scikit-learn Pipeline
-   │
-   ├── Numerical preprocessing
-   ├── Ordinal preprocessing
-   ├── Nominal preprocessing
-   └── Gradient Boosting
-   │
-   ▼
-Prediction
-   │
-   ├── Predicted class
-   ├── Confidence
-   └── Class probabilities
+            │
+            ▼
+       Input Validation
+            │
+            ▼
+        ModelService
+            │
+            ▼
+Saved Scikit-learn Pipeline
+            │
+            ▼
+      Gradient Boosting
+            │
+            ▼
+        Prediction
 ```
 
 ---
 
-# Flask Application Factory
+# Application Factory
 
 The Flask backend uses:
 
@@ -994,102 +983,84 @@ The Flask backend uses:
 create_app()
 ```
 
-rather than creating one global application containing all logic.
-
-This allows application initialization to be organized centrally.
-
 The application factory:
 
 ```text
-Creates Flask application
+Creates Flask Application
         ↓
-Applies configuration
+Applies Configuration
         ↓
-Creates ModelService
+Loads ModelService
         ↓
-Loads saved model
+Loads ML Pipeline
         ↓
-Registers ModelService
+Registers Blueprints
         ↓
-Registers API blueprints
+Registers Error Handlers
         ↓
-Registers error handlers
-        ↓
-Returns application
+Returns Application
 ```
 
 ---
 
 # Model Service
 
-Model-related logic is implemented in:
+Model operations are implemented in:
 
 ```text
 backend/services/model_service.py
 ```
 
-`ModelService` is responsible for:
+Responsibilities include:
 
 ```text
-Loading model_metadata.json
-Checking the Scikit-learn version
-Loading obesity_risk_pipeline.joblib
-Returning model information
-Creating prediction input DataFrames
-Running predict()
-Running predict_proba()
-Returning prediction results
+Load model metadata
+Check Scikit-learn version
+Load saved pipeline
+Return model information
+Create model input DataFrame
+Run predict()
+Run predict_proba()
+Return class probabilities
 ```
 
-The trained model is loaded when the Flask application is created rather than being loaded again for every request.
+The model is loaded when the Flask application starts instead of being reloaded for every request.
 
 ---
 
 # Input Validation
 
-Prediction validation is implemented in:
+Prediction input validation is implemented in:
 
 ```text
 backend/services/input_validator.py
 ```
 
-A prediction request must:
+Incoming requests must:
 
 ```text
-Be a JSON object
-Contain all 16 required features
+Be JSON objects
+Contain all 16 features
 Contain no unexpected features
-Use valid numeric types
-Use finite numerical values
-Remain inside configured sanity ranges
-Use supported categorical values
+Use valid numerical values
+Use finite numbers
+Stay within configured input ranges
+Use valid categorical values
 ```
-
-Invalid requests are rejected before the model receives the input.
 
 ---
 
 # API Endpoints
 
-The Flask API currently exposes three endpoints.
-
 | Method | Endpoint | Purpose |
 |---|---|---|
-| GET | `/health` | Check whether the API is running |
-| GET | `/model-info` | Return information about the trained model |
-| POST | `/predict` | Generate an obesity-risk prediction |
+| GET | `/health` | Verify backend availability |
+| GET | `/model-info` | Retrieve model metadata |
+| POST | `/predict` | Generate obesity-risk prediction |
 
 ---
 
 # GET /health
-
-Used to verify API availability.
-
-Example request:
-
-```text
-GET /health
-```
 
 Example response:
 
@@ -1100,38 +1071,22 @@ Example response:
 }
 ```
 
-HTTP status:
-
-```text
-200 OK
-```
-
 ---
 
 # GET /model-info
 
-Returns information about the loaded machine learning model.
-
-Example request:
+Returns information including:
 
 ```text
-GET /model-info
-```
-
-The response includes information such as:
-
-```text
-Project name
+Project
 Selected model
 Model family
 Configuration
-Predictive feature count
-Transformed feature count
-Target class count
-Predictive feature names
-Target class names
+Feature counts
+Feature names
+Target classes
 Scikit-learn version
-Final test performance
+Final test metrics
 Model loading status
 ```
 
@@ -1155,9 +1110,9 @@ Example structure:
 
 # POST /predict
 
-The `/predict` endpoint accepts the 16 raw predictive features.
+The endpoint accepts the 16 predictive features.
 
-Example request body:
+Example:
 
 ```json
 {
@@ -1184,7 +1139,7 @@ Example request body:
 
 # Prediction Response
 
-A successful prediction returns:
+The endpoint returns:
 
 ```json
 {
@@ -1202,35 +1157,17 @@ A successful prediction returns:
 }
 ```
 
-The values in this example are **illustrative only**.
+The values above are illustrative examples.
 
-Actual:
-
-```text
-predicted_class
-confidence
-probabilities
-```
-
-are calculated dynamically by the trained machine learning model.
-
-The returned probability dictionary contains probabilities for all seven obesity classes.
-
-The probabilities should sum approximately to:
-
-```text
-1.0
-```
-
-The confidence corresponds to the highest predicted class probability.
+Actual values are calculated dynamically by the trained model.
 
 ---
 
-# API Validation Errors
+# API Error Handling
 
-Invalid requests return structured JSON.
+The backend uses structured JSON error responses.
 
-Example:
+## Validation Error
 
 ```json
 {
@@ -1239,19 +1176,13 @@ Example:
 }
 ```
 
-HTTP status:
+Status:
 
 ```text
-400 Bad Request
+400
 ```
 
-Validation protects the prediction pipeline against malformed application input.
-
----
-
-# 404 Error Response
-
-Unknown endpoints return:
+## Unknown Endpoint
 
 ```json
 {
@@ -1260,17 +1191,13 @@ Unknown endpoints return:
 }
 ```
 
-HTTP status:
+Status:
 
 ```text
-404 Not Found
+404
 ```
 
----
-
-# 405 Error Response
-
-Using an unsupported HTTP method returns:
+## Unsupported HTTP Method
 
 ```json
 {
@@ -1279,31 +1206,13 @@ Using an unsupported HTTP method returns:
 }
 ```
 
-HTTP status:
+Status:
 
 ```text
-405 Method Not Allowed
+405
 ```
 
-For example:
-
-```text
-GET /predict
-```
-
-is rejected because `/predict` accepts:
-
-```text
-POST
-```
-
-only.
-
----
-
-# 500 Error Response
-
-Unexpected internal API failures return a structured response:
+## Internal Server Error
 
 ```json
 {
@@ -1312,53 +1221,627 @@ Unexpected internal API failures return a structured response:
 }
 ```
 
-HTTP status:
+Status:
 
 ```text
-500 Internal Server Error
+500
 ```
-
-Detailed internal exception information is intentionally not exposed directly through the API response.
 
 ---
 
-# API Testing
+# Phase 9 — Streamlit Frontend
 
-Phase 8 includes automated tests for:
+Phase 9 provides the user-facing interface for the Obesity Risk Intelligence System.
+
+The frontend is built using:
 
 ```text
-Health endpoint
-Model loading
-Model metadata endpoint
-Valid prediction
-Prediction confidence
-Seven class probabilities
-Probability sum
-Missing features
-Unexpected features
-Wrong numerical types
-Numerical range validation
-Invalid categorical values
-Non-JSON requests
-Unknown endpoints
-Unsupported HTTP methods
+Streamlit
 ```
 
-Run all tests with:
+The Streamlit application does not directly load the machine learning model.
+
+Instead:
+
+```text
+Streamlit
+    ↓
+APIClient
+    ↓
+Flask REST API
+    ↓
+Machine Learning Pipeline
+```
+
+This keeps frontend and backend responsibilities separated.
+
+---
+
+# Frontend Architecture
+
+```text
+Browser
+   │
+   ▼
+Streamlit Application
+   │
+   ├── Sidebar
+   │     ├── API status
+   │     ├── Model name
+   │     ├── Accuracy
+   │     └── Macro F1
+   │
+   ├── Assessment Form
+   │     ├── Personal information
+   │     ├── Physical information
+   │     ├── Eating habits
+   │     ├── Activity
+   │     └── Lifestyle
+   │
+   └── Prediction Result
+         ├── Predicted category
+         ├── Confidence
+         ├── Probability chart
+         ├── Probability ranking
+         └── Technical details
+                │
+                ▼
+             APIClient
+                │
+          HTTP / JSON
+                │
+                ▼
+          Flask REST API
+```
+
+---
+
+# Frontend Components
+
+The Streamlit interface is divided into reusable components.
+
+## Assessment Form
+
+Implemented in:
+
+```text
+frontend/components/assessment_form.py
+```
+
+It collects all 16 predictive features.
+
+The form groups inputs into:
+
+```text
+Personal and Physical Information
+Eating Habits
+Lifestyle and Activity
+```
+
+This avoids presenting users with one long unstructured input form.
+
+---
+
+# Personal and Physical Inputs
+
+```text
+Age
+Height
+Weight
+Gender
+Family history of overweight
+```
+
+---
+
+# Eating Habit Inputs
+
+```text
+FCVC
+NCP
+CAEC
+FAVC
+CH2O
+CALC
+```
+
+---
+
+# Lifestyle and Activity Inputs
+
+```text
+FAF
+TUE
+SMOKE
+SCC
+MTRANS
+```
+
+---
+
+# Streamlit Form Submission
+
+The complete form generates a dictionary containing:
+
+```text
+16 predictive features
+```
+
+The payload is then sent to:
+
+```text
+POST /predict
+```
+
+through the frontend API client.
+
+---
+
+# Frontend API Client
+
+HTTP communication is handled by:
+
+```text
+frontend/services/api_client.py
+```
+
+The API client provides:
+
+```text
+get_health()
+get_model_info()
+predict()
+```
+
+The frontend therefore avoids scattering raw HTTP request code throughout the Streamlit application.
+
+---
+
+# API Error Handling in the Frontend
+
+The frontend API client converts backend failures into:
+
+```text
+APIClientError
+```
+
+When the Flask API returns a useful error message, the Streamlit interface can display it to the user.
+
+For example:
+
+```text
+Age must be numeric.
+```
+
+instead of displaying only:
+
+```text
+HTTP 400
+```
+
+---
+
+# Prediction Result Component
+
+Prediction visualization is implemented in:
+
+```text
+frontend/components/prediction_result.py
+```
+
+The component displays:
+
+```text
+Human-readable predicted category
+Prediction confidence
+Confidence progress indicator
+Seven-class probability chart
+Probability ranking
+Second-highest predicted class
+Technical prediction data
+Educational-use warning
+```
+
+---
+
+# Human-Readable Prediction Labels
+
+Internal model labels such as:
+
+```text
+Normal_Weight
+```
+
+are presented as:
+
+```text
+Normal Weight
+```
+
+Similarly:
+
+```text
+Obesity_Type_III
+```
+
+becomes:
+
+```text
+Obesity Type III
+```
+
+The internal machine learning class names are not modified.
+
+Only their visual presentation changes.
+
+---
+
+# Prediction Confidence
+
+The frontend displays the model's probability for the predicted class.
+
+Example:
+
+```text
+Prediction Confidence
+87.25%
+```
+
+The confidence value represents:
+
+```text
+The model's predicted probability for its selected class
+```
+
+It does not represent medical certainty.
+
+---
+
+# Probability Visualization
+
+The frontend displays probabilities for all seven classes.
+
+Example structure:
+
+```text
+Normal Weight             █████████████████
+Overweight Level I        ████
+Overweight Level II       ██
+Insufficient Weight       █
+Obesity Type I            █
+Obesity Type II
+Obesity Type III
+```
+
+Probabilities are also shown as a ranked table.
+
+---
+
+# Streamlit Session State
+
+The most recent prediction is stored in:
+
+```text
+st.session_state
+```
+
+This allows the prediction result to persist during Streamlit reruns within the current session.
+
+The key used is:
+
+```text
+prediction_result
+```
+
+---
+
+# Start New Assessment
+
+After a prediction has been generated, the interface provides:
+
+```text
+Start New Assessment
+```
+
+This clears:
+
+```text
+Current prediction
+Form widget state
+```
+
+and restores the form to its default values.
+
+---
+
+# Backend Connection Monitoring
+
+When Streamlit starts, it requests:
+
+```text
+GET /health
+```
+
+If Flask is available:
+
+```text
+API Connected
+```
+
+is displayed.
+
+If Flask cannot be reached, the frontend displays an error and prevents prediction functionality from continuing.
+
+---
+
+# Model Information Sidebar
+
+The Streamlit sidebar displays:
+
+```text
+API connection status
+Selected model
+Test accuracy
+Macro F1
+Number of input features
+Number of target classes
+```
+
+This information is retrieved from:
+
+```text
+GET /model-info
+```
+
+rather than being manually duplicated in the frontend.
+
+---
+
+# Complete Application Architecture
+
+```text
+                       USER
+                         │
+                         ▼
+                Streamlit Frontend
+                         │
+          ┌──────────────┼──────────────┐
+          │              │              │
+          ▼              ▼              ▼
+       Sidebar      Assessment Form   Result UI
+                         │
+                  16 Raw Features
+                         │
+                         ▼
+                      APIClient
+                         │
+                    HTTP / JSON
+                         │
+                         ▼
+                   Flask REST API
+                         │
+                         ▼
+                  Input Validation
+                         │
+                         ▼
+                    ModelService
+                         │
+             ┌───────────┴───────────┐
+             │                       │
+             ▼                       ▼
+    model_metadata.json    obesity_risk_pipeline.joblib
+                                     │
+                                     ▼
+                           Preprocessing Pipeline
+                                     │
+                    ┌────────────────┼────────────────┐
+                    │                │                │
+                    ▼                ▼                ▼
+              Numerical          Ordinal          Nominal
+               Pipeline          Pipeline          Pipeline
+                    │                │                │
+                    └────────────────┼────────────────┘
+                                     │
+                                     ▼
+                           25 Transformed Features
+                                     │
+                                     ▼
+                          Gradient Boosting Model
+                                     │
+                                     ▼
+                              Prediction Result
+                                     │
+                     ┌───────────────┼───────────────┐
+                     │               │               │
+                     ▼               ▼               ▼
+                Predicted        Confidence      Probabilities
+                  Class
+                     │
+                     └───────────────┬───────────────┘
+                                     │
+                                     ▼
+                              Streamlit UI
+```
+
+---
+
+# Automated Testing
+
+The project includes automated tests for machine learning preprocessing, Flask backend functionality, API validation, API client communication, and frontend result-processing helpers.
+
+Tests include:
+
+```text
+Preprocessing configuration
+Feature transformation
+Missing-value handling
+Unknown categories
+Health API
+Model loading
+Model metadata
+Prediction API
+Prediction probabilities
+Missing feature validation
+Unexpected feature validation
+Numeric type validation
+Numeric range validation
+Categorical validation
+Non-JSON requests
+404 handling
+405 handling
+Frontend GET requests
+Frontend prediction POST request
+Frontend backend-error handling
+Invalid JSON responses
+Prediction label formatting
+Probability DataFrame generation
+Probability sorting
+```
+
+---
+
+# Running Tests
+
+Run the entire test suite:
 
 ```bash
 python -m pytest -q
 ```
 
-All tests should complete without failures before a Phase 8 change is considered complete.
+Run only backend API tests:
+
+```bash
+python -m pytest tests/test_prediction_api.py -q
+```
+
+Run frontend API-client tests:
+
+```bash
+python -m pytest tests/test_frontend_api_client.py -q
+```
+
+Run prediction-result helper tests:
+
+```bash
+python -m pytest tests/test_prediction_result.py -q
+```
+
+All tests should pass before project changes are committed.
 
 ---
 
-# Running the Flask API
+# Installation
 
-Activate the virtual environment first.
+## 1. Clone Repository
 
-## Windows PowerShell
+```bash
+git clone https://github.com/SMCodeX7/Obesity-Risk-Intelligence-System.git
+```
+
+Move into the project:
+
+```bash
+cd Obesity-Risk-Intelligence-System
+```
+
+---
+
+# 2. Create Virtual Environment
+
+## Windows
+
+```powershell
+python -m venv .venv
+```
+
+Activate:
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+```
+
+## Linux / macOS
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+```
+
+---
+
+# 3. Upgrade pip
+
+```bash
+python -m pip install --upgrade pip
+```
+
+---
+
+# 4. Install Dependencies
+
+```bash
+python -m pip install -r requirements.txt
+```
+
+Important project dependencies include:
+
+```text
+pandas
+numpy
+matplotlib
+seaborn
+jupyterlab
+scikit-learn==1.8.0
+pytest
+shap
+joblib
+Flask
+streamlit
+requests
+```
+
+---
+
+# Dataset Setup
+
+Place the dataset at:
+
+```text
+data/raw/obesity.csv
+```
+
+The raw dataset is excluded from Git version control.
+
+---
+
+# Running the Jupyter Notebooks
+
+Launch:
+
+```bash
+jupyter lab
+```
+
+Execute notebooks in this order:
+
+```text
+1. 01_data_understanding.ipynb
+2. 02_eda.ipynb
+3. 03_preprocessing.ipynb
+4. 04_baseline_models.ipynb
+5. 05_model_tuning.ipynb
+6. 06_explainability.ipynb
+```
+
+---
+
+# Running the Complete Application
+
+The application currently requires two running processes.
+
+## Terminal 1 — Flask Backend
+
+Activate the environment:
 
 ```powershell
 .\.venv\Scripts\Activate.ps1
@@ -1370,7 +1853,7 @@ Start Flask:
 python -m flask --app backend run --debug
 ```
 
-The development server should start at:
+The API runs locally at:
 
 ```text
 http://127.0.0.1:5000
@@ -1379,56 +1862,69 @@ http://127.0.0.1:5000
 Available endpoints:
 
 ```text
-http://127.0.0.1:5000/health
-
-http://127.0.0.1:5000/model-info
-
-http://127.0.0.1:5000/predict
+GET  /health
+GET  /model-info
+POST /predict
 ```
-
-`/predict` must be called using an HTTP `POST` request.
 
 ---
 
-# Example Prediction with PowerShell
+# Terminal 2 — Streamlit Frontend
 
-Create the request body:
+Activate the environment:
 
 ```powershell
-$body = @{
-    Age = 25
-    Height = 1.70
-    Weight = 70
-    FCVC = 2
-    NCP = 3
-    CH2O = 2
-    FAF = 1
-    TUE = 1
-    CAEC = "Sometimes"
-    CALC = "no"
-    Gender = "Male"
-    family_history_with_overweight = "yes"
-    FAVC = "yes"
-    SMOKE = "no"
-    SCC = "no"
-    MTRANS = "Public_Transportation"
-} | ConvertTo-Json
+.\.venv\Scripts\Activate.ps1
 ```
 
-Send the request:
+Start Streamlit:
 
 ```powershell
-$response = Invoke-RestMethod `
-    -Uri http://127.0.0.1:5000/predict `
-    -Method Post `
-    -ContentType "application/json" `
-    -Body $body
+python -m streamlit run frontend/app.py
 ```
 
-Display the full result:
+Open the Streamlit URL shown in the terminal.
 
-```powershell
-$response | ConvertTo-Json -Depth 5
+---
+
+# Application Request Flow
+
+When a user submits an assessment:
+
+```text
+User enters 16 features
+        ↓
+Streamlit Form
+        ↓
+Python Dictionary
+        ↓
+Frontend APIClient
+        ↓
+POST /predict
+        ↓
+Flask API
+        ↓
+Input Validation
+        ↓
+Pandas DataFrame
+        ↓
+Saved Scikit-learn Pipeline
+        ↓
+Preprocessing
+        ↓
+Gradient Boosting Classifier
+        ↓
+Predicted Class
+        ↓
+Confidence
+        ↓
+Seven Class Probabilities
+        ↓
+JSON Response
+        ↓
+Streamlit
+        ↓
+Prediction Result UI
 ```
 
 ---
@@ -1441,13 +1937,15 @@ Machine learning reports are stored in:
 reports/generated/
 ```
 
-Important reports include:
+Important files include:
 
 ```text
 baseline_model_comparison.csv
 gradient_boosting_tuning_results.csv
 random_forest_tuning_results.csv
 model_tuning_comparison.csv
+tuning_candidates.csv
+leading_model_candidate.csv
 final_model_selection.csv
 final_test_metrics.csv
 final_classification_report.csv
@@ -1469,200 +1967,19 @@ phase7_summary.json
 
 # Generated Figures
 
-Visual outputs are stored in:
+Visual outputs are stored under:
 
 ```text
 reports/figures/
 ```
 
-Important figures include:
+Important outputs include:
 
 ```text
 global_tree_feature_importance.png
 global_shap_feature_importance.png
 gender_subgroup_macro_f1.png
-local_shap_<sample_id>.png
-```
-
----
-
-# Installation
-
-## 1. Clone Repository
-
-```bash
-git clone https://github.com/SMCodeX7/Obesity-Risk-Intelligence-System.git
-```
-
-Move into the repository:
-
-```bash
-cd Obesity-Risk-Intelligence-System
-```
-
----
-
-## 2. Create Virtual Environment
-
-### Windows
-
-```powershell
-python -m venv .venv
-```
-
-Activate:
-
-```powershell
-.\.venv\Scripts\Activate.ps1
-```
-
-### Linux / macOS
-
-```bash
-python -m venv .venv
-source .venv/bin/activate
-```
-
----
-
-## 3. Upgrade pip
-
-```bash
-python -m pip install --upgrade pip
-```
-
----
-
-## 4. Install Dependencies
-
-```bash
-python -m pip install -r requirements.txt
-```
-
-Important runtime dependencies include:
-
-```text
-pandas
-numpy
-matplotlib
-seaborn
-jupyterlab
-scikit-learn==1.8.0
-pytest
-shap
-joblib
-Flask
-```
-
----
-
-# Dataset Setup
-
-Place the obesity dataset at:
-
-```text
-data/raw/obesity.csv
-```
-
-The raw dataset is ignored by Git.
-
----
-
-# Running the Notebooks
-
-Launch JupyterLab:
-
-```bash
-jupyter lab
-```
-
-Study or execute the notebooks in this order:
-
-```text
-1. notebooks/01_data_understanding.ipynb
-2. notebooks/02_eda.ipynb
-3. notebooks/03_preprocessing.ipynb
-4. notebooks/04_baseline_models.ipynb
-5. notebooks/05_model_tuning.ipynb
-6. notebooks/06_explainability.ipynb
-```
-
----
-
-# Running Automated Tests
-
-Run the complete test suite:
-
-```bash
-python -m pytest -q
-```
-
-Run only API error tests:
-
-```bash
-python -m pytest tests/test_api_errors.py -q
-```
-
-Run prediction tests:
-
-```bash
-python -m pytest tests/test_prediction_api.py -q
-```
-
----
-
-# Complete System Architecture So Far
-
-```text
-                        User / API Client
-                               │
-                               ▼
-                        Flask REST API
-                               │
-                ┌──────────────┼──────────────┐
-                │              │              │
-                ▼              ▼              ▼
-             /health       /model-info     /predict
-                                               │
-                                               ▼
-                                      Input Validation
-                                               │
-                                               ▼
-                                         ModelService
-                                               │
-                     ┌─────────────────────────┴────────────────────┐
-                     │                                              │
-                     ▼                                              ▼
-          model_metadata.json                       obesity_risk_pipeline.joblib
-                                                                    │
-                                                                    ▼
-                                                        Scikit-learn Pipeline
-                                                                    │
-                        ┌───────────────────────────────────────────┼───────────────────────────────────┐
-                        │                                           │                                   │
-                        ▼                                           ▼                                   ▼
-                Numerical Pipeline                         Ordinal Pipeline                     Nominal Pipeline
-                        │                                           │                                   │
-                Median Imputation                         Most Frequent                          Most Frequent
-                        │                                   Imputation                              Imputation
-                        ▼                                           │                                   │
-                Standard Scaling                                  ▼                                   ▼
-                                                        Ordinal Encoding                      One-Hot Encoding
-                        └───────────────────────────────────────────┼───────────────────────────────────┘
-                                                                    │
-                                                                    ▼
-                                                         25 Transformed Features
-                                                                    │
-                                                                    ▼
-                                                        Tuned Gradient Boosting
-                                                                    │
-                                                                    ▼
-                                                       Obesity Risk Prediction
-                                                                    │
-                                     ┌──────────────────────────────┼──────────────────────────────┐
-                                     │                              │                              │
-                                     ▼                              ▼                              ▼
-                              Predicted Class                   Confidence                   Probabilities
+local_shap_<sample>.png
 ```
 
 ---
@@ -1680,7 +1997,7 @@ SHAP
 Joblib
 ```
 
-## Data Analysis and Visualization
+## Data Analysis
 
 ```text
 Pandas
@@ -1697,12 +2014,29 @@ Python
 Flask
 ```
 
+## Frontend
+
+```text
+Python
+Streamlit
+Requests
+```
+
 ## Testing
 
 ```text
 Pytest
 Flask Test Client
+unittest.mock
 ```
+
+## Database
+
+```text
+SQLite
+```
+
+Planned for Phase 10.
 
 ## Version Control
 
@@ -1711,134 +2045,195 @@ Git
 GitHub
 ```
 
-## Planned Frontend
-
-```text
-Streamlit
-```
-
-## Planned Database
-
-```text
-SQLite
-```
-
 ---
 
 # Key Technical Decisions
 
-The project applies several practices intended to improve reliability and maintainability.
+## Identifier Exclusion
 
-### Identifier Removal
-
-The dataset `id` field is not used as a predictive feature.
-
-### Reusable Preprocessing
-
-Feature preprocessing is implemented as reusable Scikit-learn pipeline components.
-
-### Safe Category Handling
-
-Unknown categorical values are handled by the preprocessing system.
-
-### Stratified Data Splitting
-
-Dataset splits preserve class proportions.
-
-### Validation-Based Model Selection
-
-Model selection and tuning are performed using development/validation data rather than repeatedly tuning against the final test result.
-
-### Macro F1
-
-Macro F1 is used as a major evaluation metric because the classification task contains seven classes.
-
-### Cross-Validation
-
-Hyperparameter tuning uses stratified cross-validation.
-
-### Frozen Final Pipeline
-
-The selected preprocessing and model components are persisted together.
-
-### Explainability
-
-Tree importance and SHAP are both used to investigate model behaviour.
-
-### BMI Ablation
-
-BMI is tested as an additional derived feature without replacing the frozen final model.
-
-### Subgroup Analysis
-
-Subgroup metrics are interpreted cautiously due to differences in subgroup class distributions.
-
-### Model Service
-
-Model loading is separated from HTTP route handling.
-
-### Load Model Once
-
-The serialized ML pipeline is loaded during Flask application initialization rather than on every prediction request.
-
-### Request Validation
-
-Incoming API data is checked before being sent to the model.
-
-### Centralized Error Handling
-
-Validation errors and HTTP errors return consistent JSON responses.
+The `id` field is excluded from model training.
 
 ---
 
-# Limitations
+## Reusable Preprocessing Pipeline
+
+All preprocessing logic is stored inside reusable Scikit-learn transformers.
+
+---
+
+## Stratified Data Splitting
+
+Class proportions are maintained when dividing data into training, validation, and test subsets.
+
+---
+
+## Validation-Based Model Selection
+
+Hyperparameter and model selection decisions are based on development/validation performance.
+
+---
+
+## Macro F1 Selection Metric
+
+Macro F1 was emphasized because all seven obesity classes should contribute equally to model evaluation.
+
+---
+
+## Saved End-to-End Pipeline
+
+The complete preprocessing and classification pipeline is persisted together.
+
+Application code therefore provides raw features directly to the saved pipeline.
+
+---
+
+## No Explicit BMI Feature
+
+BMI was evaluated experimentally but did not improve validation Macro F1.
+
+Therefore, the original 16-feature model remains the final model.
+
+---
+
+## Explainability
+
+Both:
+
+```text
+Tree-based importance
+SHAP
+```
+
+were used to analyse model behaviour.
+
+---
+
+## Separate Backend and Frontend
+
+Streamlit does not directly load the trained model.
+
+Instead:
+
+```text
+Streamlit
+    ↓
+Flask
+    ↓
+ML Pipeline
+```
+
+This provides clearer separation of responsibilities.
+
+---
+
+## Model Loaded Once
+
+The Flask application loads the persisted machine learning pipeline during application initialization instead of repeatedly loading it for individual requests.
+
+---
+
+## Input Validation Before Inference
+
+All incoming prediction requests are validated before reaching the machine learning model.
+
+---
+
+## Centralized Backend Error Handling
+
+Backend validation and HTTP errors produce structured JSON responses.
+
+---
+
+## Dedicated Frontend API Client
+
+HTTP communication is implemented inside:
+
+```text
+frontend/services/api_client.py
+```
+
+instead of being spread throughout the UI.
+
+---
+
+## Session-Based Prediction Persistence
+
+The most recent result is stored using Streamlit session state.
+
+---
+
+# Current Limitations
 
 ## Dataset Representation
 
-Model performance depends on the characteristics of the available dataset and may not generalize equally well to every real-world population.
+Model performance depends on the characteristics of the available dataset and may not generalize equally well to all real-world populations.
+
+---
 
 ## Generated Dataset
 
-The competition dataset contains generated characteristics and should not automatically be treated as representative clinical population data.
+The competition dataset contains generated characteristics.
+
+It should not automatically be considered representative clinical population data.
+
+---
 
 ## Medical Use
 
 This project is intended for:
 
 ```text
-Machine learning
-Software engineering
-Educational demonstration
-Research experimentation
+Education
+Machine learning experimentation
+Software engineering practice
+Research demonstration
 ```
 
-It is **not a medical diagnostic system**.
+It is not intended for medical diagnosis.
 
 Predictions should not replace professional medical assessment.
 
-## Explainability
+---
 
-SHAP values explain model behaviour.
+## Explainability Limitation
 
-They do not establish medical causation.
+SHAP explains relationships inside the trained model.
+
+It does not establish medical causation.
 
 For example:
 
 ```text
-A feature having high SHAP importance
+Weight has high SHAP importance
 ```
 
-does not mean:
+does not by itself mean:
 
 ```text
-The feature medically causes obesity.
+Weight medically causes a particular outcome
 ```
 
-## Subgroup Evaluation
+---
 
-Class distributions differ substantially between some gender subgroups.
+## Subgroup Analysis
 
-Subgroup comparisons should therefore be interpreted carefully.
+Gender subgroup class distributions are uneven.
+
+Subgroup metrics must therefore be interpreted cautiously.
+
+---
+
+## Current Prediction Persistence
+
+Prediction results currently exist only during the active Streamlit session.
+
+They are not yet permanently stored.
+
+Persistent storage will be introduced in:
+
+```text
+Phase 10
+```
 
 ---
 
@@ -1850,13 +2245,13 @@ Where applicable, the project uses:
 random_state = 42
 ```
 
-The persisted final model records:
+The final persisted model records:
 
 ```text
-scikit-learn version = 1.8.0
+scikit-learn = 1.8.0
 ```
 
-Using the same Scikit-learn version is recommended when loading the model.
+Using the same version is recommended when loading the serialized pipeline.
 
 ---
 
@@ -1865,86 +2260,95 @@ Using the same Scikit-learn version is recommended when loading the model.
 ## Completed
 
 ```text
-Phase 1  — Data Understanding
-Phase 2  — Exploratory Data Analysis
-Phase 3  — Preprocessing
-Phase 4  — Baseline Models
-Phase 5  — Hyperparameter Tuning
-Phase 6  — Final Model Evaluation
-Phase 7  — Explainability and Advanced Evaluation
-Phase 8  — Flask REST API
-```
+Phase 1
+Data Understanding
 
-## Next
+Phase 2
+Exploratory Data Analysis
 
-```text
-Phase 9 — Streamlit Frontend
-```
+Phase 3
+Preprocessing Pipeline
 
-Phase 9 will create a graphical interface that allows a user to:
+Phase 4
+Baseline Model Development
 
-```text
-Enter obesity-risk features
-        ↓
-Submit assessment
-        ↓
-Call Flask /predict
-        ↓
-Display predicted obesity category
-        ↓
-Display confidence
-        ↓
-Display class probabilities
-```
+Phase 5
+Hyperparameter Tuning
 
-## Planned
+Phase 6
+Final Model Selection and Evaluation
 
-```text
-Phase 10 — SQLite and Full Integration
-Phase 11 — Deployment and Final Documentation
+Phase 7
+Explainability and Advanced Evaluation
+
+Phase 8
+Flask REST API
+
+Phase 9
+Streamlit Frontend
 ```
 
 ---
 
-# Future Application Architecture
+# Phase 10 — SQLite and Full Integration
+
+The next phase will introduce persistent application data.
+
+Planned functionality includes:
+
+```text
+SQLite database
+        ↓
+Prediction history
+        ↓
+Prediction timestamps
+        ↓
+Stored assessment inputs
+        ↓
+Stored predicted class
+        ↓
+Stored confidence
+        ↓
+Prediction history interface
+```
+
+The expected architecture will become:
 
 ```text
 User
- │
- ▼
-Streamlit Frontend
- │
- │ HTTP / JSON
- ▼
+ ↓
+Streamlit
+ ↓
 Flask REST API
- │
- ├── Input Validation
- │
- ├── Model Information
- │
- ├── Prediction Service
- │
- └── Error Handling
- │
- ▼
-Saved Scikit-learn Pipeline
- │
- ├── Preprocessing
- │
- └── Tuned Gradient Boosting
- │
- ▼
-Prediction Result
- │
- ├── Predicted Class
- ├── Confidence
- └── Probabilities
- │
- ▼
-SQLite Prediction History
+ ↓
+Machine Learning Pipeline
+ ↓
+Prediction
+ ↓
+SQLite Database
+ ↓
+Prediction History
 ```
 
-SQLite integration will be implemented in a later phase.
+---
+
+# Phase 11 — Deployment and Final Documentation
+
+The final phase will focus on:
+
+```text
+Final application testing
+Code cleanup
+Configuration review
+Environment configuration
+Deployment preparation
+Architecture documentation
+Final README review
+Project screenshots
+Final diagrams
+Academic documentation
+Final project demonstration preparation
+```
 
 ---
 
@@ -1959,16 +2363,92 @@ Model Tuning             ██████████ 100%
 Final Model Evaluation   ██████████ 100%
 Explainability           ██████████ 100%
 Flask REST API           ██████████ 100%
-Streamlit Frontend       ░░░░░░░░░░   0%
-Database Integration     ░░░░░░░░░░   0%
+Streamlit Frontend       ██████████ 100%
+SQLite Integration       ░░░░░░░░░░   0%
 Deployment               ░░░░░░░░░░   0%
+```
+
+---
+
+# Current System Architecture
+
+```text
+┌──────────────────────────────────────────┐
+│                   USER                   │
+└─────────────────────┬────────────────────┘
+                      │
+                      ▼
+┌──────────────────────────────────────────┐
+│          STREAMLIT FRONTEND              │
+│                                          │
+│  • Assessment Form                       │
+│  • API Status                            │
+│  • Model Information                     │
+│  • Prediction Result                     │
+│  • Confidence                            │
+│  • Probability Visualization             │
+└─────────────────────┬────────────────────┘
+                      │
+                   HTTP/JSON
+                      │
+                      ▼
+┌──────────────────────────────────────────┐
+│              FLASK REST API              │
+│                                          │
+│  GET  /health                            │
+│  GET  /model-info                        │
+│  POST /predict                           │
+└─────────────────────┬────────────────────┘
+                      │
+                      ▼
+┌──────────────────────────────────────────┐
+│             INPUT VALIDATION             │
+└─────────────────────┬────────────────────┘
+                      │
+                      ▼
+┌──────────────────────────────────────────┐
+│               MODEL SERVICE              │
+└─────────────────────┬────────────────────┘
+                      │
+                      ▼
+┌──────────────────────────────────────────┐
+│       SAVED SCIKIT-LEARN PIPELINE        │
+│                                          │
+│  Numerical Preprocessing                 │
+│  Ordinal Preprocessing                   │
+│  Nominal Preprocessing                   │
+│             ↓                            │
+│      Gradient Boosting                   │
+└─────────────────────┬────────────────────┘
+                      │
+                      ▼
+┌──────────────────────────────────────────┐
+│             PREDICTION RESULT            │
+│                                          │
+│  • Predicted Class                       │
+│  • Confidence                            │
+│  • 7 Class Probabilities                 │
+└─────────────────────┬────────────────────┘
+                      │
+                      ▼
+              Streamlit Result UI
+
+                      │
+                      ▼
+
+              SQLite Integration
+                 Phase 10 — Next
 ```
 
 ---
 
 # License
 
-This project is licensed under the MIT License.
+This project is licensed under the:
+
+```text
+MIT License
+```
 
 See:
 
@@ -1976,43 +2456,53 @@ See:
 LICENSE
 ```
 
-for license information.
+for details.
 
 ---
 
 # Current Milestone
 
-## Phases 1–8 Complete
+## Phases 1–9 Complete
 
-The following components are now available:
+The project currently provides:
 
 ```text
-Dataset analysis
-Exploratory data analysis
-Reusable preprocessing
-Baseline model comparison
-Hyperparameter tuning
-Final model selection
-Final model evaluation
-Saved ML pipeline
-Model metadata
-Global explainability
-Local explainability
-Ordinal error analysis
-BMI feature ablation
-Subgroup analysis
-Flask application factory
-Health endpoint
-Model information endpoint
-Validated prediction endpoint
-Prediction confidence
-Seven-class probabilities
-Centralized API error handling
-Automated backend tests
+Data Understanding                    ✅
+Exploratory Data Analysis             ✅
+Reusable Preprocessing                ✅
+Baseline Model Comparison             ✅
+Hyperparameter Tuning                 ✅
+Final Model Selection                 ✅
+Final Model Evaluation                ✅
+Saved ML Pipeline                     ✅
+Model Metadata                        ✅
+Global Feature Importance             ✅
+Global SHAP Analysis                  ✅
+Local SHAP Explanations               ✅
+Ordinal Error Analysis                ✅
+BMI Ablation                          ✅
+Gender Subgroup Analysis              ✅
+Flask Application Factory             ✅
+Health API                            ✅
+Model Information API                 ✅
+Prediction API                        ✅
+Input Validation                      ✅
+Prediction Confidence                 ✅
+Seven-Class Probabilities             ✅
+Centralized Backend Errors            ✅
+Streamlit Frontend                    ✅
+16-Feature Assessment Form            ✅
+Frontend API Client                   ✅
+Prediction Result Interface           ✅
+Probability Visualization             ✅
+Session-Based Result Persistence      ✅
+Start New Assessment                  ✅
+Frontend Error Handling               ✅
+Automated Testing                     ✅
 ```
 
-The next milestone is:
+# Next Milestone
 
-# Phase 9 — Streamlit Frontend
+## Phase 10 — SQLite and Full Integration
 
-The Streamlit interface will provide the first user-facing layer of the Obesity Risk Intelligence System.
+The next objective is to make prediction data persistent and introduce prediction-history functionality.

@@ -9,7 +9,16 @@ DEFAULT_API_BASE_URL = (
 
 
 class APIClientError(Exception):
-    pass
+    def __init__(
+        self,
+        message,
+        status_code=None,
+    ):
+        super().__init__(message)
+
+        self.status_code = (
+            status_code
+        )
 
 
 class APIClient:
@@ -28,9 +37,11 @@ class APIClient:
 
         self.timeout = timeout
 
-    def _get(
+    def _request(
         self,
+        method,
         endpoint,
+        payload=None,
     ):
         url = (
             f"{self.base_url}"
@@ -38,77 +49,97 @@ class APIClient:
         )
 
         try:
-            response = requests.get(
-                url,
-                timeout=self.timeout,
-            )
+            if method == "GET":
+                response = requests.get(
+                    url,
+                    timeout=self.timeout,
+                )
 
-            response.raise_for_status()
+            elif method == "POST":
+                response = requests.post(
+                    url,
+                    json=payload,
+                    timeout=self.timeout,
+                )
 
-            return response.json()
+            else:
+                raise APIClientError(
+                    "Unsupported API client "
+                    "request method"
+                )
 
         except requests.RequestException as error:
             raise APIClientError(
                 "Unable to communicate "
-                "with the backend API: "
-                f"{error}"
+                "with the backend API"
             ) from error
-
-        except ValueError as error:
-            raise APIClientError(
-                "Backend returned an "
-                "invalid JSON response"
-            ) from error
-
-    def _post(
-        self,
-        endpoint,
-        payload,
-    ):
-        url = (
-            f"{self.base_url}"
-            f"{endpoint}"
-        )
 
         try:
-            response = requests.post(
-                url,
-                json=payload,
-                timeout=self.timeout,
+            response_data = (
+                response.json()
             )
-
-            response.raise_for_status()
-
-            return response.json()
-
-        except requests.RequestException as error:
-            raise APIClientError(
-                "Unable to complete "
-                "the API request: "
-                f"{error}"
-            ) from error
 
         except ValueError as error:
             raise APIClientError(
                 "Backend returned an "
-                "invalid JSON response"
+                "invalid JSON response.",
+                status_code=(
+                    response.status_code
+                ),
             ) from error
 
+        if not response.ok:
+
+            if isinstance(
+                response_data,
+                dict,
+            ):
+                message = (
+                    response_data.get(
+                        "message"
+                    )
+                    or response_data.get(
+                        "error"
+                    )
+                )
+
+            else:
+                message = None
+
+            if not message:
+                message = (
+                    "Backend request failed "
+                    f"with HTTP "
+                    f"{response.status_code}."
+                )
+
+            raise APIClientError(
+                message,
+                status_code=(
+                    response.status_code
+                ),
+            )
+
+        return response_data
+
     def get_health(self):
-        return self._get(
-            "/health"
+        return self._request(
+            "GET",
+            "/health",
         )
 
     def get_model_info(self):
-        return self._get(
-            "/model-info"
+        return self._request(
+            "GET",
+            "/model-info",
         )
 
     def predict(
         self,
         payload,
     ):
-        return self._post(
+        return self._request(
+            "POST",
             "/predict",
-            payload,
+            payload=payload,
         )

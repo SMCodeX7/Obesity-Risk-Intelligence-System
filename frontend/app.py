@@ -2,6 +2,7 @@ import streamlit as st
 
 from frontend.components.assessment_form import (
     render_assessment_form,
+    reset_assessment_form,
 )
 from frontend.components.prediction_result import (
     render_prediction_result,
@@ -35,16 +36,13 @@ if (
 
 
 st.title(
-    "Obesity Risk "
-    "Intelligence System"
+    "Obesity Risk Intelligence System"
 )
 
 st.caption(
     "Machine Learning-Based "
     "Obesity Risk Assessment"
 )
-
-st.divider()
 
 
 try:
@@ -61,9 +59,14 @@ except APIClientError as error:
         "Backend API is unavailable"
     )
 
+    st.write(
+        "The Streamlit interface could "
+        "not connect to the Flask API"
+    )
+
     st.info(
-        "Start the Flask backend "
-        "and refresh this page"
+        "Start the Flask backend and "
+        "refresh this page"
     )
 
     with st.expander(
@@ -76,83 +79,70 @@ except APIClientError as error:
     st.stop()
 
 
-if (
-    health_data.get(
-        "status"
-    )
-    == "ok"
-):
-    st.success(
-        "Backend API connected"
+with st.sidebar:
+    st.header(
+        "System Information"
     )
 
-
-with st.expander(
-    "Model Information"
-):
-    col1, col2, col3 = (
-        st.columns(3)
-    )
-
-    with col1:
-        st.metric(
-            "Model",
-            model_info.get(
-                "selected_model",
-                "Unknown",
-            ),
+    if (
+        health_data.get(
+            "status"
         )
-
-    with col2:
-        accuracy = (
-            model_info
-            .get(
-                "final_test_metrics",
-                {},
-            )
-            .get(
-                "accuracy"
-            )
+        == "ok"
+    ):
+        st.success(
+            "API Connected"
         )
-
-        if accuracy is not None:
-            st.metric(
-                "Test Accuracy",
-                f"{accuracy * 100:.2f}%",
-            )
-
-        else:
-            st.metric(
-                "Test Accuracy",
-                "Unavailable",
-            )
-
-    with col3:
-        macro_f1 = (
-            model_info
-            .get(
-                "final_test_metrics",
-                {},
-            )
-            .get(
-                "macro_f1"
-            )
-        )
-
-        if macro_f1 is not None:
-            st.metric(
-                "Macro F1",
-                f"{macro_f1:.4f}",
-            )
-
-        else:
-            st.metric(
-                "Macro F1",
-                "Unavailable",
-            )
 
     st.write(
-        "Input features:",
+        "**Model:**"
+    )
+
+    st.write(
+        model_info.get(
+            "selected_model",
+            "Unknown",
+        )
+    )
+
+    accuracy = (
+        model_info
+        .get(
+            "final_test_metrics",
+            {},
+        )
+        .get(
+            "accuracy"
+        )
+    )
+
+    macro_f1 = (
+        model_info
+        .get(
+            "final_test_metrics",
+            {},
+        )
+        .get(
+            "macro_f1"
+        )
+    )
+
+    if accuracy is not None:
+        st.metric(
+            "Test Accuracy",
+            f"{accuracy * 100:.2f}%",
+        )
+
+    if macro_f1 is not None:
+        st.metric(
+            "Macro F1",
+            f"{macro_f1:.4f}",
+        )
+
+    st.divider()
+
+    st.write(
+        "**Model Inputs:**",
         model_info.get(
             "predictive_feature_count",
             "Unknown",
@@ -160,15 +150,28 @@ with st.expander(
     )
 
     st.write(
-        "Target classes:",
+        "**Target Classes:**",
         model_info.get(
             "target_class_count",
             "Unknown",
         ),
     )
 
+    st.divider()
 
-st.divider()
+    st.caption(
+        "Educational ML application "
+        "Not a medical diagnostic tool"
+    )
+
+
+st.info(
+    "Enter the requested information "
+    "below. The values are sent to the "
+    "Flask prediction API and processed "
+    "by the trained Gradient Boosting "
+    "pipeline"
+)
 
 
 payload = (
@@ -194,16 +197,35 @@ if payload is not None:
         ] = prediction_result
 
     except APIClientError as error:
+        st.session_state[
+            "prediction_result"
+        ] = None
+
         st.error(
             "Prediction request failed"
         )
+
+        if (
+            error.status_code
+            is not None
+        ):
+            st.warning(
+                f"Backend response: "
+                f"{str(error)}"
+            )
+
+        else:
+            st.warning(
+                "The backend API could "
+                "not be reached"
+            )
 
         with st.expander(
             "Technical details"
         ):
             st.code(
                 str(error)
-        )
+            )
 
 
 if (
@@ -218,12 +240,22 @@ if (
         ]
     )
 
+    st.button(
+        "Start New Assessment",
+        on_click=(
+            reset_assessment_form
+        ),
+        type="secondary",
+    )
+
 
 st.divider()
 
 st.caption(
-    "This application is an "
-    "educational machine learning "
-    "system and is not a medical "
-    "diagnostic tool"
+    "The Obesity Risk Intelligence "
+    "System is an educational machine "
+    "learning application. Predictions "
+    "are not medical diagnoses and "
+    "should not replace professional "
+    "health assessment"
 )

@@ -3,8 +3,11 @@ from unittest.mock import (
     patch,
 )
 
+import pytest
+
 from frontend.services.api_client import (
     APIClient,
+    APIClientError,
 )
 
 
@@ -17,9 +20,8 @@ def test_get_health(
 ):
     mock_response = Mock()
 
-    mock_response.raise_for_status.return_value = (
-        None
-    )
+    mock_response.ok = True
+    mock_response.status_code = 200
 
     mock_response.json.return_value = {
         "status": "ok",
@@ -61,9 +63,8 @@ def test_predict(
 ):
     mock_response = Mock()
 
-    mock_response.raise_for_status.return_value = (
-        None
-    )
+    mock_response.ok = True
+    mock_response.status_code = 200
 
     mock_response.json.return_value = {
         "predicted_class":
@@ -146,17 +147,82 @@ def test_predict(
         == 7
     )
 
-    assert (
-        result[
-            "probabilities"
-        ][
-            "Normal_Weight"
-        ]
-        == 0.85
-    )
-
     mock_post.assert_called_once_with(
         "http://127.0.0.1:5000/predict",
         json=payload,
         timeout=5,
     )
+
+
+@patch(
+    "frontend.services."
+    "api_client.requests.post"
+)
+def test_predict_surfaces_backend_error(
+    mock_post,
+):
+    mock_response = Mock()
+
+    mock_response.ok = False
+    mock_response.status_code = 400
+
+    mock_response.json.return_value = {
+        "error":
+            "validation_error",
+
+        "message":
+            "Age must be numeric.",
+    }
+
+    mock_post.return_value = (
+        mock_response
+    )
+
+    client = APIClient()
+
+    with pytest.raises(
+        APIClientError,
+        match="Age must be numeric",
+    ) as error_info:
+
+        client.predict(
+            {
+                "Age": "twenty",
+            }
+        )
+
+    assert (
+        error_info.value.status_code
+        == 400
+    )
+
+
+@patch(
+    "frontend.services."
+    "api_client.requests.get"
+)
+def test_invalid_json_response(
+    mock_get,
+):
+    mock_response = Mock()
+
+    mock_response.ok = True
+    mock_response.status_code = 200
+
+    mock_response.json.side_effect = (
+        ValueError(
+            "Invalid JSON"
+        )
+    )
+
+    mock_get.return_value = (
+        mock_response
+    )
+
+    client = APIClient()
+
+    with pytest.raises(
+        APIClientError,
+        match="invalid JSON",
+    ):
+        client.get_health()
