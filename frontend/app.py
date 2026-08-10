@@ -3,6 +3,9 @@ import streamlit as st
 from frontend.components.assessment_form import (
     render_assessment_form,
 )
+from frontend.components.prediction_result import (
+    render_prediction_result,
+)
 from frontend.services.api_client import (
     APIClient,
     APIClientError,
@@ -20,6 +23,15 @@ st.set_page_config(
 
 
 api_client = APIClient()
+
+
+if (
+    "prediction_result"
+    not in st.session_state
+):
+    st.session_state[
+        "prediction_result"
+    ] = None
 
 
 st.title(
@@ -109,6 +121,12 @@ with st.expander(
                 f"{accuracy * 100:.2f}%",
             )
 
+        else:
+            st.metric(
+                "Test Accuracy",
+                "Unavailable",
+            )
+
     with col3:
         macro_f1 = (
             model_info
@@ -126,6 +144,28 @@ with st.expander(
                 "Macro F1",
                 f"{macro_f1:.4f}",
             )
+
+        else:
+            st.metric(
+                "Macro F1",
+                "Unavailable",
+            )
+
+    st.write(
+        "Input features:",
+        model_info.get(
+            "predictive_feature_count",
+            "Unknown",
+        ),
+    )
+
+    st.write(
+        "Target classes:",
+        model_info.get(
+            "target_class_count",
+            "Unknown",
+        ),
+    )
 
 
 st.divider()
@@ -153,21 +193,9 @@ if payload is not None:
             "prediction_result"
         ] = prediction_result
 
-        st.success(
-            "Prediction received "
-            "successfully."
-        )
-
-        with st.expander(
-            "Temporary API response verification"
-        ):
-            st.json(
-                prediction_result
-            )
-
     except APIClientError as error:
         st.error(
-            "Prediction request failed."
+            "Prediction request failed"
         )
 
         with st.expander(
@@ -175,7 +203,20 @@ if payload is not None:
         ):
             st.code(
                 str(error)
-            )
+        )
+
+
+if (
+    st.session_state[
+        "prediction_result"
+    ]
+    is not None
+):
+    render_prediction_result(
+        st.session_state[
+            "prediction_result"
+        ]
+    )
 
 
 st.divider()
