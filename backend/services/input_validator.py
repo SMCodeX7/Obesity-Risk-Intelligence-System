@@ -1,5 +1,8 @@
 import math
 
+from backend.exceptions import (
+    ValidationError,
+)
 from src.preprocessing import (
     PREDICTIVE_FEATURES,
 )
@@ -73,7 +76,7 @@ def validate_prediction_payload(
         payload,
         dict,
     ):
-        raise ValueError(
+        raise ValidationError(
             "Request body must be a JSON object."
         )
 
@@ -91,7 +94,7 @@ def validate_prediction_payload(
     )
 
     if missing_features:
-        raise ValueError(
+        raise ValidationError(
             "Missing required features: "
             + ", ".join(
                 sorted(
@@ -106,7 +109,7 @@ def validate_prediction_payload(
     )
 
     if unexpected_features:
-        raise ValueError(
+        raise ValidationError(
             "Unexpected features: "
             + ", ".join(
                 sorted(
@@ -120,7 +123,6 @@ def validate_prediction_payload(
     for feature in (
         PREDICTIVE_FEATURES
     ):
-
         value = payload[
             feature
         ]
@@ -134,7 +136,7 @@ def validate_prediction_payload(
                     (int, float),
                 )
             ):
-                raise ValueError(
+                raise ValidationError(
                     f"{feature} must be numeric."
                 )
 
@@ -145,7 +147,7 @@ def validate_prediction_payload(
             if not math.isfinite(
                 numeric_value
             ):
-                raise ValueError(
+                raise ValidationError(
                     f"{feature} must be finite."
                 )
 
@@ -160,7 +162,7 @@ def validate_prediction_payload(
                 <= numeric_value
                 <= maximum
             ):
-                raise ValueError(
+                raise ValidationError(
                     f"{feature} must be between "
                     f"{minimum} and {maximum}."
                 )
@@ -175,7 +177,7 @@ def validate_prediction_payload(
                 value,
                 str,
             ):
-                raise ValueError(
+                raise ValidationError(
                     f"{feature} must be a string."
                 )
 
@@ -195,7 +197,7 @@ def validate_prediction_payload(
                     )
                 )
 
-                raise ValueError(
+                raise ValidationError(
                     f"Invalid value for "
                     f"{feature}. "
                     f"Allowed values: "

@@ -1,5 +1,8 @@
 from flask import Flask
 
+from backend.error_handlers import (
+    register_error_handlers,
+)
 from backend.routes.health import (
     health_bp,
 )
@@ -44,6 +47,10 @@ def create_app(
 
     app.register_blueprint(
         prediction_bp
+    )
+
+    register_error_handlers(
+        app
     )
 
     return app

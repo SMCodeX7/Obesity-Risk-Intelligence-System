@@ -23,21 +23,11 @@ def predict():
         silent=True
     )
 
-    try:
-        validated_features = (
-            validate_prediction_payload(
-                payload
-            )
+    validated_features = (
+        validate_prediction_payload(
+            payload
         )
-
-    except ValueError as error:
-        return {
-            "error":
-                "validation_error",
-
-            "message":
-                str(error),
-        }, 400
+    )
 
     model_service = (
         current_app
