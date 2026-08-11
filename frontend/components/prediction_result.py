@@ -280,6 +280,40 @@ def _get_second_highest_class(
     }
 
 
+def _sanitize_technical_details(
+    value,
+):
+    if isinstance(
+        value,
+        dict,
+    ):
+        return {
+            key:
+                _sanitize_technical_details(
+                    item
+                )
+            for key, item
+            in value.items()
+            if key not in {
+                "id",
+                "prediction_id",
+            }
+        }
+
+    if isinstance(
+        value,
+        list,
+    ):
+        return [
+            _sanitize_technical_details(
+                item
+            )
+            for item in value
+        ]
+
+    return value
+
+
 def render_prediction_result(
     result,
 ):
@@ -364,19 +398,11 @@ def render_prediction_result(
         or {}
     )
 
-    prediction_id = (
-        result.get(
-            "prediction_id"
-        )
-        or result.get(
-            "id"
-        )
-    )
-
     model_name = (
         result.get(
             "model_name"
         )
+        or "Unavailable"
     )
 
     created_at_value = (
@@ -417,55 +443,33 @@ def render_prediction_result(
             f"{second_highest['probability'] * 100:.2f}%."
         )
 
-    metadata_items = []
-
-    if prediction_id is not None:
-        metadata_items.append(
-            (
-                "Assessment ID",
-                f"#{prediction_id}",
-            )
-        )
-
-    metadata_items.append(
+    metadata_items = [
         (
             "Top Category",
             readable_class,
-        )
-    )
-
-    if model_name:
-        metadata_items.append(
-            (
-                "Model",
-                str(
-                    model_name
-                ),
-            )
-        )
-
-    elif len(
-        metadata_items
-    ) < 3:
-        metadata_items.append(
-            (
-                "Classes Evaluated",
-                str(
-                    len(
-                        probabilities
-                    )
-                ),
-            )
-        )
+        ),
+        (
+            "Model",
+            str(
+                model_name
+            ),
+        ),
+        (
+            "Classes Evaluated",
+            str(
+                len(
+                    probabilities
+                )
+            ),
+        ),
+    ]
 
     metadata_html = []
 
     for (
         label,
         value,
-    ) in metadata_items[
-        :3
-    ]:
+    ) in metadata_items:
         metadata_html.append(
             f"""
             <div
@@ -720,9 +724,15 @@ def render_prediction_result(
             f"{created_at}"
         )
 
+    technical_details = (
+        _sanitize_technical_details(
+            result
+        )
+    )
+
     with st.expander(
         "Technical prediction details"
     ):
         st.json(
-            result
+            technical_details
         )

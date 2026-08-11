@@ -28,6 +28,7 @@ from reportlab.platypus import (
     Table,
     TableStyle,
 )
+
 from frontend.time_utils import (
     format_sri_lanka_datetime,
 )
@@ -536,7 +537,6 @@ def _build_probability_chart(
         height,
     )
 
-    label_width = 150
     bar_x = 155
     bar_width = 250
 
@@ -847,12 +847,6 @@ def generate_prediction_report(
 
     story = []
 
-    prediction_id = (
-        prediction[
-            "id"
-        ]
-    )
-
     created_at = (
         format_sri_lanka_datetime(
             prediction.get(
@@ -888,8 +882,6 @@ def generate_prediction_report(
     report_information = Table(
         [
             [
-                "Assessment ID",
-                f"#{prediction_id}",
                 "Assessment Date",
                 str(
                     created_at
@@ -897,10 +889,8 @@ def generate_prediction_report(
             ]
         ],
         colWidths=[
-            28 * mm,
-            28 * mm,
-            32 * mm,
-            76 * mm,
+            42 * mm,
+            122 * mm,
         ],
     )
 
@@ -919,12 +909,6 @@ def generate_prediction_report(
                     "FONTNAME",
                     (0, 0),
                     (0, -1),
-                    "Helvetica-Bold",
-                ),
-                (
-                    "FONTNAME",
-                    (2, 0),
-                    (2, -1),
                     "Helvetica-Bold",
                 ),
                 (

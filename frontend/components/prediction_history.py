@@ -362,13 +362,6 @@ def _render_history_cards(
     cards = []
 
     for prediction in predictions:
-        prediction_id = (
-            prediction.get(
-                "id",
-                "Unavailable",
-            )
-        )
-
         predicted_class = (
             prediction.get(
                 "predicted_class",
@@ -462,8 +455,7 @@ def _render_history_cards(
                             health-history-id
                         "
                     >
-                        Assessment
-                        #{_safe_text(prediction_id)}
+                        Saved Assessment
                     </div>
 
                     <div
@@ -556,8 +548,7 @@ def _format_selector_option(
     )
 
     return (
-        f"Assessment #{prediction_id} "
-        f"— {category} "
+        f"{category} "
         f"— {created_at}"
     )
 
@@ -977,8 +968,7 @@ def _render_detail_header(
                     health-result-category
                 "
             >
-                Assessment
-                #{_safe_text(selected_id)}
+                Assessment Details
             </div>
 
             <div
