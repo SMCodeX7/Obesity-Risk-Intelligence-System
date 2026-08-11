@@ -1,3 +1,5 @@
+from html import escape
+
 import pandas as pd
 import streamlit as st
 
@@ -42,7 +44,9 @@ def format_class_name(
 ):
     return CLASS_LABELS.get(
         class_name,
-        class_name.replace(
+        str(
+            class_name
+        ).replace(
             "_",
             " ",
         ),
@@ -55,7 +59,7 @@ def build_probability_dataframe(
     rows = []
 
     for class_name in CLASS_ORDER:
-        probability = (
+        probability = float(
             probabilities.get(
                 class_name,
                 0.0,
@@ -70,257 +74,541 @@ def build_probability_dataframe(
                     ),
 
                 "Probability":
-                    float(
-                        probability
-                    ),
+                    probability,
 
                 "Probability (%)":
-                    float(
-                        probability
-                    ) * 100,
+                    probability
+                    * 100,
             }
         )
 
-    probability_df = (
-        pd.DataFrame(
-            rows
-        )
+    dataframe = pd.DataFrame(
+        rows
     )
 
-    probability_df = (
-        probability_df
-        .sort_values(
-            "Probability",
-            ascending=False,
-        )
-        .reset_index(
-            drop=True
-        )
+    return dataframe.sort_values(
+        by="Probability",
+        ascending=False,
+        ignore_index=True,
     )
 
-    return probability_df
 
-
-def render_prediction_result(
-    prediction_result,
+def _build_probability_html(
+    probabilities,
 ):
-    if not isinstance(
-        prediction_result,
-        dict,
-    ):
-        st.error(
-            "The prediction result "
-            "has an invalid format"
-        )
-        return
-
-    predicted_class = (
-        prediction_result.get(
-            "predicted_class"
-        )
-    )
-
-    confidence = (
-        prediction_result.get(
-            "confidence"
-        )
-    )
-
-    probabilities = (
-        prediction_result.get(
-            "probabilities",
-            {},
-        )
-    )
-
-    if (
-        predicted_class is None
-        or confidence is None
-        or not isinstance(
-            probabilities,
-            dict,
-        )
-    ):
-        st.error(
-            "The backend returned an "
-            "incomplete prediction"
-        )
-        return
-
-    readable_prediction = (
-        format_class_name(
-            predicted_class
-        )
-    )
-
-    probability_df = (
+    dataframe = (
         build_probability_dataframe(
             probabilities
         )
     )
 
-    st.divider()
+    rows = []
 
-    st.subheader(
-        "Assessment Result"
-    )
-
-    col1, col2 = (
-        st.columns(2)
-    )
-
-    with col1:
-        st.metric(
-            "Model-Predicted Category",
-            readable_prediction,
-            border=True,
+    for _, row in dataframe.iterrows():
+        category = escape(
+            str(
+                row[
+                    "Category"
+                ]
+            )
         )
 
-    with col2:
-        st.metric(
-            "Prediction Confidence",
-            f"{confidence * 100:.2f}%",
-            border=True,
-        )
-
-    st.progress(
-        min(
-            max(
-                float(confidence),
-                0.0,
-            ),
-            1.0,
-        ),
-        text=(
-            "Model confidence for "
-            "the predicted category"
-        ),
-    )
-
-    st.caption(
-        "Confidence represents the "
-        "model's predicted probability "
-        "for the selected category. "
-        "It is not a medical certainty"
-    )
-
-    st.markdown(
-        "### Class Probability Distribution"
-    )
-
-    st.bar_chart(
-        probability_df,
-        x="Category",
-        y="Probability (%)",
-        horizontal=True,
-        height=420,
-    )
-
-    st.markdown(
-        "### Probability Ranking"
-    )
-
-    display_df = (
-        probability_df[
-            [
-                "Category",
-                "Probability (%)",
+        probability = float(
+            row[
+                "Probability"
             ]
-        ]
-        .copy()
-    )
-
-    display_df[
-        "Probability (%)"
-    ] = (
-        display_df[
-            "Probability (%)"
-        ]
-        .map(
-            lambda value:
-                f"{value:.2f}%"
         )
+
+        percentage = (
+            probability
+            * 100
+        )
+
+        bar_width = max(
+            0.0,
+            min(
+                percentage,
+                100.0,
+            ),
+        )
+
+        rows.append(
+            f"""
+            <div
+                class="
+                    health-probability-row
+                "
+            >
+
+                <div
+                    class="
+                        health-probability-header
+                    "
+                >
+
+                    <span
+                        class="
+                            health-probability-name
+                        "
+                    >
+                        {category}
+                    </span>
+
+                    <span
+                        class="
+                            health-probability-value
+                        "
+                    >
+                        {percentage:.2f}%
+                    </span>
+
+                </div>
+
+                <div
+                    class="
+                        health-probability-track
+                    "
+                >
+
+                    <div
+                        class="
+                            health-probability-fill
+                        "
+                        style="
+                            width:
+                            {bar_width:.2f}%;
+                        "
+                    >
+                    </div>
+
+                </div>
+
+            </div>
+            """
+        )
+
+    return "".join(
+        rows
     )
 
-    st.dataframe(
-        display_df,
-        width="stretch",
-        hide_index=True,
-    )
 
-    st.markdown(
-        "### Result Summary"
-    )
-
-    highest_probability = (
-        probability_df.iloc[0]
-    )
-
-    st.write(
-        "The model assigned the "
-        "highest probability to "
-        f"**{readable_prediction}** "
-        "with a confidence of "
-        f"**{confidence * 100:.2f}%**."
+def _get_second_highest_class(
+    probabilities,
+):
+    dataframe = (
+        build_probability_dataframe(
+            probabilities
+        )
     )
 
     if len(
-        probability_df
-    ) > 1:
-        second_result = (
-            probability_df.iloc[1]
+        dataframe
+    ) < 2:
+        return None
+
+    return {
+        "category":
+            dataframe.iloc[
+                1
+            ][
+                "Category"
+            ],
+
+        "probability":
+            float(
+                dataframe.iloc[
+                    1
+                ][
+                    "Probability"
+                ]
+            ),
+    }
+
+
+def render_prediction_result(
+    result,
+):
+    if not isinstance(
+        result,
+        dict,
+    ):
+        st.error(
+            "Prediction result "
+            "is unavailable."
         )
 
-        st.write(
-            "The next highest "
-            "predicted category was "
-            f"**{second_result['Category']}** "
-            "with a probability of "
-            f"**{second_result['Probability (%)']:.2f}%**."
+        return
+
+    required_fields = {
+        "predicted_class",
+        "confidence",
+        "probabilities",
+    }
+
+    if not required_fields.issubset(
+        result.keys()
+    ):
+        st.error(
+            "Prediction result "
+            "is incomplete."
         )
 
-    calculated_probability_sum = (
-        probability_df[
-            "Probability"
-        ].sum()
+        return
+
+    predicted_class = (
+        result[
+            "predicted_class"
+        ]
+    )
+
+    readable_class = (
+        format_class_name(
+            predicted_class
+        )
+    )
+
+    confidence = float(
+        result[
+            "confidence"
+        ]
+    )
+
+    confidence_percentage = (
+        confidence
+        * 100
+    )
+
+    probabilities = (
+        result[
+            "probabilities"
+        ]
+        or {}
+    )
+
+    prediction_id = (
+        result.get(
+            "prediction_id"
+        )
+        or result.get(
+            "id"
+        )
+    )
+
+    model_name = (
+        result.get(
+            "model_name"
+        )
+    )
+
+    created_at = (
+        result.get(
+            "created_at"
+        )
+    )
+
+    second_highest = (
+        _get_second_highest_class(
+            probabilities
+        )
+    )
+
+    if second_highest is None:
+        supporting_text = (
+            "The model assigned this "
+            "category the highest "
+            "predicted probability."
+        )
+
+    else:
+        supporting_text = (
+            "The model assigned the "
+            "highest probability to "
+            f"{readable_class}. The "
+            "next most likely category "
+            f"was {second_highest['category']} "
+            f"at "
+            f"{second_highest['probability'] * 100:.2f}%."
+        )
+
+    metadata_items = []
+
+    if prediction_id is not None:
+        metadata_items.append(
+            (
+                "Assessment ID",
+                f"#{prediction_id}",
+            )
+        )
+
+    metadata_items.append(
+        (
+            "Top Category",
+            readable_class,
+        )
+    )
+
+    if model_name:
+        metadata_items.append(
+            (
+                "Model",
+                str(
+                    model_name
+                ),
+            )
+        )
+
+    elif len(
+        metadata_items
+    ) < 3:
+        metadata_items.append(
+            (
+                "Classes Evaluated",
+                str(
+                    len(
+                        probabilities
+                    )
+                ),
+            )
+        )
+
+    metadata_html = []
+
+    for (
+        label,
+        value,
+    ) in metadata_items[
+        :3
+    ]:
+        metadata_html.append(
+            f"""
+            <div
+                class="
+                    health-result-meta-item
+                "
+            >
+
+                <div
+                    class="
+                        health-result-meta-label
+                    "
+                >
+                    {
+                        escape(
+                            str(
+                                label
+                            )
+                        )
+                    }
+                </div>
+
+                <div
+                    class="
+                        health-result-meta-value
+                    "
+                >
+                    {
+                        escape(
+                            str(
+                                value
+                            )
+                        )
+                    }
+                </div>
+
+            </div>
+            """
+        )
+
+    st.html(
+        f"""
+        <section
+            class="
+                health-result-summary
+            "
+        >
+
+            <div
+                class="
+                    health-result-top
+                "
+            >
+
+                <div>
+
+                    <div
+                        class="
+                            health-result-eyebrow
+                        "
+                    >
+                        Model-Predicted Category
+                    </div>
+
+                    <div
+                        class="
+                            health-result-category
+                        "
+                    >
+                        {
+                            escape(
+                                readable_class
+                            )
+                        }
+                    </div>
+
+                    <div
+                        class="
+                            health-result-description
+                        "
+                    >
+                        {
+                            escape(
+                                supporting_text
+                            )
+                        }
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="
+                        health-confidence-box
+                    "
+                >
+
+                    <div
+                        class="
+                            health-confidence-label
+                        "
+                    >
+                        Model Confidence
+                    </div>
+
+                    <div
+                        class="
+                            health-confidence-value
+                        "
+                    >
+                        {
+                            confidence_percentage
+                        :.2f}%
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div
+                class="
+                    health-result-meta
+                "
+            >
+                {
+                    "".join(
+                        metadata_html
+                    )
+                }
+            </div>
+
+        </section>
+        """
+    )
+
+    st.html(
+        f"""
+        <section
+            class="
+                health-probability-section
+            "
+        >
+
+            <div
+                class="
+                    health-section-title
+                "
+            >
+                Probability distribution
+            </div>
+
+            <div
+                class="
+                    health-section-description
+                "
+            >
+                The model compares all seven
+                obesity-risk categories.
+                Longer bars indicate a higher
+                predicted probability for the
+                submitted assessment.
+            </div>
+
+            <div
+                class="
+                    health-probability-list
+                "
+            >
+                {
+                    _build_probability_html(
+                        probabilities
+                    )
+                }
+            </div>
+
+        </section>
+        """
+    )
+
+    probability_sum = sum(
+        float(
+            value
+        )
+        for value
+        in probabilities.values()
     )
 
     if abs(
-        calculated_probability_sum
+        probability_sum
         - 1.0
     ) > 0.01:
         st.warning(
             "The returned class "
             "probabilities do not sum "
-            "approximately to 100%"
+            "to approximately 100%."
+        )
+
+    st.html(
+        """
+        <div class="health-notice">
+
+            <strong>
+                How to interpret this result
+            </strong>
+
+            <br><br>
+
+            The predicted category is the
+            class assigned the highest
+            probability by the machine
+            learning model.
+
+            Confidence represents model
+            certainty for this prediction,
+            not medical certainty.
+
+        </div>
+        """
+    )
+
+    if created_at:
+        st.caption(
+            f"Assessment recorded: "
+            f"{created_at}"
         )
 
     with st.expander(
         "Technical prediction details"
     ):
-        st.write(
-            "Raw predicted class:",
-            predicted_class,
-        )
-
-        st.write(
-            "Raw confidence:",
-            confidence,
-        )
-
-        st.write(
-            "Probability sum:",
-            calculated_probability_sum,
-        )
-
         st.json(
-            prediction_result
+            result
         )
-
-    st.info(
-        "This result is produced by a "
-        "machine learning model for "
-        "educational purposes. It is "
-        "not a medical diagnosis or "
-        "professional health assessment"
-    )

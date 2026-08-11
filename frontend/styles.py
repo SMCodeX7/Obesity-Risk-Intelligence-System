@@ -4,16 +4,6 @@ import streamlit as st
 APP_CSS = """
 <style>
 
-/* ==========================================================
-   OBESITY RISK INTELLIGENCE SYSTEM
-   Healthcare UI Design System
-========================================================== */
-
-
-/* ----------------------------------------------------------
-   MAIN APPLICATION
----------------------------------------------------------- */
-
 .stApp {
     background:
         radial-gradient(
@@ -30,20 +20,12 @@ APP_CSS = """
 }
 
 
-/* ----------------------------------------------------------
-   PAGE CONTAINER
----------------------------------------------------------- */
-
 .block-container {
     max-width: 1180px;
     padding-top: 1.8rem;
     padding-bottom: 3rem;
 }
 
-
-/* ----------------------------------------------------------
-   HERO
----------------------------------------------------------- */
 
 .health-hero {
     position: relative;
@@ -97,10 +79,6 @@ APP_CSS = """
 }
 
 
-/* ----------------------------------------------------------
-   HERO BADGE
----------------------------------------------------------- */
-
 .health-eyebrow {
     display: inline-flex;
 
@@ -151,10 +129,6 @@ APP_CSS = """
 }
 
 
-/* ----------------------------------------------------------
-   HERO TYPOGRAPHY
----------------------------------------------------------- */
-
 .health-hero-title {
     max-width: 780px;
 
@@ -197,10 +171,6 @@ APP_CSS = """
     line-height: 1.75;
 }
 
-
-/* ----------------------------------------------------------
-   HERO STATISTICS
----------------------------------------------------------- */
 
 .health-stats {
     display: grid;
@@ -277,10 +247,6 @@ APP_CSS = """
 }
 
 
-/* ----------------------------------------------------------
-   PAGE SECTION HEADER
----------------------------------------------------------- */
-
 .health-page-header {
     margin:
         2.2rem
@@ -331,10 +297,6 @@ APP_CSS = """
     line-height: 1.7;
 }
 
-
-/* ----------------------------------------------------------
-   ASSESSMENT PROGRESS
----------------------------------------------------------- */
 
 .health-stepper {
     display: grid;
@@ -452,10 +414,6 @@ APP_CSS = """
 }
 
 
-/* ----------------------------------------------------------
-   INFORMATION CARD
----------------------------------------------------------- */
-
 .health-info-card {
     padding:
         1.05rem
@@ -521,10 +479,6 @@ APP_CSS = """
 }
 
 
-/* ----------------------------------------------------------
-   CONTENT CARD
----------------------------------------------------------- */
-
 .health-card {
     padding: 1.4rem;
 
@@ -544,11 +498,6 @@ APP_CSS = """
         );
 }
 
-
-/* ----------------------------------------------------------
-   RESULT CARD
-   Used more extensively during checkpoint 2
----------------------------------------------------------- */
 
 .health-result-card {
     padding: 1.5rem;
@@ -592,10 +541,6 @@ APP_CSS = """
 }
 
 
-/* ----------------------------------------------------------
-   SUBTLE HEALTHCARE NOTICE
----------------------------------------------------------- */
-
 .health-notice {
     padding:
         0.9rem
@@ -615,10 +560,6 @@ APP_CSS = """
     line-height: 1.55;
 }
 
-
-/* ----------------------------------------------------------
-   SIDEBAR BRAND
----------------------------------------------------------- */
 
 .health-sidebar-brand {
     padding:
@@ -699,10 +640,6 @@ APP_CSS = """
 }
 
 
-/* ----------------------------------------------------------
-   STATUS DOT
----------------------------------------------------------- */
-
 .health-status {
     display: inline-flex;
 
@@ -735,10 +672,6 @@ APP_CSS = """
 }
 
 
-/* ----------------------------------------------------------
-   FOOTER
----------------------------------------------------------- */
-
 .health-footer {
     padding-top: 1.4rem;
 
@@ -755,9 +688,548 @@ APP_CSS = """
 }
 
 
-/* ----------------------------------------------------------
-   RESPONSIVE
----------------------------------------------------------- */
+.health-result-summary {
+    padding: 1.6rem;
+
+    border: 1px solid #DBEAFE;
+    border-radius: 24px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #FFFFFF 0%,
+            #F8FBFF 55%,
+            #EFF6FF 100%
+        );
+
+    box-shadow:
+        0 14px 38px
+        rgba(
+            15,
+            23,
+            42,
+            0.045
+        );
+}
+
+
+.health-result-top {
+    display: flex;
+
+    justify-content: space-between;
+    align-items: flex-start;
+
+    gap: 1.5rem;
+
+    flex-wrap: wrap;
+}
+
+
+.health-result-eyebrow {
+    color: #2563EB;
+
+    font-size: 0.72rem;
+    font-weight: 760;
+
+    letter-spacing: 0.08em;
+
+    text-transform: uppercase;
+}
+
+
+.health-result-category {
+    margin-top: 0.35rem;
+
+    color: #0F172A;
+
+    font-size: 2.2rem;
+
+    line-height: 1.1;
+
+    font-weight: 780;
+
+    letter-spacing: -0.045em;
+}
+
+
+.health-result-description {
+    max-width: 620px;
+
+    margin-top: 0.65rem;
+
+    color: #64748B;
+
+    font-size: 0.9rem;
+
+    line-height: 1.65;
+}
+
+
+.health-confidence-box {
+    min-width: 180px;
+
+    padding:
+        1rem
+        1.15rem;
+
+    border: 1px solid #BFDBFE;
+
+    border-radius: 18px;
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.85
+        );
+}
+
+
+.health-confidence-label {
+    color: #64748B;
+
+    font-size: 0.72rem;
+
+    font-weight: 700;
+
+    letter-spacing: 0.065em;
+
+    text-transform: uppercase;
+}
+
+
+.health-confidence-value {
+    margin-top: 0.25rem;
+
+    color: #1D4ED8;
+
+    font-size: 1.8rem;
+
+    font-weight: 780;
+
+    letter-spacing: -0.035em;
+}
+
+
+.health-result-meta {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            3,
+            minmax(0, 1fr)
+        );
+
+    gap: 0.75rem;
+
+    margin-top: 1.2rem;
+}
+
+
+.health-result-meta-item {
+    padding:
+        0.85rem
+        1rem;
+
+    border: 1px solid #E2E8F0;
+
+    border-radius: 16px;
+
+    background: #FFFFFF;
+}
+
+
+.health-result-meta-label {
+    color: #94A3B8;
+
+    font-size: 0.68rem;
+
+    font-weight: 700;
+
+    letter-spacing: 0.065em;
+
+    text-transform: uppercase;
+}
+
+
+.health-result-meta-value {
+    margin-top: 0.22rem;
+
+    color: #334155;
+
+    font-size: 0.86rem;
+
+    font-weight: 650;
+}
+
+
+.health-probability-section {
+    margin-top: 1.4rem;
+}
+
+
+.health-section-title {
+    color: #0F172A;
+
+    font-size: 1rem;
+
+    font-weight: 740;
+}
+
+
+.health-section-description {
+    margin-top: 0.25rem;
+
+    color: #64748B;
+
+    font-size: 0.82rem;
+
+    line-height: 1.55;
+}
+
+
+.health-probability-list {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 0.8rem;
+
+    margin-top: 1rem;
+}
+
+
+.health-probability-row {
+    padding:
+        0.8rem
+        0.9rem;
+
+    border: 1px solid #E2E8F0;
+
+    border-radius: 15px;
+
+    background: #FFFFFF;
+}
+
+
+.health-probability-header {
+    display: flex;
+
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 1rem;
+
+    margin-bottom: 0.5rem;
+}
+
+
+.health-probability-name {
+    color: #334155;
+
+    font-size: 0.82rem;
+
+    font-weight: 650;
+}
+
+
+.health-probability-value {
+    color: #2563EB;
+
+    font-size: 0.8rem;
+
+    font-weight: 740;
+}
+
+
+.health-probability-track {
+    width: 100%;
+    height: 8px;
+
+    overflow: hidden;
+
+    border-radius: 999px;
+
+    background: #E2E8F0;
+}
+
+
+.health-probability-fill {
+    height: 100%;
+
+    border-radius: 999px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #2563EB,
+            #0F8B8D
+        );
+}
+
+
+.health-history-summary {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            3,
+            minmax(0, 1fr)
+        );
+
+    gap: 0.8rem;
+
+    margin-bottom: 1.3rem;
+}
+
+
+.health-history-stat {
+    padding:
+        1rem
+        1.1rem;
+
+    border: 1px solid #E2E8F0;
+
+    border-radius: 18px;
+
+    background: #FFFFFF;
+}
+
+
+.health-history-stat-value {
+    color: #0F172A;
+
+    font-size: 1.35rem;
+
+    font-weight: 760;
+}
+
+
+.health-history-stat-label {
+    margin-top: 0.15rem;
+
+    color: #64748B;
+
+    font-size: 0.74rem;
+
+    font-weight: 650;
+}
+
+
+.health-history-list {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 0.85rem;
+
+    margin-top: 1rem;
+}
+
+
+.health-history-card {
+    padding:
+        1rem
+        1.1rem;
+
+    border: 1px solid #E2E8F0;
+
+    border-radius: 18px;
+
+    background: #FFFFFF;
+
+    transition:
+        transform 0.18s ease,
+        border-color 0.18s ease,
+        box-shadow 0.18s ease;
+}
+
+
+.health-history-card:hover {
+    transform: translateY(-1px);
+
+    border-color: #BFDBFE;
+
+    box-shadow:
+        0 10px 24px
+        rgba(
+            15,
+            23,
+            42,
+            0.045
+        );
+}
+
+
+.health-history-header {
+    display: flex;
+
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 1rem;
+
+    flex-wrap: wrap;
+}
+
+
+.health-history-id {
+    color: #2563EB;
+
+    font-size: 0.75rem;
+
+    font-weight: 740;
+}
+
+
+.health-history-date {
+    color: #94A3B8;
+
+    font-size: 0.75rem;
+}
+
+
+.health-history-category {
+    margin-top: 0.45rem;
+
+    color: #0F172A;
+
+    font-size: 1.05rem;
+
+    font-weight: 720;
+}
+
+
+.health-history-details {
+    display: flex;
+
+    gap: 1rem;
+
+    flex-wrap: wrap;
+
+    margin-top: 0.45rem;
+
+    color: #64748B;
+
+    font-size: 0.78rem;
+}
+
+
+.health-empty-state {
+    padding:
+        2rem
+        1.5rem;
+
+    text-align: center;
+
+    border: 1px dashed #CBD5E1;
+
+    border-radius: 22px;
+
+    background: #FFFFFF;
+}
+
+
+.health-empty-icon {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 48px;
+    height: 48px;
+
+    margin:
+        0 auto
+        0.9rem;
+
+    border-radius: 15px;
+
+    background: #EFF6FF;
+
+    color: #2563EB;
+
+    font-size: 1rem;
+
+    font-weight: 780;
+}
+
+
+.health-empty-title {
+    color: #0F172A;
+
+    font-size: 1rem;
+
+    font-weight: 720;
+}
+
+
+.health-empty-text {
+    max-width: 460px;
+
+    margin:
+        0.4rem
+        auto
+        0;
+
+    color: #64748B;
+
+    font-size: 0.82rem;
+
+    line-height: 1.6;
+}
+
+
+.health-detail-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            2,
+            minmax(0, 1fr)
+        );
+
+    gap: 0.8rem;
+
+    margin-top: 1rem;
+}
+
+
+.health-detail-card {
+    padding: 1rem;
+
+    border: 1px solid #E2E8F0;
+
+    border-radius: 17px;
+
+    background: #FFFFFF;
+}
+
+
+.health-detail-title {
+    color: #2563EB;
+
+    font-size: 0.72rem;
+
+    font-weight: 740;
+
+    letter-spacing: 0.065em;
+
+    text-transform: uppercase;
+}
+
+
+.health-detail-value {
+    margin-top: 0.25rem;
+
+    color: #334155;
+
+    font-size: 0.86rem;
+
+    font-weight: 620;
+}
+
 
 @media (
     max-width: 800px
@@ -789,6 +1261,26 @@ APP_CSS = """
         grid-template-columns: 1fr;
     }
 
+    .health-result-meta {
+        grid-template-columns: 1fr;
+    }
+
+    .health-history-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .health-detail-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .health-result-top {
+        flex-direction: column;
+    }
+
+    .health-confidence-box {
+        width: 100%;
+    }
+
 }
 
 
@@ -806,6 +1298,10 @@ APP_CSS = """
 
     .health-page-title {
         font-size: 1.55rem;
+    }
+
+    .health-result-category {
+        font-size: 1.75rem;
     }
 
 }
