@@ -3,6 +3,9 @@ from html import escape
 import pandas as pd
 import streamlit as st
 
+from frontend.category_styles import (
+    get_category_style,
+)
 from frontend.time_utils import (
     format_sri_lanka_datetime,
 )
@@ -100,26 +103,55 @@ def build_probability_dataframe(
 def _build_probability_html(
     probabilities,
 ):
-    dataframe = (
-        build_probability_dataframe(
-            probabilities
-        )
+    sorted_classes = sorted(
+        CLASS_ORDER,
+        key=lambda class_name:
+            float(
+                probabilities.get(
+                    class_name,
+                    0.0,
+                )
+            ),
+        reverse=True,
     )
 
     rows = []
 
-    for _, row in dataframe.iterrows():
-        category = escape(
-            str(
-                row[
-                    "Category"
-                ]
+    for class_name in sorted_classes:
+        probability = float(
+            probabilities.get(
+                class_name,
+                0.0,
             )
         )
 
-        probability = float(
-            row[
-                "Probability"
+        category = escape(
+            format_class_name(
+                class_name
+            )
+        )
+
+        category_style = (
+            get_category_style(
+                class_name
+            )
+        )
+
+        category_color = (
+            category_style[
+                "color"
+            ]
+        )
+
+        category_background = (
+            category_style[
+                "background"
+            ]
+        )
+
+        category_border = (
+            category_style[
+                "border"
             ]
         )
 
@@ -142,6 +174,18 @@ def _build_probability_html(
                 class="
                     health-probability-row
                 "
+                style="
+                    border-color:
+                    {category_border};
+
+                    background:
+                    linear-gradient(
+                        90deg,
+                        #FFFFFF 0%,
+                        #FFFFFF 82%,
+                        {category_background} 100%
+                    );
+                "
             >
 
                 <div
@@ -162,6 +206,10 @@ def _build_probability_html(
                         class="
                             health-probability-value
                         "
+                        style="
+                            color:
+                            {category_color};
+                        "
                     >
                         {percentage:.2f}%
                     </span>
@@ -181,6 +229,9 @@ def _build_probability_html(
                         style="
                             width:
                             {bar_width:.2f}%;
+
+                            background:
+                            {category_color};
                         "
                     >
                     </div>
@@ -269,6 +320,30 @@ def render_prediction_result(
         format_class_name(
             predicted_class
         )
+    )
+
+    category_style = (
+        get_category_style(
+            predicted_class
+        )
+    )
+
+    category_color = (
+        category_style[
+            "color"
+        ]
+    )
+
+    category_background = (
+        category_style[
+            "background"
+        ]
+    )
+
+    category_border = (
+        category_style[
+            "border"
+        ]
     )
 
     confidence = float(
@@ -437,6 +512,18 @@ def render_prediction_result(
             class="
                 health-result-summary
             "
+            style="
+                border-color:
+                {category_border};
+
+                background:
+                linear-gradient(
+                    135deg,
+                    #FFFFFF 0%,
+                    #FFFFFF 58%,
+                    {category_background} 100%
+                );
+            "
         >
 
             <div
@@ -458,6 +545,10 @@ def render_prediction_result(
                     <div
                         class="
                             health-result-category
+                        "
+                        style="
+                            color:
+                            {category_color};
                         "
                     >
                         {
@@ -486,6 +577,13 @@ def render_prediction_result(
                     class="
                         health-confidence-box
                     "
+                    style="
+                        border-color:
+                        {category_border};
+
+                        background:
+                        {category_background};
+                    "
                 >
 
                     <div
@@ -499,6 +597,10 @@ def render_prediction_result(
                     <div
                         class="
                             health-confidence-value
+                        "
+                        style="
+                            color:
+                            {category_color};
                         "
                     >
                         {

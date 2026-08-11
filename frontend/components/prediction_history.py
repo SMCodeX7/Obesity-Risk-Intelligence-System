@@ -4,6 +4,9 @@ from html import escape
 import pandas as pd
 import streamlit as st
 
+from frontend.category_styles import (
+    get_category_style,
+)
 from frontend.components.prediction_result import (
     format_class_name,
     render_prediction_result,
@@ -366,13 +369,41 @@ def _render_history_cards(
             )
         )
 
+        predicted_class = (
+            prediction.get(
+                "predicted_class",
+                "Unavailable",
+            )
+        )
+
         category = (
             format_class_name(
-                prediction.get(
-                    "predicted_class",
-                    "Unavailable",
-                )
+                predicted_class
             )
+        )
+
+        category_style = (
+            get_category_style(
+                predicted_class
+            )
+        )
+
+        category_color = (
+            category_style[
+                "color"
+            ]
+        )
+
+        category_background = (
+            category_style[
+                "background"
+            ]
+        )
+
+        category_border = (
+            category_style[
+                "border"
+            ]
         )
 
         confidence = (
@@ -402,6 +433,22 @@ def _render_history_cards(
             f"""
             <article
                 class="health-history-card"
+                style="
+                    border-color:
+                    {category_border};
+
+                    border-left:
+                    4px solid
+                    {category_color};
+
+                    background:
+                    linear-gradient(
+                        90deg,
+                        {category_background} 0%,
+                        #FFFFFF 16%,
+                        #FFFFFF 100%
+                    );
+                "
             >
 
                 <div
@@ -433,6 +480,10 @@ def _render_history_cards(
                 <div
                     class="
                         health-history-category
+                    "
+                    style="
+                        color:
+                        {category_color};
                     "
                 >
                     {_safe_text(category)}
