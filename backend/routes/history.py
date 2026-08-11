@@ -104,7 +104,6 @@ def prediction_report(
         mimetype="application/pdf",
         as_attachment=True,
         download_name=(
-            "obesity-risk-"
-            f"assessment-{prediction_id}.pdf"
+            "obesity-risk-assessment-report.pdf"
         ),
     )

@@ -119,8 +119,13 @@ def test_prediction_report_endpoint(
     )
 
     assert (
-        f"assessment-{prediction_id}.pdf"
+        "obesity-risk-assessment-report.pdf"
         in content_disposition
+    )
+
+    assert (
+        f"assessment-{prediction_id}.pdf"
+        not in content_disposition
     )
 
 
