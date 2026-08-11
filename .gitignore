@@ -237,3 +237,5 @@ database/*.sqlite3
 
 !database/.gitkeep
 !database/schema.sql
+
+.streamlit/secrets.toml

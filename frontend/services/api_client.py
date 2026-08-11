@@ -1,20 +1,21 @@
-import os
-
 import requests
 
-
-DEFAULT_API_BASE_URL = (
-    "http://127.0.0.1:5000"
+from frontend.config import (
+    get_api_base_url,
 )
 
 
-class APIClientError(Exception):
+class APIClientError(
+    Exception
+):
     def __init__(
         self,
         message,
         status_code=None,
     ):
-        super().__init__(message)
+        super().__init__(
+            message
+        )
 
         self.status_code = (
             status_code
@@ -29,11 +30,10 @@ class APIClient:
     ):
         self.base_url = (
             base_url
-            or os.getenv(
-                "OBESITY_API_BASE_URL",
-                DEFAULT_API_BASE_URL,
-            )
-        ).rstrip("/")
+            or get_api_base_url()
+        ).rstrip(
+            "/"
+        )
 
         self.timeout = timeout
 
@@ -50,28 +50,40 @@ class APIClient:
 
         try:
             if method == "GET":
-                response = requests.get(
-                    url,
-                    timeout=self.timeout,
+                response = (
+                    requests.get(
+                        url,
+                        timeout=(
+                            self.timeout
+                        ),
+                    )
                 )
 
             elif method == "POST":
-                response = requests.post(
-                    url,
-                    json=payload,
-                    timeout=self.timeout,
+                response = (
+                    requests.post(
+                        url,
+                        json=payload,
+                        timeout=(
+                            self.timeout
+                        ),
+                    )
                 )
 
             else:
                 raise APIClientError(
-                    "Unsupported API client "
-                    "request method."
+                    (
+                        "Unsupported API "
+                        "client request method."
+                    )
                 )
 
         except requests.RequestException as error:
             raise APIClientError(
-                "Unable to communicate "
-                "with the backend API."
+                (
+                    "Unable to communicate "
+                    "with the backend API."
+                )
             ) from error
 
         try:
@@ -81,15 +93,16 @@ class APIClient:
 
         except ValueError as error:
             raise APIClientError(
-                "Backend returned an "
-                "invalid JSON response.",
+                (
+                    "Backend returned an "
+                    "invalid JSON response."
+                ),
                 status_code=(
                     response.status_code
                 ),
             ) from error
 
         if not response.ok:
-
             if isinstance(
                 response_data,
                 dict,
@@ -122,13 +135,17 @@ class APIClient:
 
         return response_data
 
-    def get_health(self):
+    def get_health(
+        self,
+    ):
         return self._request(
             "GET",
             "/health",
         )
 
-    def get_model_info(self):
+    def get_model_info(
+        self,
+    ):
         return self._request(
             "GET",
             "/model-info",
@@ -144,7 +161,9 @@ class APIClient:
             payload=payload,
         )
 
-    def get_predictions(self):
+    def get_predictions(
+        self,
+    ):
         return self._request(
             "GET",
             "/predictions",
@@ -156,8 +175,10 @@ class APIClient:
     ):
         return self._request(
             "GET",
-            f"/predictions/"
-            f"{prediction_id}",
+            (
+                "/predictions/"
+                f"{prediction_id}"
+            ),
         )
 
     def get_prediction_report(
@@ -166,25 +187,30 @@ class APIClient:
     ):
         url = (
             f"{self.base_url}"
-            f"/predictions/"
+            "/predictions/"
             f"{prediction_id}"
-            f"/report"
+            "/report"
         )
 
         try:
-            response = requests.get(
-                url,
-                timeout=self.timeout,
+            response = (
+                requests.get(
+                    url,
+                    timeout=(
+                        self.timeout
+                    ),
+                )
             )
 
         except requests.RequestException as error:
             raise APIClientError(
-                "Unable to download "
-                "the PDF report."
+                (
+                    "Unable to download "
+                    "the PDF report."
+                )
             ) from error
 
         if not response.ok:
-
             try:
                 response_data = (
                     response.json()
@@ -212,7 +238,7 @@ class APIClient:
             if not message:
                 message = (
                     "PDF report request "
-                    f"failed with HTTP "
+                    "failed with HTTP "
                     f"{response.status_code}."
                 )
 
