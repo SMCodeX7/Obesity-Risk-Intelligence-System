@@ -1,3 +1,4 @@
+import os
 from io import BytesIO
 
 from flask import (
@@ -6,6 +7,7 @@ from flask import (
 )
 
 from backend.repositories.prediction_repository import (
+    clear_predictions,
     get_prediction,
     list_predictions,
 )
@@ -18,6 +20,23 @@ history_bp = Blueprint(
     "history",
     __name__,
 )
+
+
+def is_history_reset_enabled():
+    value = os.getenv(
+        "OBESITY_ENABLE_HISTORY_RESET",
+        "false",
+    )
+
+    return (
+        value.strip().lower()
+        in {
+            "1",
+            "true",
+            "yes",
+            "on",
+        }
+    )
 
 
 @history_bp.get(
@@ -36,6 +55,33 @@ def prediction_history():
 
         "predictions":
             predictions,
+    }, 200
+
+
+@history_bp.delete(
+    "/predictions"
+)
+def clear_prediction_history():
+    if not is_history_reset_enabled():
+        return {
+            "error":
+                "history_reset_disabled",
+
+            "message":
+                "Prediction history reset "
+                "is disabled.",
+        }, 403
+
+    deleted_count = (
+        clear_predictions()
+    )
+
+    return {
+        "message":
+            "Prediction history cleared.",
+
+        "deleted_count":
+            deleted_count,
     }, 200
 
 

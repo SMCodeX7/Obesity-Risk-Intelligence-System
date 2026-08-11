@@ -70,6 +70,16 @@ class APIClient:
                     )
                 )
 
+            elif method == "DELETE":
+                response = (
+                    requests.delete(
+                        url,
+                        timeout=(
+                            self.timeout
+                        ),
+                    )
+                )
+
             else:
                 raise APIClientError(
                     (
@@ -166,6 +176,14 @@ class APIClient:
     ):
         return self._request(
             "GET",
+            "/predictions",
+        )
+
+    def clear_predictions(
+        self,
+    ):
+        return self._request(
+            "DELETE",
             "/predictions",
         )
 

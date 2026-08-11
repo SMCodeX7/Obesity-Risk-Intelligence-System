@@ -237,3 +237,23 @@ def get_prediction(
         "created_at":
             row["created_at"],
     }
+
+
+def clear_predictions():
+    database = get_db()
+
+    cursor = database.execute(
+        """
+        DELETE FROM prediction_history
+        """
+    )
+
+    database.commit()
+
+    deleted_count = (
+        cursor.rowcount
+        if cursor.rowcount is not None
+        else 0
+    )
+
+    return deleted_count

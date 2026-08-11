@@ -216,6 +216,167 @@ def _render_empty_state():
     )
 
 
+def _reset_history_ui_state():
+    keys = [
+        "selected_history_prediction_id",
+        "history_prediction_selector",
+        "show_history_clear_confirmation",
+        "confirm_history_clear",
+    ]
+
+    for key in keys:
+        st.session_state.pop(
+            key,
+            None,
+        )
+
+
+def _render_clear_history_controls(
+    api_client,
+    prediction_count,
+):
+    st.write("")
+
+    with st.expander(
+        "History management"
+    ):
+        st.markdown(
+            "#### Clear prediction history"
+        )
+
+        st.caption(
+            "Remove all saved prediction "
+            "records from the history. "
+            "This action cannot be undone."
+        )
+
+        confirmation_open = (
+            st.session_state.get(
+                "show_history_clear_confirmation",
+                False,
+            )
+        )
+
+        if not confirmation_open:
+            if st.button(
+                "Clear prediction history",
+                key="open_history_clear_confirmation",
+                width="stretch",
+            ):
+                st.session_state[
+                    "show_history_clear_confirmation"
+                ] = True
+
+                st.rerun()
+
+            return
+
+        st.warning(
+            f"This will permanently delete "
+            f"all {prediction_count} saved "
+            f"assessment records."
+        )
+
+        confirmed = st.checkbox(
+            (
+                "I understand that all saved "
+                "prediction history will be "
+                "permanently deleted."
+            ),
+            key="confirm_history_clear",
+        )
+
+        cancel_column, clear_column = (
+            st.columns(
+                2
+            )
+        )
+
+        with cancel_column:
+            if st.button(
+                "Cancel",
+                key="cancel_history_clear",
+                width="stretch",
+            ):
+                st.session_state.pop(
+                    "show_history_clear_confirmation",
+                    None,
+                )
+
+                st.session_state.pop(
+                    "confirm_history_clear",
+                    None,
+                )
+
+                st.rerun()
+
+        with clear_column:
+            if st.button(
+                "Permanently clear history",
+                key="confirm_history_clear_button",
+                disabled=not confirmed,
+                type="primary",
+                width="stretch",
+            ):
+                try:
+                    response = (
+                        api_client.clear_predictions()
+                    )
+
+                except APIClientError as error:
+                    if (
+                        error.status_code
+                        == 403
+                    ):
+                        st.error(
+                            "Prediction history "
+                            "clearing is disabled "
+                            "on this backend."
+                        )
+
+                    else:
+                        st.error(
+                            "Prediction history "
+                            "could not be cleared."
+                        )
+
+                        with st.expander(
+                            "Technical details"
+                        ):
+                            st.code(
+                                str(
+                                    error
+                                )
+                            )
+
+                    return
+
+                deleted_count = (
+                    response.get(
+                        "deleted_count",
+                        prediction_count,
+                    )
+                    if isinstance(
+                        response,
+                        dict,
+                    )
+                    else prediction_count
+                )
+
+                _reset_history_ui_state()
+
+                st.session_state[
+                    "history_clear_success"
+                ] = (
+                    f"{deleted_count} saved "
+                    f"assessment record"
+                    f"{'' if deleted_count == 1 else 's'} "
+                    f"cleared."
+                )
+
+                st.rerun()
+
+
 def _render_history_summary(
     predictions,
 ):
@@ -1093,6 +1254,18 @@ def render_prediction_history(
 
         return
 
+    success_message = (
+        st.session_state.pop(
+            "history_clear_success",
+            None,
+        )
+    )
+
+    if success_message:
+        st.success(
+            success_message
+        )
+
     predictions = (
         history_response.get(
             "predictions",
@@ -1108,6 +1281,13 @@ def render_prediction_history(
 
     _render_history_summary(
         predictions
+    )
+
+    _render_clear_history_controls(
+        api_client=api_client,
+        prediction_count=len(
+            predictions
+        ),
     )
 
     st.html(
