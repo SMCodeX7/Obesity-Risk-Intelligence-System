@@ -3,6 +3,10 @@ from html import escape
 import pandas as pd
 import streamlit as st
 
+from frontend.time_utils import (
+    format_sri_lanka_datetime,
+)
+
 
 CLASS_LABELS = {
     "Insufficient_Weight":
@@ -300,10 +304,18 @@ def render_prediction_result(
         )
     )
 
-    created_at = (
+    created_at_value = (
         result.get(
             "created_at"
         )
+    )
+
+    created_at = (
+        format_sri_lanka_datetime(
+            created_at_value
+        )
+        if created_at_value
+        else None
     )
 
     second_highest = (

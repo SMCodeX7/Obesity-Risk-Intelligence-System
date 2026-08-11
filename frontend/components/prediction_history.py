@@ -14,6 +14,10 @@ from frontend.components.report_download import (
 from frontend.services.api_client import (
     APIClientError,
 )
+from frontend.time_utils import (
+    format_sri_lanka_datetime,
+    format_sri_lanka_datetime_compact,
+)
 
 
 FEATURE_LABELS = {
@@ -380,9 +384,10 @@ def _render_history_cards(
         )
 
         created_at = (
-            prediction.get(
-                "created_at",
-                "Unavailable",
+            format_sri_lanka_datetime_compact(
+                prediction.get(
+                    "created_at"
+                )
             )
         )
 
@@ -492,9 +497,10 @@ def _format_selector_option(
     )
 
     created_at = (
-        prediction.get(
-            "created_at",
-            "Unavailable",
+        format_sri_lanka_datetime_compact(
+            prediction.get(
+                "created_at"
+            )
         )
     )
 
@@ -871,13 +877,14 @@ def _render_detail_header(
     )
 
     created_at = (
-        detail.get(
-            "created_at"
+        format_sri_lanka_datetime(
+            detail.get(
+                "created_at"
+            )
+            or result.get(
+                "created_at"
+            )
         )
-        or result.get(
-            "created_at"
-        )
-        or "Unavailable"
     )
 
     model_name = (
