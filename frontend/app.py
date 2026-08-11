@@ -1,5 +1,12 @@
 import streamlit as st
 
+from frontend.components.app_shell import (
+    render_footer,
+    render_hero,
+    render_navigation,
+    render_page_header,
+    render_sidebar,
+)
 from frontend.components.assessment_form import (
     render_assessment_form,
     reset_assessment_form,
@@ -17,16 +24,20 @@ from frontend.services.api_client import (
     APIClient,
     APIClientError,
 )
+from frontend.styles import (
+    load_app_styles,
+)
 
 
 st.set_page_config(
-    page_title=(
-        "Obesity Risk "
-        "Intelligence System"
-    ),
-    page_icon="📊",
+    page_title="Obesity Risk Intelligence",
+    page_icon="⚕️",
     layout="wide",
+    initial_sidebar_state="expanded",
 )
+
+
+load_app_styles()
 
 
 api_client = APIClient()
@@ -50,15 +61,13 @@ if (
     ] = None
 
 
-st.title(
-    "Obesity Risk "
-    "Intelligence System"
-)
-
-st.caption(
-    "Machine Learning-Based "
-    "Obesity Risk Assessment"
-)
+if (
+    "assessment_step"
+    not in st.session_state
+):
+    st.session_state[
+        "assessment_step"
+    ] = 1
 
 
 try:
@@ -72,17 +81,17 @@ try:
 
 except APIClientError as error:
     st.error(
-        "Backend API is unavailable."
+        "Healthcare assessment service "
+        "is currently unavailable."
     )
 
     st.write(
-        "The Streamlit interface "
-        "could not connect to the "
-        "Flask API."
+        "The interface could not "
+        "connect to the Flask backend."
     )
 
     st.info(
-        "Start the Flask backend "
+        "Start the backend service "
         "and refresh this page."
     )
 
@@ -96,116 +105,38 @@ except APIClientError as error:
     st.stop()
 
 
-with st.sidebar:
-    st.header(
-        "Navigation"
-    )
+render_sidebar(
+    health_data=health_data,
+    model_info=model_info,
+)
 
-    page = st.radio(
-        "Application navigation",
-        options=[
-            "New Assessment",
-            "Prediction History",
-        ],
-        label_visibility="collapsed",
-    )
 
-    st.divider()
+render_hero(
+    model_info=model_info
+)
 
-    st.header(
-        "System Information"
-    )
 
-    if (
-        health_data.get(
-            "status"
-        )
-        == "ok"
-    ):
-        st.success(
-            "API Connected"
-        )
+st.write("")
 
-    st.write(
-        "**Model:**"
-    )
 
-    st.write(
-        model_info.get(
-            "selected_model",
-            "Unknown",
-        )
-    )
+page = render_navigation()
 
-    accuracy = (
-        model_info
-        .get(
-            "final_test_metrics",
-            {},
-        )
-        .get(
-            "accuracy"
-        )
-    )
 
-    macro_f1 = (
-        model_info
-        .get(
-            "final_test_metrics",
-            {},
-        )
-        .get(
-            "macro_f1"
-        )
-    )
-
-    if accuracy is not None:
-        st.metric(
-            "Test Accuracy",
-            f"{accuracy * 100:.2f}%",
-        )
-
-    if macro_f1 is not None:
-        st.metric(
-            "Macro F1",
-            f"{macro_f1:.4f}",
-        )
-
-    st.divider()
-
-    st.write(
-        "**Model Inputs:**",
-        model_info.get(
-            "predictive_feature_count",
-            "Unknown",
+if page == "Assessment":
+    render_page_header(
+        kicker="Guided Health Assessment",
+        title=(
+            "Build your obesity-risk profile"
         ),
-    )
-
-    st.write(
-        "**Target Classes:**",
-        model_info.get(
-            "target_class_count",
-            "Unknown",
+        description=(
+            "Complete three short sections "
+            "covering your physical profile, "
+            "nutrition habits, and lifestyle. "
+            "Your information is processed by "
+            "the trained machine learning "
+            "pipeline to estimate an obesity-"
+            "risk category."
         ),
-    )
-
-    st.divider()
-
-    st.caption(
-        "Educational ML "
-        "application. Not a "
-        "medical diagnostic tool."
-    )
-
-
-if page == "New Assessment":
-
-    st.info(
-        "Enter the requested "
-        "information below. The "
-        "assessment is processed by "
-        "the trained machine "
-        "learning pipeline."
     )
 
     payload = (
@@ -213,11 +144,9 @@ if page == "New Assessment":
     )
 
     if payload is not None:
-
         try:
             with st.spinner(
-                "Running obesity risk "
-                "assessment..."
+                "Analyzing your assessment..."
             ):
                 prediction_result = (
                     api_client.predict(
@@ -235,8 +164,8 @@ if page == "New Assessment":
             ] = None
 
             st.error(
-                "Prediction request "
-                "failed."
+                "The assessment could "
+                "not be completed."
             )
 
             if (
@@ -244,13 +173,15 @@ if page == "New Assessment":
                 is not None
             ):
                 st.warning(
-                    "Backend response: "
-                    f"{str(error)}"
+                    (
+                        "Backend response: "
+                        f"{str(error)}"
+                    )
                 )
 
             else:
                 st.warning(
-                    "The backend API "
+                    "The backend service "
                     "could not be reached."
                 )
 
@@ -273,44 +204,84 @@ if page == "New Assessment":
             ]
         )
 
-        render_prediction_result(
-            current_result
+        st.write("")
+
+        render_page_header(
+            kicker="Assessment Complete",
+            title="Your assessment result",
+            description=(
+                "Review the model's predicted "
+                "category, confidence score, "
+                "and probability distribution "
+                "across all seven obesity-risk "
+                "categories."
+            ),
         )
 
-        current_prediction_id = (
-            current_result.get(
-                "prediction_id"
-            )
-        )
-
-        if (
-            current_prediction_id
-            is not None
+        with st.container(
+            border=True
         ):
-            st.markdown(
-                "### Assessment Report"
+            render_prediction_result(
+                current_result
             )
 
-            st.write(
-                "Download a PDF copy "
-                "of this assessment."
+            current_prediction_id = (
+                current_result.get(
+                    "prediction_id"
+                )
             )
 
-            render_pdf_download(
-                api_client=api_client,
-                prediction_id=(
-                    current_prediction_id
-                ),
-                key_prefix="current",
-            )
+            if (
+                current_prediction_id
+                is not None
+            ):
+                st.divider()
 
-        else:
-            st.warning(
-                "No prediction ID was "
-                "returned, so a PDF "
-                "report cannot be "
-                "generated."
-            )
+                st.markdown(
+                    "#### Assessment report"
+                )
+
+                st.caption(
+                    "Download a formatted PDF "
+                    "copy of this assessment "
+                    "for your records."
+                )
+
+                render_pdf_download(
+                    api_client=api_client,
+                    prediction_id=(
+                        current_prediction_id
+                    ),
+                    key_prefix="current",
+                )
+
+        st.write("")
+
+        st.html(
+            """
+            <div class="health-notice">
+
+                <strong>
+                    About this result
+                </strong>
+
+                <br><br>
+
+                This prediction represents
+                patterns learned by a machine
+                learning model from its
+                training data.
+
+                It is an educational risk
+                classification and should
+                not be interpreted as a
+                medical diagnosis.
+
+            </div>
+            """
+        )
+
+        st.write("")
 
         st.button(
             "Start New Assessment",
@@ -318,24 +289,26 @@ if page == "New Assessment":
                 reset_assessment_form
             ),
             type="secondary",
+            width="stretch",
         )
 
 
-elif page == "Prediction History":
+elif page == "History":
+    render_page_header(
+        kicker="Assessment Archive",
+        title="Prediction history",
+        description=(
+            "Review previous assessments, "
+            "reopen the information used for "
+            "each prediction, examine the "
+            "stored result, and download "
+            "assessment reports."
+        ),
+    )
 
     render_prediction_history(
         api_client
     )
 
 
-st.divider()
-
-st.caption(
-    "The Obesity Risk Intelligence "
-    "System is an educational "
-    "machine learning application. "
-    "Predictions are not medical "
-    "diagnoses and should not "
-    "replace professional health "
-    "assessment."
-)
+render_footer()
