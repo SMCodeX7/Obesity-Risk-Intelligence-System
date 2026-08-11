@@ -28,6 +28,9 @@ from reportlab.platypus import (
     Table,
     TableStyle,
 )
+from frontend.time_utils import (
+    format_sri_lanka_datetime,
+)
 
 
 CLASS_LABELS = {
@@ -851,9 +854,10 @@ def generate_prediction_report(
     )
 
     created_at = (
-        prediction.get(
-            "created_at",
-            "Unavailable",
+        format_sri_lanka_datetime(
+            prediction.get(
+                "created_at"
+            )
         )
     )
 
