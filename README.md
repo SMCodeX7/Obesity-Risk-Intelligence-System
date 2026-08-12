@@ -33,6 +33,7 @@ The final model uses 16 input features and a tuned Gradient Boosting Classifier.
 - Downloadable PDF reports
 - Sri Lanka time display using UTC+05:30
 - Safe prediction-history clearing
+- Public-deployment privacy controls
 - Automated test suite
 - Model explainability and evaluation analysis
 
@@ -81,7 +82,8 @@ Prediction Result
 
 ## Technology Stack
 
-**Machine Learning**
+### Machine Learning
+
 - Python
 - Scikit-learn
 - Pandas
@@ -89,16 +91,19 @@ Prediction Result
 - SHAP
 - Joblib
 
-**Backend**
+### Backend
+
 - Flask
 - Waitress
 - SQLite
 - ReportLab
 
-**Frontend**
+### Frontend
+
 - Streamlit
 
-**Testing**
+### Testing
+
 - Pytest
 
 ## Project Structure
@@ -168,6 +173,51 @@ python -m streamlit run frontend/app.py
 
 Open the Streamlit URL shown in the terminal.
 
+## Environment Configuration
+
+The application supports environment-based configuration.
+
+Example local configuration:
+
+```env
+OBESITY_API_BASE_URL=http://127.0.0.1:5000
+OBESITY_DATABASE_PATH=database/obesity_risk.db
+OBESITY_LOG_LEVEL=INFO
+OBESITY_ENABLE_HISTORY_RESET=false
+OBESITY_SAVE_PREDICTIONS=true
+OBESITY_ENABLE_HISTORY_ACCESS=true
+OBESITY_SHOW_HISTORY=true
+PORT=5000
+```
+
+### Public Deployment Privacy
+
+The application includes privacy controls that allow prediction-history features to be disabled for public deployments.
+
+Recommended public configuration:
+
+```env
+OBESITY_SAVE_PREDICTIONS=false
+OBESITY_ENABLE_HISTORY_ACCESS=false
+OBESITY_ENABLE_HISTORY_RESET=false
+OBESITY_SHOW_HISTORY=false
+```
+
+With these settings:
+
+```text
+Public Assessment        Enabled
+ML Prediction            Enabled
+Confidence Scores        Enabled
+Class Probabilities      Enabled
+Prediction Storage       Disabled
+Prediction History       Disabled
+Saved PDF Reports        Disabled
+History Reset            Disabled
+```
+
+This prevents anonymous public users from storing or accessing assessment history.
+
 ## Prediction History Clearing
 
 Prediction-history deletion is protected by an environment variable.
@@ -180,16 +230,34 @@ $env:OBESITY_ENABLE_HISTORY_RESET="true"
 
 When disabled, the backend rejects history-clear requests.
 
+Prediction-history access can also be controlled using:
+
+```text
+OBESITY_ENABLE_HISTORY_ACCESS
+```
+
+Prediction persistence can be controlled using:
+
+```text
+OBESITY_SAVE_PREDICTIONS
+```
+
+The History interface can be controlled using:
+
+```text
+OBESITY_SHOW_HISTORY
+```
+
 ## API Endpoints
 
 | Method | Endpoint | Purpose |
 |---|---|---|
 | GET | `/health` | Check API health |
 | GET | `/model-info` | Retrieve model information |
-| POST | `/predict` | Generate and save a prediction |
-| GET | `/predictions` | Retrieve prediction history |
-| GET | `/predictions/<id>` | Retrieve a saved assessment |
-| GET | `/predictions/<id>/report` | Download a PDF report |
+| POST | `/predict` | Generate an obesity-risk prediction |
+| GET | `/predictions` | Retrieve prediction history when enabled |
+| GET | `/predictions/<id>` | Retrieve a saved assessment when enabled |
+| GET | `/predictions/<id>/report` | Download a saved PDF report when enabled |
 | DELETE | `/predictions` | Clear prediction history when enabled |
 
 ## Running Tests
@@ -199,6 +267,20 @@ Run the complete automated test suite with:
 ```bash
 python -m pytest -q
 ```
+
+The test suite covers:
+
+- Backend API functionality
+- Input validation
+- Model loading
+- Prediction generation
+- SQLite database operations
+- Prediction history
+- PDF report generation
+- Frontend API communication
+- Full application integration
+- Error handling
+- History reset controls
 
 ## Dataset
 
@@ -222,6 +304,7 @@ The model uses 16 predictive features covering:
 The machine learning workflow includes:
 
 - Data exploration
+- Exploratory data analysis
 - Preprocessing pipelines
 - Stratified dataset splitting
 - Baseline model comparison
@@ -237,6 +320,64 @@ The final trained pipeline is stored in:
 ```text
 models/obesity_risk_pipeline.joblib
 ```
+
+## Development Status
+
+The core application is complete.
+
+Completed areas include:
+
+- Data preparation
+- Exploratory analysis
+- Feature preprocessing
+- Model development
+- Model comparison
+- Hyperparameter tuning
+- Independent test evaluation
+- Explainability analysis
+- Flask REST API
+- Streamlit user interface
+- SQLite integration
+- Prediction history
+- PDF report generation
+- UI improvements
+- Automated testing
+- Local integration testing
+- Production server preparation
+- Environment configuration
+- Public-deployment privacy controls
+
+## Future Work / Deployment Roadmap
+
+The remaining work focuses mainly on public deployment and automation.
+
+### Backend Deployment
+
+- Deploy the Flask API to a public hosting platform.
+- Configure production environment variables.
+- Verify `/health`, `/model-info`, and `/predict`.
+- Keep prediction persistence and public history disabled.
+
+### Streamlit Deployment
+
+- Deploy the Streamlit frontend.
+- Connect the frontend to the deployed Flask API.
+- Configure `OBESITY_API_BASE_URL`.
+- Verify the full public prediction workflow.
+
+### Live Application URLs
+
+- Add the deployed frontend URL to the README.
+- Add the deployed backend API URL.
+- Add a clear **Live Demo** section.
+- Update deployment instructions after final verification.
+
+### GitHub Actions CI
+
+- Add a GitHub Actions workflow.
+- Automatically install project dependencies.
+- Run the Pytest suite on pushes and pull requests.
+- Use CI results to detect regressions before deployment.
 
 ## Disclaimer
 
