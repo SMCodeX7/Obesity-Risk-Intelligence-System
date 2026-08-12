@@ -39,10 +39,43 @@ def is_history_reset_enabled():
     )
 
 
+def is_history_access_enabled():
+    value = os.getenv(
+        "OBESITY_ENABLE_HISTORY_ACCESS",
+        "true",
+    )
+
+    return (
+        value.strip().lower()
+        in {
+            "1",
+            "true",
+            "yes",
+            "on",
+        }
+    )
+
+
+def history_disabled_response():
+    return {
+        "error":
+            "history_access_disabled",
+
+        "message":
+            (
+                "Prediction history is "
+                "disabled for this deployment."
+            ),
+    }, 403
+
+
 @history_bp.get(
     "/predictions"
 )
 def prediction_history():
+    if not is_history_access_enabled():
+        return history_disabled_response()
+
     predictions = (
         list_predictions()
     )
@@ -62,6 +95,9 @@ def prediction_history():
     "/predictions"
 )
 def clear_prediction_history():
+    if not is_history_access_enabled():
+        return history_disabled_response()
+
     if not is_history_reset_enabled():
         return {
             "error":
@@ -91,6 +127,9 @@ def clear_prediction_history():
 def prediction_detail(
     prediction_id,
 ):
+    if not is_history_access_enabled():
+        return history_disabled_response()
+
     prediction = (
         get_prediction(
             prediction_id
@@ -117,6 +156,9 @@ def prediction_detail(
 def prediction_report(
     prediction_id,
 ):
+    if not is_history_access_enabled():
+        return history_disabled_response()
+
     prediction = (
         get_prediction(
             prediction_id

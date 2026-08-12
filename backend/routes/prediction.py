@@ -1,3 +1,5 @@
+import os
+
 from flask import (
     Blueprint,
     current_app,
@@ -16,6 +18,23 @@ prediction_bp = Blueprint(
     "prediction",
     __name__,
 )
+
+
+def is_prediction_persistence_enabled():
+    value = os.getenv(
+        "OBESITY_SAVE_PREDICTIONS",
+        "true",
+    )
+
+    return (
+        value.strip().lower()
+        in {
+            "1",
+            "true",
+            "yes",
+            "on",
+        }
+    )
 
 
 @prediction_bp.post(
@@ -44,22 +63,25 @@ def predict():
         )
     )
 
-    prediction_id = (
-        save_prediction(
-            features=(
-                validated_features
-            ),
-            prediction_result=(
-                result
-            ),
-            model_metadata=(
-                model_service.metadata
-            ),
+    if (
+        is_prediction_persistence_enabled()
+    ):
+        prediction_id = (
+            save_prediction(
+                features=(
+                    validated_features
+                ),
+                prediction_result=(
+                    result
+                ),
+                model_metadata=(
+                    model_service.metadata
+                ),
+            )
         )
-    )
 
-    result[
-        "prediction_id"
-    ] = prediction_id
+        result[
+            "prediction_id"
+        ] = prediction_id
 
     return result, 200

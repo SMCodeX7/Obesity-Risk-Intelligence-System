@@ -20,6 +20,9 @@ from frontend.components.prediction_result import (
 from frontend.components.report_download import (
     render_pdf_download,
 )
+from frontend.config import (
+    is_history_ui_enabled,
+)
 from frontend.services.api_client import (
     APIClient,
     APIClientError,
@@ -119,7 +122,11 @@ render_hero(
 st.write("")
 
 
-page = render_navigation()
+page = render_navigation(
+    show_history=(
+        is_history_ui_enabled()
+    )
+)
 
 
 if page == "Assessment":

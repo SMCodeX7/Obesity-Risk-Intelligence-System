@@ -187,13 +187,21 @@ def render_hero(
     )
 
 
-def render_navigation():
+def render_navigation(
+    show_history=True,
+):
+    options = [
+        "Assessment",
+    ]
+
+    if show_history:
+        options.append(
+            "History"
+        )
+
     selected_page = st.pills(
         "Main navigation",
-        options=[
-            "Assessment",
-            "History",
-        ],
+        options=options,
         default="Assessment",
         selection_mode="single",
         key="main_navigation",
