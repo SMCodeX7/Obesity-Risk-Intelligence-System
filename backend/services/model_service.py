@@ -239,4 +239,14 @@ class ModelService:
 
             "probabilities":
                 probabilities,
-        }
+
+            "model_name":
+                self.metadata[
+                    "selected_candidate"
+            ],
+
+            "scikit_learn_version":
+                self.metadata[
+                    "scikit_learn_version"
+                ],
+}

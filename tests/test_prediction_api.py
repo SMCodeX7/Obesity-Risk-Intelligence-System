@@ -101,6 +101,16 @@ def test_prediction_endpoint(
         in data
     )
 
+    assert (
+        data["model_name"]
+        == "Tuned Gradient Boosting"
+    )
+
+    assert (
+        data["scikit_learn_version"]
+        == "1.8.0"
+    )
+
     model_service = (
         app.extensions[
             "obesity_risk_model"
