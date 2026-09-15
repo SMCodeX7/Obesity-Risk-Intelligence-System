@@ -1366,6 +1366,128 @@ APP_CSS = """
 }
 
 
+.health-timeline-list {
+
+    display: grid;
+
+    gap: 1rem;
+
+    margin-top: 1rem;
+
+}
+
+
+.health-timeline-card {
+
+    padding: 1rem 1.2rem;
+
+    border-radius: 18px;
+
+    border: 1px solid #E2E8F0;
+
+    background: #FFFFFF;
+
+    box-shadow:
+        0 10px 24px
+        rgba(15, 23, 42, 0.04);
+
+}
+
+
+.health-timeline-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 1rem;
+
+    flex-wrap: wrap;
+
+    margin-bottom: 0.9rem;
+
+}
+
+
+.health-timeline-date {
+
+    font-size: 0.95rem;
+
+    color: #475569;
+
+    font-weight: 600;
+
+}
+
+
+.health-timeline-badge {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    padding:
+        0.45rem
+        0.85rem;
+
+    border-radius: 999px;
+
+    font-size: 0.82rem;
+
+    font-weight: 750;
+
+    white-space: nowrap;
+
+}
+
+
+.health-timeline-footer {
+
+    display: flex;
+
+    gap: 0.75rem;
+
+    flex-wrap: wrap;
+
+}
+
+
+.health-timeline-chip {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 0.35rem;
+
+    padding:
+        0.5rem
+        0.8rem;
+
+    border-radius: 999px;
+
+    background: rgba(148, 163, 184, 0.12);
+
+    color: #334155;
+
+    font-size: 0.84rem;
+
+    font-weight: 600;
+
+}
+
+
+.health-timeline-chip strong {
+
+    color: #0F172A;
+
+    font-weight: 750;
+
+}
+
+
 @media (
     max-width: 800px
 ) {
@@ -1418,6 +1540,16 @@ APP_CSS = """
 
     .health-confidence-box {
         width: 100%;
+    }
+
+    .health-timeline-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .health-timeline-footer {
+        flex-direction: column;
+        align-items: flex-start;
     }
 
 }

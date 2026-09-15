@@ -1,6 +1,7 @@
 import json
 from html import escape
 
+import altair as alt
 import pandas as pd
 import streamlit as st
 
@@ -375,6 +376,361 @@ def _render_clear_history_controls(
                 )
 
                 st.rerun()
+
+
+def _render_history_analytics(
+    predictions,
+):
+    if not predictions:
+        return
+
+    dataframe = pd.DataFrame(
+        [
+            {
+                "Date":
+                    format_sri_lanka_datetime_compact(
+                        prediction.get(
+                            "created_at"
+                        )
+                    ),
+
+                "Confidence":
+                    float(
+                        prediction.get(
+                            "confidence",
+                            0.0,
+                        )
+                    )
+                    * 100,
+
+                "Category":
+                    format_class_name(
+                        prediction.get(
+                            "predicted_class",
+                            "Unavailable",
+                        )
+                    ),
+            }
+
+            for prediction in reversed(
+                predictions
+            )
+        ]
+    )
+
+    st.html(
+        """
+        <div class="health-section-title">
+            Assessment Analytics
+        </div>
+
+        <div class="health-section-description">
+            Review prediction confidence trends
+            and category patterns across saved
+            assessments.
+        </div>
+        """
+    )
+
+    column1, column2 = st.columns(
+        2,
+        gap="large",
+    )
+
+    with column1:
+
+        st.markdown(
+            "#### Confidence Trend"
+        )
+
+        confidence_data = (
+            dataframe.copy()
+        )
+
+        confidence_data[
+            "Assessment"
+        ] = range(
+            1,
+            len(confidence_data) + 1,
+        )
+
+        confidence_chart = (
+            alt.Chart(
+                confidence_data
+            )
+            .mark_line(
+                point=True,
+                strokeWidth=3,
+            )
+            .encode(
+                x=alt.X(
+                    "Assessment:O",
+                    title="Assessment",
+                    axis=alt.Axis(
+                        labelAngle=0,
+                    ),
+                ),
+                y=alt.Y(
+                    "Confidence:Q",
+                    title="Confidence (%)",
+                    scale=alt.Scale(
+                        domain=[
+                            0,
+                            100,
+                        ]
+                    ),
+                ),
+                tooltip=[
+                    alt.Tooltip(
+                        "Assessment:O",
+                        title="Assessment",
+                    ),
+                    alt.Tooltip(
+                        "Date:N",
+                        title="Recorded",
+                    ),
+                    alt.Tooltip(
+                        "Category:N",
+                        title="Category",
+                    ),
+                    alt.Tooltip(
+                        "Confidence:Q",
+                        title="Confidence",
+                        format=".2f",
+                    ),
+                ],
+            )
+            .properties(
+                height=300,
+            )
+        )
+
+        st.altair_chart(
+            confidence_chart,
+            use_container_width=True,
+        )
+
+
+    with column2:
+
+        st.markdown(
+            "#### Risk Category Distribution"
+        )
+
+        category_counts = (
+            dataframe[
+                "Category"
+            ]
+            .value_counts()
+            .rename_axis(
+                "Category"
+            )
+            .reset_index(
+                name="Assessments"
+            )
+        )
+
+        category_chart = (
+            alt.Chart(
+                category_counts
+            )
+            .mark_bar(
+                cornerRadiusEnd=6,
+            )
+            .encode(
+                x=alt.X(
+                    "Assessments:Q",
+                    title="Number of Assessments",
+                    axis=alt.Axis(
+                        tickMinStep=1,
+                        format="d",
+                    ),
+                ),
+                y=alt.Y(
+                    "Category:N",
+                    title=None,
+                    sort="-x",
+                    axis=alt.Axis(
+                        labelLimit=180,
+                    ),
+                ),
+                tooltip=[
+                    alt.Tooltip(
+                        "Category:N",
+                        title="Category",
+                    ),
+                    alt.Tooltip(
+                        "Assessments:Q",
+                        title="Assessments",
+                        format="d",
+                    ),
+                ],
+            )
+            .properties(
+                height=300,
+            )
+        )
+
+        st.altair_chart(
+            category_chart,
+            use_container_width=True,
+        )
+
+    st.markdown(
+        "#### Assessment Timeline"
+    )
+
+    timeline_cards = []
+
+    for prediction in predictions:
+        predicted_class = (
+            prediction.get(
+                "predicted_class",
+                "Unavailable",
+            )
+        )
+
+        category = (
+            format_class_name(
+                predicted_class
+            )
+        )
+
+        category_style = (
+            get_category_style(
+                predicted_class
+            )
+        )
+
+        category_color = (
+            category_style[
+                "color"
+            ]
+        )
+
+        category_background = (
+            category_style[
+                "background"
+            ]
+        )
+
+        category_border = (
+            category_style[
+                "border"
+            ]
+        )
+
+        confidence = (
+            _format_percentage(
+                prediction.get(
+                    "confidence"
+                )
+            )
+        )
+
+        date = (
+            format_sri_lanka_datetime(
+                prediction.get(
+                    "created_at"
+                )
+            )
+        )
+
+        model_name = (
+            prediction.get(
+                "model_name",
+                "Unavailable",
+            )
+        )
+
+        timeline_cards.append(
+            f"""
+            <article
+                class="health-timeline-card"
+                style="
+                    border-color:
+                    {category_border};
+
+                    border-left:
+                    5px solid
+                    {category_color};
+
+                    background:
+                    linear-gradient(
+                        90deg,
+                        {category_background} 0%,
+                        #FFFFFF 18%,
+                        #FFFFFF 100%
+                    );
+                "
+            >
+
+                <div
+                    class="health-timeline-header"
+                >
+
+                    <div
+                        class="health-timeline-date"
+                    >
+                        {_safe_text(date)}
+                    </div>
+
+                    <div
+                        class="health-timeline-badge"
+                        style="
+                            background:
+                            {category_background};
+
+                            color:
+                            {category_color};
+
+                            border:
+                            1px solid
+                            {category_border};
+                        "
+                    >
+                        {_safe_text(category)}
+                    </div>
+
+                </div>
+
+                <div
+                    class="health-timeline-footer"
+                >
+
+                    <div
+                        class="health-timeline-chip"
+                    >
+                        Confidence
+                        <strong>
+                            {_safe_text(confidence)}
+                        </strong>
+                    </div>
+
+                    <div
+                        class="health-timeline-chip"
+                    >
+                        Model
+                        <strong>
+                            {_safe_text(model_name)}
+                        </strong>
+                    </div>
+
+                </div>
+
+            </article>
+            """
+        )
+
+    st.html(
+        f"""
+        <section
+            class="health-timeline-list"
+        >
+            {"".join(timeline_cards)}
+        </section>
+        """
+    )
 
 
 def _render_history_summary(
@@ -1282,6 +1638,14 @@ def render_prediction_history(
     _render_history_summary(
         predictions
     )
+
+    st.write("")
+
+    _render_history_analytics(
+        predictions
+    )
+
+    st.write("")
 
     _render_clear_history_controls(
         api_client=api_client,
