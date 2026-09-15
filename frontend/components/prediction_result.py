@@ -46,6 +46,51 @@ CLASS_ORDER = [
 ]
 
 
+RISK_LEVEL_MAP = {
+    "Insufficient_Weight": {
+        "label": "Low Risk",
+        "emoji": "🟢",
+        "class": "low",
+    },
+
+    "Normal_Weight": {
+        "label": "Low Risk",
+        "emoji": "🟢",
+        "class": "low",
+    },
+
+    "Overweight_Level_I": {
+        "label": "Moderate Risk",
+        "emoji": "🟡",
+        "class": "moderate",
+    },
+
+    "Overweight_Level_II": {
+        "label": "Moderate Risk",
+        "emoji": "🟡",
+        "class": "moderate",
+    },
+
+    "Obesity_Type_I": {
+        "label": "High Risk",
+        "emoji": "🟠",
+        "class": "high",
+    },
+
+    "Obesity_Type_II": {
+        "label": "High Risk",
+        "emoji": "🔴",
+        "class": "high",
+    },
+
+    "Obesity_Type_III": {
+        "label": "Very High Risk",
+        "emoji": "🔴",
+        "class": "very-high",
+    },
+}
+
+
 def format_class_name(
     class_name,
 ):
@@ -356,6 +401,15 @@ def render_prediction_result(
         )
     )
 
+    risk_info = RISK_LEVEL_MAP.get(
+        predicted_class,
+        {
+            "label": "Unknown",
+            "emoji": "⚪",
+            "class": "unknown",
+        },
+    )
+    
     category_style = (
         get_category_style(
             predicted_class
@@ -564,6 +618,15 @@ def render_prediction_result(
 
                     <div
                         class="
+                            health-risk-badge {risk_info['class']}
+                        "
+                    >
+                        {risk_info["emoji"]}
+                        {risk_info["label"]}
+                    </div>
+
+                    <div
+                        class="
                             health-result-description
                         "
                     >
@@ -610,6 +673,14 @@ def render_prediction_result(
                         {
                             confidence_percentage
                         :.2f}%
+                        <div
+                            style="
+                                margin-top:0.4rem;
+                                font-size:0.75rem;
+                            "
+                        >
+                            Prediction confidence
+                        </div>
                     </div>
 
                 </div>

@@ -1231,6 +1231,74 @@ APP_CSS = """
 }
 
 
+.health-risk-badge {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 0.35rem;
+
+    margin-top: 0.8rem;
+
+    padding:
+        0.45rem
+        0.9rem;
+
+    border-radius: 999px;
+
+    font-size: 0.8rem;
+
+    font-weight: 750;
+
+}
+
+
+.health-risk-badge.low {
+
+    background: #DCFCE7;
+
+    color: #166534;
+
+}
+
+
+.health-risk-badge.moderate {
+
+    background: #FEF9C3;
+
+    color: #854D0E;
+
+}
+
+
+.health-risk-badge.high {
+
+    background: #FEE2E2;
+
+    color: #991B1B;
+
+}
+
+
+.health-risk-badge.very-high {
+
+    background: #FECACA;
+
+    color: #7F1D1D;
+
+}
+
+
+.health-risk-badge.unknown {
+
+    background: #F1F5F9;
+
+    color: #475569;
+
+}
+
+
 @media (
     max-width: 800px
 ) {
