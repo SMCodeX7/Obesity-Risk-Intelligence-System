@@ -349,6 +349,15 @@ def _render_profile_step():
         "assessment_profile_form"
     ):
 
+        st.markdown(
+            """
+            <div class="health-section-title">
+                👤 Personal Profile
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
         left, right = (
             st.columns(
                 2,
@@ -555,7 +564,15 @@ def _render_nutrition_step():
         )
 
         with left:
-
+            st.markdown(
+                """
+                <div class="health-section-title">
+                    🍎 Eating Behaviour
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+            
             fcvc = st.slider(
                 (
                     "Vegetable consumption "
@@ -619,8 +636,6 @@ def _render_nutrition_step():
                 ),
             )
 
-        with right:
-
             favc_options = [
                 "yes",
                 "no",
@@ -648,6 +663,17 @@ def _render_nutrition_step():
                     "foods are consumed "
                     "frequently."
                 ),
+            )
+
+        with right:
+
+            st.markdown(
+                """
+                <div class="health-section-title">
+                    💧 Hydration and Consumption
+                </div>
+                """,
+                unsafe_allow_html=True,
             )
 
             ch2o = st.slider(
@@ -807,7 +833,15 @@ def _render_lifestyle_step():
         )
 
         with left:
-
+            st.markdown(
+            """
+            <div class="health-section-title">
+                🏃 Activity Level
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+            
             faf = st.slider(
                 (
                     "Physical activity "
@@ -874,6 +908,15 @@ def _render_lifestyle_step():
                 "yes",
             ]
 
+            st.markdown(
+                """
+                <div class="health-section-title">
+                    🌱 Daily Habits
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+            
             scc = st.selectbox(
                 "Calorie monitoring",
                 options=scc_options,

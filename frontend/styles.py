@@ -870,11 +870,29 @@ APP_CSS = """
 
 
 .health-section-title {
-    color: #0F172A;
 
-    font-size: 1rem;
+    margin-top: 1rem;
+    margin-bottom: 0.8rem;
 
-    font-weight: 740;
+    padding: 0.7rem 1rem;
+
+    border-radius: 12px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(37,99,235,0.08),
+            rgba(15,139,141,0.08)
+        );
+
+    color:
+        #1E3A8A;
+
+    font-size:
+        1rem;
+
+    font-weight:
+        750;
 }
 
 
