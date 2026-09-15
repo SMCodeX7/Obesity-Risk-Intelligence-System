@@ -8,8 +8,12 @@ from frontend.components.app_shell import (
     render_sidebar,
 )
 from frontend.components.assessment_form import (
+    get_assessment_data,
     render_assessment_form,
     reset_assessment_form,
+)
+from frontend.components.bmi_indicator import (
+    render_bmi_indicator,
 )
 from frontend.components.prediction_history import (
     render_prediction_history,
@@ -211,6 +215,10 @@ if page == "Assessment":
             ]
         )
 
+        current_assessment_data = (
+            get_assessment_data()
+        )
+
         st.write("")
 
         render_page_header(
@@ -230,6 +238,20 @@ if page == "Assessment":
         ):
             render_prediction_result(
                 current_result
+            )
+
+            st.write("")
+
+            render_bmi_indicator(
+                age=current_assessment_data.get(
+                    "Age"
+                ),
+                height=current_assessment_data.get(
+                    "Height"
+                ),
+                weight=current_assessment_data.get(
+                    "Weight"
+                ),
             )
 
             current_prediction_id = (

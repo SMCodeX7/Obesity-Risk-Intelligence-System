@@ -1488,6 +1488,262 @@ APP_CSS = """
 }
 
 
+.health-bmi-card {
+
+    margin-top: 1.5rem;
+
+    padding: 1.4rem;
+
+    border: 1px solid #DBEAFE;
+
+    border-radius: 20px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #FFFFFF,
+            #F8FBFF
+        );
+
+}
+
+
+.health-bmi-header {
+
+    display: flex;
+
+    justify-content: space-between;
+    align-items: flex-start;
+
+    gap: 1rem;
+
+    flex-wrap: wrap;
+
+}
+
+
+.health-bmi-title {
+
+    margin-top: 0.3rem;
+
+    color: #0F172A;
+
+    font-size: 1.35rem;
+
+    font-weight: 760;
+
+}
+
+
+.health-bmi-value {
+
+    margin-top: 1rem;
+
+    color: #0F172A;
+
+    font-size: 2.6rem;
+
+    line-height: 1;
+
+    font-weight: 800;
+
+    letter-spacing: -0.04em;
+
+}
+
+
+.health-bmi-unit {
+
+    margin-top: 0.25rem;
+
+    color: #64748B;
+
+    font-size: 0.8rem;
+
+}
+
+
+.health-bmi-category {
+
+    display: inline-flex;
+
+    padding:
+        0.45rem
+        0.85rem;
+
+    border-radius: 999px;
+
+    font-size: 0.8rem;
+
+    font-weight: 750;
+
+}
+
+
+.health-bmi-category.underweight {
+
+    background: #E0F2FE;
+
+    color: #0369A1;
+
+}
+
+
+.health-bmi-category.normal {
+
+    background: #DCFCE7;
+
+    color: #166534;
+
+}
+
+
+.health-bmi-category.overweight {
+
+    background: #FEF9C3;
+
+    color: #854D0E;
+
+}
+
+
+.health-bmi-category.obesity {
+
+    background: #FEE2E2;
+
+    color: #991B1B;
+
+}
+
+
+.health-bmi-category.age-specific {
+
+    background: #F1F5F9;
+
+    color: #475569;
+
+}
+
+
+.health-bmi-scale {
+
+    position: relative;
+
+    height: 10px;
+
+    margin-top: 1.4rem;
+
+    border-radius: 999px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #38BDF8 0%,
+            #38BDF8 24%,
+            #22C55E 24%,
+            #22C55E 43%,
+            #EAB308 43%,
+            #EAB308 57%,
+            #EF4444 57%,
+            #EF4444 100%
+        );
+
+}
+
+
+.health-bmi-marker {
+
+    position: absolute;
+
+    top: -5px;
+
+    width: 4px;
+    height: 20px;
+
+    transform:
+        translateX(-50%);
+
+    border-radius: 999px;
+
+    background: #0F172A;
+
+    box-shadow:
+        0 0 0 3px
+        #FFFFFF;
+
+}
+
+
+.health-bmi-scale-labels {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    gap: 0.5rem;
+
+    margin-top: 0.55rem;
+
+    color: #64748B;
+
+    font-size: 0.7rem;
+
+}
+
+
+.health-bmi-details {
+
+    margin-top: 1.1rem;
+
+    color: #475569;
+
+    font-size: 0.84rem;
+
+}
+
+
+.health-bmi-notice {
+
+    margin-top: 0.9rem;
+
+    padding:
+        0.75rem
+        0.9rem;
+
+    border-radius: 12px;
+
+    background: #F8FAFC;
+
+    color: #64748B;
+
+    font-size: 0.78rem;
+
+    line-height: 1.55;
+
+}
+
+
+.health-bmi-age-note {
+
+    margin-top: 1.2rem;
+
+    padding: 0.9rem;
+
+    border: 1px solid #E2E8F0;
+
+    border-radius: 12px;
+
+    background: #F8FAFC;
+
+    color: #475569;
+
+    font-size: 0.8rem;
+
+    line-height: 1.55;
+
+}
+
+
 @media (
     max-width: 800px
 ) {
@@ -1550,6 +1806,15 @@ APP_CSS = """
     .health-timeline-footer {
         flex-direction: column;
         align-items: flex-start;
+    }
+
+    .health-bmi-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .health-bmi-scale-labels {
+        font-size: 0.62rem;
     }
 
 }
