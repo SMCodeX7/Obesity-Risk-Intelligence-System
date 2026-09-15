@@ -1744,6 +1744,116 @@ APP_CSS = """
 }
 
 
+.health-report-card {
+
+    margin-top: 1rem;
+
+    padding: 1.35rem;
+
+    border-radius: 20px;
+
+    border: 1px solid #DBEAFE;
+
+    background:
+        linear-gradient(
+            135deg,
+            #FFFFFF,
+            #F8FBFF
+        );
+
+}
+
+
+.health-report-header {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 1rem;
+
+}
+
+
+.health-report-icon {
+
+    width: 48px;
+
+    height: 48px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 14px;
+
+    background: #EFF6FF;
+
+    font-size: 1.5rem;
+
+}
+
+
+.health-report-title {
+
+    font-size: 1.25rem;
+
+    font-weight: 750;
+
+    color: #0F172A;
+
+}
+
+
+.health-report-subtitle {
+
+    margin-top: 0.25rem;
+
+    color: #64748B;
+
+    font-size: 0.9rem;
+
+}
+
+
+.health-report-content {
+
+    margin-top: 1rem;
+
+    color: #334155;
+
+}
+
+
+.health-report-content ul {
+
+    margin-top: 0.75rem;
+
+    padding-left: 1.25rem;
+
+}
+
+
+.health-report-content li {
+
+    margin-bottom: 0.35rem;
+
+}
+
+
+.health-report-reference {
+
+    margin-top: 1rem;
+
+    color: #64748B;
+
+    font-size: 0.8rem;
+
+}
+
+
 @media (
     max-width: 800px
 ) {

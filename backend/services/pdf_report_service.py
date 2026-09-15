@@ -254,8 +254,8 @@ def _create_styles():
             name="Disclaimer",
             parent=styles["Normal"],
             fontName="Helvetica",
-            fontSize=8.5,
-            leading=12,
+            fontSize=8,
+            leading=10,
             textColor=colors.HexColor(
                 "#7B241C"
             ),
@@ -266,8 +266,8 @@ def _create_styles():
                 "#E6B0AA"
             ),
             borderWidth=0.5,
-            borderPadding=8,
-            spaceBefore=5 * mm,
+            borderPadding=6,
+            spaceBefore=3 * mm,
         )
     )
 
@@ -1142,22 +1142,26 @@ def generate_prediction_report(
     )
 
     story.append(
-        Paragraph(
-            (
-                "<b>Important Notice:</b> "
-                "This report was generated "
-                "by an educational machine "
-                "learning system. The result "
-                "is not a medical diagnosis, "
-                "does not establish medical "
-                "certainty, and should not "
-                "replace evaluation or advice "
-                "from a qualified healthcare "
-                "professional."
-            ),
-            styles[
-                "Disclaimer"
-            ],
+        KeepTogether(
+            [
+                Paragraph(
+                    (
+                        "<b>Important Notice:</b> "
+                        "This report was generated "
+                        "by an educational machine "
+                        "learning system. The result "
+                        "is not a medical diagnosis, "
+                        "does not establish medical "
+                        "certainty, and should not "
+                        "replace evaluation or advice "
+                        "from a qualified healthcare "
+                        "professional."
+                    ),
+                    styles[
+                        "Disclaimer"
+                    ],
+                )
+            ]
         )
     )
 

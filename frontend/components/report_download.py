@@ -53,37 +53,78 @@ def render_pdf_download(
 
     st.html(
         f"""
-        <div
-            class="health-info-card"
+        <section
+            class="health-report-card"
         >
 
             <div
-                class="health-info-icon"
+                class="health-report-header"
             >
-                PDF
+
+                <div
+                    class="health-report-icon"
+                >
+                    📄
+                </div>
+
+
+                <div>
+
+                    <div
+                        class="health-report-title"
+                    >
+                        Assessment Report Ready
+                    </div>
+
+                    <div
+                        class="health-report-subtitle"
+                    >
+                        Your complete AI health
+                        assessment summary is ready.
+                    </div>
+
+                </div>
+
             </div>
+
 
             <div
-                class="health-info-title"
+                class="health-report-content"
             >
-                Assessment report ready
+
+                <strong>
+                    Report includes:
+                </strong>
+
+
+                <ul>
+
+                    <li>
+                        AI prediction result
+                    </li>
+
+                    <li>
+                        Confidence score
+                    </li>
+
+                    <li>
+                        Probability distribution
+                    </li>
+
+                    <li>
+                        Assessment information
+                    </li>
+
+                    <li>
+                        Model analysis details
+                    </li>
+
+                </ul>
+
             </div>
 
-            <div
-                class="health-info-text"
-            >
-                A formatted PDF report has
-                been prepared for assessment
-                #{safe_prediction_id}.
 
-                It includes the submitted
-                assessment information,
-                predicted category,
-                confidence score, and model
-                probability information.
-            </div>
-
-        </div>
+        </section>
         """
     )
 
