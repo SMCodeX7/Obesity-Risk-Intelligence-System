@@ -81,7 +81,7 @@ def render_hero(
                     class="health-eyebrow-dot">
                 </span>
 
-                Machine Learning
+                AI-Powered
                 · Health Risk Assessment
 
             </div>
@@ -91,27 +91,24 @@ def render_hero(
 
                 Understand your
                 <span>
-                    obesity risk
+                    health risk profile
                 </span>
-                profile
 
             </h1>
 
 
             <p class="health-hero-description">
 
-                Explore obesity-risk patterns
-                using a structured machine
-                learning assessment designed
-                around physical characteristics,
-                nutrition habits, and lifestyle
-                signals.
+                Analyze physical characteristics,
+                nutrition behaviour, and lifestyle
+                patterns using an AI-powered
+                obesity-risk classification system.
 
-                Results include transparent
-                confidence scores, class
-                probabilities, persistent
-                assessment history, and
-                downloadable reports.
+                Receive prediction confidence,
+                probability insights, assessment
+                history, and downloadable reports
+                through an interactive health
+                analytics experience.
 
             </p>
 
@@ -133,7 +130,7 @@ def render_hero(
 
                     <span
                         class="health-stat-label">
-                        Test Accuracy
+                        Model Accuracy
                     </span>
 
                 </div>
