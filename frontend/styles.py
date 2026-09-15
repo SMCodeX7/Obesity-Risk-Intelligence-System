@@ -1317,6 +1317,55 @@ APP_CSS = """
 }
 
 
+.health-explanation-card {
+
+    margin-top: 1.5rem;
+
+    padding: 1.25rem;
+
+    border-radius: 18px;
+
+    border: 1px solid #DBEAFE;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(37,99,235,0.05),
+            rgba(15,139,141,0.05)
+        );
+
+}
+
+
+.health-explanation-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 1rem;
+
+    margin-top: 1rem;
+
+}
+
+
+.health-explanation-item {
+
+    padding: 1rem;
+
+    border-radius: 14px;
+
+    background: white;
+
+    border: 1px solid #E2E8F0;
+
+    color: #334155;
+
+}
+
+
 @media (
     max-width: 800px
 ) {
@@ -1356,6 +1405,10 @@ APP_CSS = """
     }
 
     .health-detail-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .health-explanation-grid {
         grid-template-columns: 1fr;
     }
 

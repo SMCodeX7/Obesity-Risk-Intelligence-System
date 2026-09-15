@@ -768,6 +768,81 @@ def render_prediction_result(
 
     st.html(
         """
+        <section class="health-explanation-card">
+
+            <div class="health-section-title">
+                Why did the model make this prediction?
+            </div>
+
+
+            <div class="health-section-description">
+
+                The model evaluated 16
+                health-related signals from
+                your assessment, including
+                physical measurements,
+                nutrition behaviour, and
+                lifestyle patterns.
+
+            </div>
+
+
+            <div class="health-explanation-grid">
+
+
+                <div class="health-explanation-item">
+
+                    <strong>
+                        ⚖ Physical Factors
+                    </strong>
+
+                    <br><br>
+
+                    Age, height, weight,
+                    and body measurements.
+
+                </div>
+
+
+                <div class="health-explanation-item">
+
+                    <strong>
+                        🍎 Nutrition Factors
+                    </strong>
+
+                    <br><br>
+
+                    Eating behaviour,
+                    food choices, and
+                    hydration patterns.
+
+                </div>
+
+
+                <div class="health-explanation-item">
+
+                    <strong>
+                        🏃 Lifestyle Factors
+                    </strong>
+
+                    <br><br>
+
+                    Physical activity,
+                    technology use, and
+                    daily habits.
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+        """
+    )
+
+    st.html(
+        """
         <div class="health-notice">
 
             <strong>
