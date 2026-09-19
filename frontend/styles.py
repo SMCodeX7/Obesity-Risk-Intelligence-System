@@ -698,17 +698,17 @@ APP_CSS = """
         linear-gradient(
             135deg,
             #FFFFFF 0%,
-            #F8FBFF 55%,
-            #EFF6FF 100%
+            #EFF6FF 45%,
+            #ECFEFF 100%
         );
 
     box-shadow:
-        0 14px 38px
+        0 18px 38px
         rgba(
-            15,
-            23,
-            42,
-            0.045
+            37,
+            99,
+            235,
+            0.10
         );
 }
 
@@ -742,11 +742,11 @@ APP_CSS = """
 
     color: #0F172A;
 
-    font-size: 2.2rem;
+    font-size: 2.6rem;
 
     line-height: 1.1;
 
-    font-weight: 780;
+    font-weight: 820;
 
     letter-spacing: -0.045em;
 }
@@ -766,7 +766,7 @@ APP_CSS = """
 
 
 .health-confidence-box {
-    min-width: 180px;
+    min-width: 210px;
 
     padding:
         1rem
@@ -774,7 +774,16 @@ APP_CSS = """
 
     border: 1px solid #BFDBFE;
 
-    border-radius: 18px;
+    border-radius: 22px;
+
+    box-shadow:
+        0 12px 25px
+        rgba(
+            15,
+            23,
+            42,
+            0.08
+        );
 
     background:
         rgba(
@@ -789,9 +798,9 @@ APP_CSS = """
 .health-confidence-label {
     color: #64748B;
 
-    font-size: 0.72rem;
+    font-size: 0.85rem;
 
-    font-weight: 700;
+    font-weight: 600;
 
     letter-spacing: 0.065em;
 
@@ -832,11 +841,43 @@ APP_CSS = """
         0.85rem
         1rem;
 
-    border: 1px solid #E2E8F0;
+    border:
+        1px solid
+        rgba(
+            148,
+            163,
+            184,
+            0.20
+        );
 
     border-radius: 16px;
 
-    background: #FFFFFF;
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.65
+        );
+    
+    backdrop-filter:blur(8px);
+
+    transition:
+        transform 0.25s ease;
+        box-shadow 0.25s ease;
+}
+
+
+.health-result-meta-item:hover {
+    transform: translateY(-5px);
+    box-shadow:
+        0 12px 25px
+        rgba(
+            37,
+            99,
+            235,
+            0.12
+        );
 }
 
 
@@ -927,7 +968,23 @@ APP_CSS = """
 
     border-radius: 15px;
 
-    background: #FFFFFF;
+    background: 
+        linear-gradient(
+            135deg,
+            #FFFFFF,
+            #FAFCFF
+        );
+    
+    transition:
+        transform 0.2s ease;
+
+}
+
+
+.health-probability-row:hover {
+    transform:
+        translateY(-2px);
+
 }
 
 
@@ -1352,17 +1409,40 @@ APP_CSS = """
 
 
 .health-explanation-item {
-
-    padding: 1rem;
-
-    border-radius: 14px;
-
-    background: white;
-
+    background: #FFFFFF;
     border: 1px solid #E2E8F0;
+    border-radius: 18px;
+    padding: 0.8rem;
+}
 
-    color: #334155;
 
+.health-explanation-item.physical {
+    background:
+    linear-gradient(
+        135deg,
+        #EFF6FF,
+        #FFFFFF
+    );
+}
+
+
+.health-explanation-item.nutrition {
+    background:
+    linear-gradient(
+        135deg,
+        #ECFDF5,
+        #FFFFFF
+    );
+}
+
+
+.health-explanation-item.lifestyle {
+    background:
+    linear-gradient(
+        135deg,
+        #FFF7ED,
+        #FFFFFF
+    );
 }
 
 

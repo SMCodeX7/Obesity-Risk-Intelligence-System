@@ -676,7 +676,8 @@ def render_prediction_result(
                         <div
                             style="
                                 margin-top:0.4rem;
-                                font-size:0.75rem;
+                                font-size:0.85rem;
+                                font-weight:600;
                             "
                         >
                             Prediction confidence
@@ -790,13 +791,13 @@ def render_prediction_result(
             <div class="health-explanation-grid">
 
 
-                <div class="health-explanation-item">
+                <div class="health-explanation-item physical">
 
                     <strong>
                         ⚖ Physical Factors
                     </strong>
 
-                    <br><br>
+                    <br>
 
                     Age, height, weight,
                     and body measurements.
@@ -804,13 +805,13 @@ def render_prediction_result(
                 </div>
 
 
-                <div class="health-explanation-item">
+                <div class="health-explanation-item nutrition">
 
                     <strong>
                         🍎 Nutrition Factors
                     </strong>
 
-                    <br><br>
+                    <br>
 
                     Eating behaviour,
                     food choices, and
@@ -819,13 +820,13 @@ def render_prediction_result(
                 </div>
 
 
-                <div class="health-explanation-item">
+                <div class="health-explanation-item lifestyle">
 
                     <strong>
                         🏃 Lifestyle Factors
                     </strong>
 
-                    <br><br>
+                    <br>
 
                     Physical activity,
                     technology use, and
