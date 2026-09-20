@@ -2860,53 +2860,241 @@ div[data-testid="stPills"] button {
 }
 
 
+/* ── Detail Inputs Section Header ── */
+.health-inputs-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.25rem;
+    margin: 1.8rem 0 1.2rem 0;
+    padding-bottom: 0.9rem;
+    border-bottom: 1px solid rgba(226, 232, 240, 0.7);
+}
+
+.health-inputs-header-left {
+    flex: 1 1 auto;
+}
+
+.health-inputs-kicker {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.22rem 0.65rem;
+    border-radius: var(--radius-pill);
+    background: rgba(37, 99, 235, 0.08);
+    color: #2563EB;
+    font-size: 0.64rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 0.35rem;
+}
+
+.health-inputs-count-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.32rem 0.8rem;
+    border-radius: var(--radius-pill);
+    background: #F1F5F9;
+    border: 1px solid #E2E8F0;
+    color: #475569;
+    font-size: 0.72rem;
+    font-weight: 750;
+    white-space: nowrap;
+}
+
+/* ── Contextual Healthcare Detail Groups ── */
+.health-detail-group-header {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 0.9rem 1.2rem;
+    border-radius: var(--radius-lg);
+    margin-top: 1.35rem;
+    margin-bottom: 0.85rem;
+    border: 1px solid transparent;
+    box-shadow: var(--shadow-xs);
+}
+
+.health-detail-group-header--profile {
+    background: linear-gradient(135deg, #F0F6FF 0%, #FFFFFF 100%);
+    border-color: rgba(191, 219, 254, 0.85);
+    border-left: 4px solid #2563EB;
+}
+
+.health-detail-group-header--nutrition {
+    background: linear-gradient(135deg, #F0FDF4 0%, #FFFFFF 100%);
+    border-color: rgba(187, 247, 208, 0.85);
+    border-left: 4px solid #16A34A;
+}
+
+.health-detail-group-header--lifestyle {
+    background: linear-gradient(135deg, #FFF7ED 0%, #FFFFFF 100%);
+    border-color: rgba(254, 215, 170, 0.85);
+    border-left: 4px solid #EA580C;
+}
+
+.health-detail-group-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    background: #FFFFFF;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.health-detail-group-info {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.health-detail-group-kicker {
+    font-size: 0.62rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.15rem;
+}
+
+.health-detail-group-header--profile .health-detail-group-kicker {
+    color: #2563EB;
+}
+
+.health-detail-group-header--nutrition .health-detail-group-kicker {
+    color: #16A34A;
+}
+
+.health-detail-group-header--lifestyle .health-detail-group-kicker {
+    color: #EA580C;
+}
+
+.health-detail-group-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #0F172A;
+    letter-spacing: -0.015em;
+    line-height: 1.2;
+}
+
+.health-detail-group-desc {
+    font-size: 0.74rem;
+    color: #64748B;
+    margin-top: 0.15rem;
+    line-height: 1.45;
+}
+
+.health-detail-group-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.22rem 0.65rem;
+    border-radius: var(--radius-pill);
+    font-size: 0.65rem;
+    font-weight: 780;
+    white-space: nowrap;
+}
+
+.health-detail-group-badge.profile {
+    background: #DBEAFE;
+    color: #1D4ED8;
+    border: 1px solid #BFDBFE;
+}
+
+.health-detail-group-badge.nutrition {
+    background: #D1FAE5;
+    color: #065F46;
+    border: 1px solid #A7F3D0;
+}
+
+.health-detail-group-badge.lifestyle {
+    background: #FFEDD5;
+    color: #9A3412;
+    border: 1px solid #FED7AA;
+}
+
 .health-detail-grid {
     display: grid;
-
-    grid-template-columns:
-        repeat(
-            2,
-            minmax(0, 1fr)
-        );
-
-    gap: 0.8rem;
-
-    margin-top: 1rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.85rem;
+    margin-top: 0.75rem;
+    margin-bottom: 0.5rem;
 }
-
 
 .health-detail-card {
-    padding: 1rem;
-
-    border: 1px solid #E2E8F0;
-
-    border-radius: 17px;
-
+    padding: 0.95rem 1.15rem;
+    border: 1px solid var(--clr-border);
+    border-radius: var(--radius-lg);
     background: #FFFFFF;
+    box-shadow: var(--shadow-xs);
+    transition: transform var(--transition-fast) var(--ease-spring),
+                box-shadow var(--transition-fast) ease,
+                border-color var(--transition-fast) ease;
 }
 
+.health-detail-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+
+.health-detail-card--profile {
+    border-left: 3.5px solid #2563EB;
+    background: linear-gradient(135deg, #F8FBFF 0%, #FFFFFF 65%);
+}
+
+.health-detail-card--profile:hover {
+    border-color: rgba(147, 197, 253, 0.9);
+}
+
+.health-detail-card--profile .health-detail-title {
+    color: #1D4ED8;
+}
+
+.health-detail-card--nutrition {
+    border-left: 3.5px solid #16A34A;
+    background: linear-gradient(135deg, #F0FDF4 0%, #FFFFFF 65%);
+}
+
+.health-detail-card--nutrition:hover {
+    border-color: rgba(167, 243, 208, 0.9);
+}
+
+.health-detail-card--nutrition .health-detail-title {
+    color: #15803D;
+}
+
+.health-detail-card--lifestyle {
+    border-left: 3.5px solid #EA580C;
+    background: linear-gradient(135deg, #FFF7ED 0%, #FFFFFF 65%);
+}
+
+.health-detail-card--lifestyle:hover {
+    border-color: rgba(254, 215, 170, 0.9);
+}
+
+.health-detail-card--lifestyle .health-detail-title {
+    color: #C2410C;
+}
 
 .health-detail-title {
-    color: #2563EB;
-
-    font-size: 0.72rem;
-
-    font-weight: 740;
-
-    letter-spacing: 0.065em;
-
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.07em;
     text-transform: uppercase;
+    color: #2563EB;
 }
-
 
 .health-detail-value {
     margin-top: 0.25rem;
-
-    color: #334155;
-
-    font-size: 0.86rem;
-
-    font-weight: 620;
+    color: #0F172A;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 780;
+    letter-spacing: -0.015em;
+    line-height: 1.25;
 }
 
 
@@ -3463,12 +3651,11 @@ div[data-testid="stPills"] button {
     flex: 1 1 auto;
     min-width: 0;
     margin-bottom: 1.15rem;
-    padding: 1rem 1.25rem;
+    padding: 1.1rem 1.35rem;
     border: 1px solid var(--clr-border);
-    border-radius: var(--radius-lg);
-    background: rgba(255, 255, 255, 0.96);
-    backdrop-filter: blur(8px);
-    box-shadow: var(--shadow-sm);
+    border-radius: var(--radius-xl);
+    background: #FFFFFF;
+    box-shadow: var(--shadow-xs);
     transition:
         transform var(--transition-base) var(--ease-spring),
         box-shadow var(--transition-base) ease,
@@ -3476,30 +3663,43 @@ div[data-testid="stPills"] button {
 }
 
 .health-vtl-card:hover {
-    transform: translateX(3px);
+    transform: translateX(4px);
     box-shadow:
-        0 8px 20px -4px rgba(15, 23, 42, 0.08),
+        0 10px 24px -4px rgba(15, 23, 42, 0.09),
         inset 0 1px 0 rgba(255, 255, 255, 0.95);
 }
 
 .health-vtl-card--latest {
-    border-width: 1.5px;
-    background:
-        radial-gradient(circle at 96% 8%, rgba(37, 99, 235, 0.04) 0%, transparent 50%),
-        rgba(255, 255, 255, 0.98);
+    box-shadow: 0 8px 24px -4px rgba(37, 99, 235, 0.12);
 }
 
 /* Card top: date row + category name */
 .health-vtl-card-top {
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.85rem;
 }
 
 .health-vtl-date-row {
     display: flex;
     align-items: center;
-    gap: 0.6rem;
-    margin-bottom: 0.35rem;
+    gap: 0.55rem;
+    margin-bottom: 0.45rem;
     flex-wrap: wrap;
+}
+
+.health-vtl-seq-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 26px;
+    height: 20px;
+    padding: 0 0.35rem;
+    border-radius: var(--radius-xs);
+    background: #F1F5F9;
+    border: 1px solid #E2E8F0;
+    color: #475569;
+    font-size: 0.65rem;
+    font-weight: 800;
+    font-family: 'Outfit', sans-serif;
 }
 
 .health-vtl-date {
@@ -3512,57 +3712,87 @@ div[data-testid="stPills"] button {
 .health-vtl-latest-badge {
     display: inline-flex;
     align-items: center;
-    padding: 0.12rem 0.55rem;
+    gap: 0.35rem;
+    padding: 0.16rem 0.65rem;
     border-radius: 999px;
-    background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
     color: #FFFFFF;
-    font-size: 0.62rem;
+    font-size: 0.63rem;
     font-weight: 800;
-    letter-spacing: 0.07em;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
-    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.35);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.health-vtl-pulse-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #FFFFFF;
+    display: inline-block;
+    animation: healthPulseDot 1.8s infinite;
+}
+
+.health-vtl-category-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    flex-wrap: wrap;
 }
 
 .health-vtl-category {
-    font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
-    font-size: 1.1rem;
-    font-weight: 760;
-    letter-spacing: -0.015em;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
     line-height: 1.2;
+}
+
+.health-vtl-risk-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.12rem 0.5rem;
+    border-radius: var(--radius-pill);
+    font-size: 0.62rem;
+    font-weight: 750;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
 }
 
 /* Meta row: confidence bar + model chip */
 .health-vtl-meta-row {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 1.25rem;
     flex-wrap: wrap;
+    padding-top: 0.5rem;
+    border-top: 1px solid rgba(226, 232, 240, 0.6);
 }
 
 .health-vtl-confidence-block {
-    flex: 1 1 120px;
-    min-width: 100px;
+    flex: 1 1 140px;
+    min-width: 120px;
 }
 
 .health-vtl-meta-label {
-    font-size: 0.67rem;
+    font-size: 0.65rem;
     font-weight: 750;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: #94A3B8;
-    margin-bottom: 0.3rem;
+    margin-bottom: 0.25rem;
 }
 
 .health-vtl-confidence-bar-wrap {
     display: flex;
     align-items: center;
-    gap: 0.55rem;
+    gap: 0.65rem;
 }
 
 .health-vtl-bar-track {
     flex: 1 1 auto;
-    height: 5px;
-    background: #E2E8F0;
+    height: 7px;
+    background: #F1F5F9;
+    border: 1px solid rgba(226, 232, 240, 0.8);
     border-radius: 999px;
     overflow: hidden;
 }
@@ -3570,29 +3800,34 @@ div[data-testid="stPills"] button {
 .health-vtl-bar-fill {
     height: 100%;
     border-radius: 999px;
-    transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: width 0.45s var(--ease-spring);
 }
 
 .health-vtl-confidence-value {
-    font-size: 0.8rem;
-    font-weight: 760;
+    font-size: 0.85rem;
+    font-weight: 800;
     white-space: nowrap;
     font-family: 'Outfit', sans-serif;
+    font-variant-numeric: tabular-nums;
 }
 
 .health-vtl-chip {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    padding: 0.35rem 0.8rem;
+    padding: 0.3rem 0.75rem;
     border-radius: 999px;
-    background: rgba(241, 245, 249, 0.9);
-    border: 1px solid rgba(226, 232, 240, 0.8);
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
     white-space: nowrap;
 }
 
+.health-vtl-chip-icon {
+    font-size: 0.85rem;
+}
+
 .health-vtl-chip-label {
-    font-size: 0.68rem;
+    font-size: 0.65rem;
     font-weight: 650;
     color: #94A3B8;
     text-transform: uppercase;
@@ -3604,6 +3839,81 @@ div[data-testid="stPills"] button {
     font-weight: 700;
     color: #334155;
     font-family: 'Outfit', sans-serif;
+}
+
+/* ── Saved Assessment Browser Card ── */
+.health-browser-card {
+    margin: 2rem 0 1rem 0;
+    padding: 1.25rem 1.4rem;
+    border-radius: var(--radius-xl);
+    background: linear-gradient(135deg, #F8FBFF 0%, #EFF6FF 100%);
+    border: 1px solid rgba(191, 219, 254, 0.85);
+    box-shadow: var(--shadow-xs);
+}
+
+.health-browser-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.health-browser-icon-box {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-sm);
+    background: #DBEAFE;
+    color: #1D4ED8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+    border: 1px solid rgba(147, 197, 253, 0.7);
+}
+
+.health-browser-content {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.health-browser-kicker {
+    font-size: 0.64rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #2563EB;
+    margin-bottom: 0.18rem;
+    display: block;
+}
+
+.health-browser-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #0F172A;
+    letter-spacing: -0.015em;
+    line-height: 1.2;
+}
+
+.health-browser-desc {
+    font-size: 0.78rem;
+    color: #475569;
+    margin-top: 0.2rem;
+    line-height: 1.45;
+}
+
+.health-browser-count-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.35rem 0.85rem;
+    border-radius: var(--radius-pill);
+    background: #FFFFFF;
+    border: 1px solid #BFDBFE;
+    color: #1D4ED8;
+    font-size: 0.72rem;
+    font-weight: 780;
+    white-space: nowrap;
 }
 
 

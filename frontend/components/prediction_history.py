@@ -9,6 +9,7 @@ from frontend.category_styles import (
     get_category_style,
 )
 from frontend.components.prediction_result import (
+    RISK_LEVEL_MAP,
     format_class_name,
     render_prediction_result,
 )
@@ -1001,9 +1002,11 @@ def _render_history_cards(
     predictions,
 ):
     items = []
+    total_count = len(predictions)
 
     for index, prediction in enumerate(predictions):
         is_latest = (index == 0)
+        seq_num = total_count - index
 
         predicted_class = (
             prediction.get(
@@ -1028,6 +1031,17 @@ def _render_history_cards(
         category_background = category_style["background"]
         category_border = category_style["border"]
 
+        risk_info = RISK_LEVEL_MAP.get(
+            predicted_class,
+            {
+                "label": "Health Assessment",
+                "emoji": "🩺",
+                "class": "low",
+            },
+        )
+        risk_label = risk_info.get("label", "Assessment")
+        risk_class = risk_info.get("class", "low")
+
         raw_confidence = prediction.get("confidence", 0.0)
         try:
             confidence_pct = float(raw_confidence) * 100
@@ -1043,20 +1057,43 @@ def _render_history_cards(
         )
 
         model_name = prediction.get("model_name", "Unavailable")
-
         bar_width = max(0.0, min(confidence_pct, 100.0))
 
         latest_badge = (
-            '<span class="health-vtl-latest-badge">Latest</span>'
+            f"""
+            <span
+                class="health-vtl-latest-badge"
+                style="background: linear-gradient(135deg, {category_color} 0%, #0F172A 140%);"
+            >
+                <span class="health-vtl-pulse-dot"></span>
+                Latest Record
+            </span>
+            """
             if is_latest
             else ""
         )
 
-        is_last = (index == len(predictions) - 1)
+        is_last = (index == total_count - 1)
         connector = (
             ""
             if is_last
             else '<div class="health-vtl-connector"></div>'
+        )
+
+        card_border_left = "5.5px" if is_latest else "4px"
+        card_class = (
+            f"health-vtl-card{'  health-vtl-card--latest' if is_latest else ''}"
+        )
+        card_style = (
+            f"border-color: {category_border}; "
+            f"border-left: {card_border_left} solid {category_color}; "
+            f"background: linear-gradient(135deg, {category_background} 0%, rgba(255, 255, 255, 0.98) 28%, #FFFFFF 100%);"
+        )
+
+        dot_shadow = (
+            f"0 0 0 4px {category_background}, 0 0 0 7px {category_border}, 0 4px 12px rgba(0, 0, 0, 0.08)"
+            if is_latest
+            else f"0 0 0 3px {category_background}, 0 0 0 5px {category_border}"
         )
 
         items.append(
@@ -1067,36 +1104,43 @@ def _render_history_cards(
                         class="health-vtl-dot{'  health-vtl-dot--latest' if is_latest else ''}"
                         style="
                             background: {category_color};
-                            box-shadow: 0 0 0 4px {category_background},
-                                        0 0 0 6px {category_border};
+                            box-shadow: {dot_shadow};
                         "
                     ></div>
                     {connector}
                 </div>
 
                 <div
-                    class="health-vtl-card{'  health-vtl-card--latest' if is_latest else ''}"
-                    style="border-color: {category_border};"
+                    class="{card_class}"
+                    style="{card_style}"
                 >
                     <div class="health-vtl-card-top">
                         <div class="health-vtl-date-row">
+                            <span class="health-vtl-seq-badge">#{seq_num}</span>
                             <span class="health-vtl-date">
-                                🕐 {_safe_text(created_at)}
+                                📅 {_safe_text(created_at)}
                             </span>
                             {latest_badge}
                         </div>
 
-                        <div
-                            class="health-vtl-category"
-                            style="color: {category_color};"
-                        >
-                            {_safe_text(category)}
+                        <div class="health-vtl-category-wrap">
+                            <div
+                                class="health-vtl-category"
+                                style="color: {category_color};"
+                            >
+                                {_safe_text(category)}
+                            </div>
+                            <span
+                                class="health-vtl-risk-tag health-risk-badge {risk_class}"
+                            >
+                                {_safe_text(risk_label)}
+                            </span>
                         </div>
                     </div>
 
                     <div class="health-vtl-meta-row">
                         <div class="health-vtl-confidence-block">
-                            <div class="health-vtl-meta-label">Confidence</div>
+                            <div class="health-vtl-meta-label">AI Confidence Score</div>
                             <div class="health-vtl-confidence-bar-wrap">
                                 <div class="health-vtl-bar-track">
                                     <div
@@ -1117,6 +1161,7 @@ def _render_history_cards(
                         </div>
 
                         <div class="health-vtl-chip">
+                            <span class="health-vtl-chip-icon">⚙️</span>
                             <span class="health-vtl-chip-label">Model</span>
                             <span class="health-vtl-chip-value">
                                 {_safe_text(model_name)}
@@ -1165,17 +1210,81 @@ def _format_selector_option(
         )
     )
 
-    return (
-        f"{category} "
-        f"— {created_at}"
+    raw_conf = prediction.get("confidence")
+    conf_str = (
+        f" · {_format_percentage(raw_conf)}"
+        if raw_conf is not None
+        else ""
     )
+
+    return (
+        f"Record #{prediction_id} — "
+        f"{category}{conf_str} "
+        f"({created_at})"
+    )
+
+
+DETAIL_GROUP_CONFIG = {
+    "profile": {
+        "theme": "profile",
+        "icon": "👤",
+        "kicker": "Personal Profile",
+        "title": "Demographic & Anthropometric Attributes",
+        "description": "Biological characteristics, body measurements, and family history.",
+        "badge": "5 Parameters",
+        "card_class": "health-detail-card--profile",
+    },
+    "nutrition": {
+        "theme": "nutrition",
+        "icon": "🥗",
+        "kicker": "Nutrition Habits",
+        "title": "Dietary Patterns & Consumption",
+        "description": "Food consumption frequency, caloric density, meal pacing, and hydration.",
+        "badge": "6 Parameters",
+        "card_class": "health-detail-card--nutrition",
+    },
+    "lifestyle": {
+        "theme": "lifestyle",
+        "icon": "⚡",
+        "kicker": "Lifestyle Factors",
+        "title": "Physical Activity & Behaviors",
+        "description": "Daily movement, sedentary screen duration, smoking habits, and commute mode.",
+        "badge": "5 Parameters",
+        "card_class": "health-detail-card--lifestyle",
+    },
+}
 
 
 def _render_detail_group(
     title,
     feature_names,
     inputs,
+    group_key=None,
 ):
+    if group_key is None:
+        group_key = title.lower()
+
+    config = DETAIL_GROUP_CONFIG.get(
+        group_key,
+        {
+            "theme": "profile",
+            "icon": "📋",
+            "kicker": title,
+            "title": title,
+            "description": "Recorded clinical input parameters.",
+            "badge": f"{len(feature_names)} Parameters",
+            "card_class": "health-detail-card--profile",
+        },
+    )
+
+    theme = config["theme"]
+    icon = config["icon"]
+    kicker = config["kicker"]
+    group_title = config["title"]
+    description = config["description"]
+    badge = config["badge"]
+    card_class = config["card_class"]
+
     cards = []
 
     for feature in feature_names:
@@ -1203,45 +1312,52 @@ def _render_detail_group(
 
         if value == "yes":
             value = "Yes"
-
         elif value == "no":
             value = "No"
 
+        # Format numeric floats with standard units
+        if isinstance(value, float):
+            if feature == "Height":
+                value_display = f"{value:.2f} m"
+            elif feature == "Weight":
+                value_display = f"{value:.1f} kg"
+            elif feature == "Age":
+                value_display = (
+                    f"{int(value)} yrs"
+                    if value.is_integer()
+                    else f"{value:.1f} yrs"
+                )
+            else:
+                value_display = f"{value:.2f}".rstrip("0").rstrip(".")
+        else:
+            value_display = str(value)
+
         cards.append(
             f"""
-            <div
-                class="health-detail-card"
-            >
-
-                <div
-                    class="
-                        health-detail-title
-                    "
-                >
+            <div class="health-detail-card {card_class}">
+                <div class="health-detail-title">
                     {_safe_text(label)}
                 </div>
-
-                <div
-                    class="
-                        health-detail-value
-                    "
-                >
-                    {_safe_text(value)}
+                <div class="health-detail-value">
+                    {_safe_text(value_display)}
                 </div>
-
             </div>
             """
         )
 
-    st.markdown(
-        f"#### {title}"
-    )
-
     st.html(
         f"""
-        <section
-            class="health-detail-grid"
-        >
+        <div class="health-detail-group-header health-detail-group-header--{theme}">
+            <div class="health-detail-group-icon">{icon}</div>
+            <div class="health-detail-group-info">
+                <span class="health-detail-group-kicker">{kicker}</span>
+                <div class="health-detail-group-title">{group_title}</div>
+                <div class="health-detail-group-desc">{description}</div>
+            </div>
+            <span class="health-detail-group-badge {theme}">{badge}</span>
+        </div>
+
+        <section class="health-detail-grid">
             {"".join(cards)}
         </section>
         """
@@ -1253,19 +1369,17 @@ def _render_assessment_inputs(
 ):
     st.html(
         """
-        <div
-            class="health-section-title"
-        >
-            Submitted assessment
-        </div>
-
-        <div
-            class="
-                health-section-description
-            "
-        >
-            These are the 16 input values
-            stored with this prediction.
+        <div class="health-inputs-section-header">
+            <div class="health-inputs-header-left">
+                <span class="health-inputs-kicker">Clinical Input Profile</span>
+                <div class="health-page-title" style="font-size: 1.35rem; margin-top: 0.15rem;">
+                    Submitted Assessment Parameters
+                </div>
+                <div class="health-page-description" style="font-size: 0.84rem; margin-top: 0.25rem;">
+                    All 16 clinical parameters stored for this assessment, grouped into biological profile, nutritional habits, and behavioral lifestyle factors.
+                </div>
+            </div>
+            <span class="health-inputs-count-pill">16 Parameters Recorded</span>
         </div>
         """
     )
@@ -1278,6 +1392,7 @@ def _render_assessment_inputs(
             PROFILE_FEATURES
         ),
         inputs=inputs,
+        group_key="profile",
     )
 
     st.write("")
@@ -1288,6 +1403,7 @@ def _render_assessment_inputs(
             NUTRITION_FEATURES
         ),
         inputs=inputs,
+        group_key="nutrition",
     )
 
     st.write("")
@@ -1298,6 +1414,7 @@ def _render_assessment_inputs(
             LIFESTYLE_FEATURES
         ),
         inputs=inputs,
+        group_key="lifestyle",
     )
 
 
@@ -1536,6 +1653,11 @@ def _render_detail_header(
         or {}
     )
 
+    predicted_class = (
+        detail.get("predicted_class")
+        or result.get("predicted_class")
+    )
+
     created_at = (
         format_sri_lanka_datetime(
             detail.get(
@@ -1567,116 +1689,93 @@ def _render_detail_header(
         or "Unavailable"
     )
 
+    category_title = "Assessment Details"
+    header_style = ""
+    eyebrow_text = f"Saved Assessment · Record #{selected_id}"
+
+    if predicted_class:
+        category_name = format_class_name(predicted_class)
+        category_title = f"Assessment Details: {category_name}"
+        cat_style = get_category_style(predicted_class)
+        header_style = (
+            f"border-top: 4px solid {cat_style['color']}; "
+            f"border-color: {cat_style['border']}; "
+            f"background: radial-gradient(circle at 95% 8%, {cat_style['background']} 0%, #FFFFFF 65%);"
+        )
+
     st.html(
         f"""
         <section
             class="health-result-summary"
+            style="{header_style}"
         >
 
             <div
-                class="
-                    health-result-eyebrow
-                "
+                class="health-result-eyebrow"
             >
-                Saved Assessment
+                {_safe_text(eyebrow_text)}
             </div>
 
             <div
-                class="
-                    health-result-category
-                "
+                class="health-result-category"
             >
-                Assessment Details
+                {_safe_text(category_title)}
             </div>
 
             <div
-                class="
-                    health-result-description
-                "
+                class="health-result-description"
             >
-                Review the information used
-                for this saved prediction,
-                inspect the model output,
-                and access the stored report.
+                Review the clinical parameters captured for this saved prediction,
+                inspect the model output, and access the stored clinical report.
             </div>
-
 
             <div
                 class="health-result-meta"
             >
 
                 <div
-                    class="
-                        health-result-meta-item
-                    "
+                    class="health-result-meta-item"
                 >
-
                     <div
-                        class="
-                            health-result-meta-label
-                        "
+                        class="health-result-meta-label"
                     >
                         Recorded
                     </div>
-
                     <div
-                        class="
-                            health-result-meta-value
-                        "
+                        class="health-result-meta-value"
                     >
                         {_safe_text(created_at)}
                     </div>
-
                 </div>
 
-
                 <div
-                    class="
-                        health-result-meta-item
-                    "
+                    class="health-result-meta-item"
                 >
-
                     <div
-                        class="
-                            health-result-meta-label
-                        "
+                        class="health-result-meta-label"
                     >
                         Model
                     </div>
-
                     <div
-                        class="
-                            health-result-meta-value
-                        "
+                        class="health-result-meta-value"
                     >
                         {_safe_text(model_name)}
                     </div>
-
                 </div>
 
-
                 <div
-                    class="
-                        health-result-meta-item
-                    "
+                    class="health-result-meta-item"
                 >
-
                     <div
-                        class="
-                            health-result-meta-label
-                        "
+                        class="health-result-meta-label"
                     >
                         Scikit-learn
                     </div>
-
                     <div
-                        class="
-                            health-result-meta-value
-                        "
+                        class="health-result-meta-value"
                     >
                         {_safe_text(version)}
                     </div>
-
                 </div>
 
             </div>
@@ -1757,21 +1856,17 @@ def render_prediction_history(
 
     st.html(
         """
-        <div
-            class="health-section-title"
-        >
-            Recent assessments
-        </div>
-
-        <div
-            class="
-                health-section-description
-            "
-        >
-            Saved predictions are displayed
-            with the newest assessment first.
-            Select one below to inspect its
-            complete details.
+        <div class="health-timeline-section-header">
+            <div class="health-timeline-header-left">
+                <span class="health-timeline-kicker">Chronological Archive</span>
+                <div class="health-page-title" style="font-size: 1.35rem; margin-top: 0.15rem;">
+                    Recent Assessments Timeline
+                </div>
+                <div class="health-page-description" style="font-size: 0.84rem; margin-top: 0.25rem;">
+                    Saved predictions are displayed in chronological order with the latest evaluation highlighted.
+                    Browse below or select any assessment to view complete clinical parameters.
+                </div>
+            </div>
         </div>
         """
     )
@@ -1834,14 +1929,24 @@ def render_prediction_history(
 
     st.divider()
 
-    st.markdown(
-        "### Open an assessment"
-    )
-
-    st.caption(
-        "Select a saved assessment "
-        "to review its complete input "
-        "profile and model result."
+    st.html(
+        f"""
+        <div class="health-browser-card">
+            <div class="health-browser-header">
+                <div class="health-browser-icon-box">📁</div>
+                <div class="health-browser-content">
+                    <span class="health-browser-kicker">Saved Health Record Browser</span>
+                    <div class="health-browser-title">Assessment Record Inspector</div>
+                    <div class="health-browser-desc">
+                        Select a past assessment from your history archive to inspect all 16 clinical risk parameters, review the machine learning model classification, and download clinical PDF reports.
+                    </div>
+                </div>
+                <div class="health-browser-count-badge">
+                    {len(prediction_ids)} Record{'s' if len(prediction_ids) != 1 else ''} Available
+                </div>
+            </div>
+        </div>
+        """
     )
 
     selected_id = (
