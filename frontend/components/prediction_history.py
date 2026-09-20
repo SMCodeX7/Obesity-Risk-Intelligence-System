@@ -23,6 +23,29 @@ from frontend.time_utils import (
     format_sri_lanka_datetime_compact,
 )
 
+CATEGORY_COLOR_SCALE = alt.Scale(
+    domain=[
+        "Normal Weight",
+        "Insufficient Weight",
+        "Overweight Level I",
+        "Overweight Level II",
+        "Obesity Type I",
+        "Obesity Type II",
+        "Obesity Type III",
+        "Unavailable",
+    ],
+    range=[
+        "#16A34A",  # Normal Weight = green
+        "#0284C7",  # Insufficient Weight = blue
+        "#D97706",  # Overweight Level I = amber
+        "#EA580C",  # Overweight Level II = orange
+        "#E11D48",  # Obesity Type I = red
+        "#DC2626",  # Obesity Type II = red
+        "#991B1B",  # Obesity Type III = dark red
+        "#64748B",  # Unavailable = gray
+    ],
+)
+
 
 FEATURE_LABELS = {
     "Age": "Age",
@@ -419,15 +442,20 @@ def _render_history_analytics(
     )
 
     st.html(
-        """
-        <div class="health-section-title">
-            Assessment Analytics
-        </div>
-
-        <div class="health-section-description">
-            Review prediction confidence trends
-            and category patterns across saved
-            assessments.
+        f"""
+        <div class="health-analytics-header">
+            <div class="health-analytics-header-left">
+                <span class="health-analytics-kicker">Clinical Pattern Intelligence</span>
+                <div class="health-section-title">
+                    Assessment Analytics
+                </div>
+                <div class="health-section-description">
+                    Longitudinal confidence trend tracking and risk category frequency analysis across historical evaluations.
+                </div>
+            </div>
+            <div class="health-analytics-header-right">
+                <span class="health-analytics-count-pill">{len(predictions)} Assessments Evaluated</span>
+            </div>
         </div>
         """
     )
@@ -439,8 +467,17 @@ def _render_history_analytics(
 
     with column1:
 
-        st.markdown(
-            "#### Confidence Trend"
+        st.html(
+            """
+            <div class="health-chart-card-header">
+                <div class="health-chart-header-left">
+                    <span class="health-chart-kicker">Longitudinal Trajectory</span>
+                    <div class="health-chart-title">Confidence Trend</div>
+                    <div class="health-chart-subtitle">Chronological progression of model certainty per assessment</div>
+                </div>
+                <span class="health-chart-badge">0% – 100% Scale</span>
+            </div>
+            """
         )
 
         confidence_data = (
@@ -454,36 +491,66 @@ def _render_history_analytics(
             len(confidence_data) + 1,
         )
 
-        confidence_chart = (
-            alt.Chart(
-                confidence_data
-            )
-            .mark_line(
-                point=True,
+        base = alt.Chart(
+            confidence_data
+        )
+
+        confidence_line = (
+            base.mark_line(
                 strokeWidth=3,
+                color="#2563EB",
+                interpolate="monotone",
             )
             .encode(
                 x=alt.X(
                     "Assessment:O",
-                    title="Assessment",
+                    title="Assessment Sequence",
                     axis=alt.Axis(
                         labelAngle=0,
+                        labelFont="Plus Jakarta Sans, sans-serif",
+                        titleFont="Plus Jakarta Sans, sans-serif",
+                        titleFontSize=11,
+                        grid=False,
                     ),
                 ),
                 y=alt.Y(
                     "Confidence:Q",
-                    title="Confidence (%)",
+                    title="Model Confidence (%)",
                     scale=alt.Scale(
                         domain=[
                             0,
                             100,
                         ]
                     ),
+                    axis=alt.Axis(
+                        labelFont="Plus Jakarta Sans, sans-serif",
+                        titleFont="Plus Jakarta Sans, sans-serif",
+                        titleFontSize=11,
+                        gridColor="#F1F5F9",
+                    ),
+                ),
+            )
+        )
+
+        confidence_points = (
+            base.mark_circle(
+                size=80,
+                opacity=1,
+                stroke="#FFFFFF",
+                strokeWidth=2,
+            )
+            .encode(
+                x=alt.X("Assessment:O"),
+                y=alt.Y("Confidence:Q"),
+                color=alt.Color(
+                    "Category:N",
+                    scale=CATEGORY_COLOR_SCALE,
+                    title="Risk Category",
                 ),
                 tooltip=[
                     alt.Tooltip(
                         "Assessment:O",
-                        title="Assessment",
+                        title="Assessment #",
                     ),
                     alt.Tooltip(
                         "Date:N",
@@ -491,17 +558,30 @@ def _render_history_analytics(
                     ),
                     alt.Tooltip(
                         "Category:N",
-                        title="Category",
+                        title="Predicted Class",
                     ),
                     alt.Tooltip(
                         "Confidence:Q",
-                        title="Confidence",
+                        title="Confidence (%)",
                         format=".2f",
                     ),
                 ],
             )
+        )
+
+        confidence_chart = (
+            (confidence_line + confidence_points)
             .properties(
                 height=300,
+            )
+            .configure_view(
+                strokeWidth=0,
+            )
+            .configure_legend(
+                orient="bottom",
+                labelFont="Plus Jakarta Sans, sans-serif",
+                titleFont="Plus Jakarta Sans, sans-serif",
+                columns=2,
             )
         )
 
@@ -513,8 +593,17 @@ def _render_history_analytics(
 
     with column2:
 
-        st.markdown(
-            "#### Risk Category Distribution"
+        st.html(
+            """
+            <div class="health-chart-card-header">
+                <div class="health-chart-header-left">
+                    <span class="health-chart-kicker">Frequency Spectrum</span>
+                    <div class="health-chart-title">Risk Category Distribution</div>
+                    <div class="health-chart-subtitle">Stratified assessment count across obesity classifications</div>
+                </div>
+                <span class="health-chart-badge">Categorical Total</span>
+            </div>
+            """
         )
 
         category_counts = (
@@ -536,6 +625,7 @@ def _render_history_analytics(
             )
             .mark_bar(
                 cornerRadiusEnd=6,
+                height=22,
             )
             .encode(
                 x=alt.X(
@@ -544,6 +634,10 @@ def _render_history_analytics(
                     axis=alt.Axis(
                         tickMinStep=1,
                         format="d",
+                        labelFont="Plus Jakarta Sans, sans-serif",
+                        titleFont="Plus Jakarta Sans, sans-serif",
+                        titleFontSize=11,
+                        gridColor="#F1F5F9",
                     ),
                 ),
                 y=alt.Y(
@@ -551,8 +645,14 @@ def _render_history_analytics(
                     title=None,
                     sort="-x",
                     axis=alt.Axis(
-                        labelLimit=180,
+                        labelLimit=200,
+                        labelFont="Plus Jakarta Sans, sans-serif",
                     ),
+                ),
+                color=alt.Color(
+                    "Category:N",
+                    scale=CATEGORY_COLOR_SCALE,
+                    legend=None,
                 ),
                 tooltip=[
                     alt.Tooltip(
@@ -569,6 +669,9 @@ def _render_history_analytics(
             .properties(
                 height=300,
             )
+            .configure_view(
+                strokeWidth=0,
+            )
         )
 
         st.altair_chart(
@@ -576,8 +679,20 @@ def _render_history_analytics(
             use_container_width=True,
         )
 
-    st.markdown(
-        "#### Assessment Timeline"
+    st.html(
+        """
+        <div class="health-timeline-section-header">
+            <div class="health-timeline-header-left">
+                <span class="health-timeline-kicker">Chronological Archive</span>
+                <div class="health-section-title">
+                    Assessment Timeline
+                </div>
+                <div class="health-section-description">
+                    Sequential log of individual clinical assessments ordered from newest to oldest.
+                </div>
+            </div>
+        </div>
+        """
     )
 
     timeline_cards = []
@@ -746,16 +861,37 @@ def _render_history_summary(
         else {}
     )
 
-    latest_category = (
-        format_class_name(
-            latest.get(
-                "predicted_class",
-                "Unavailable",
-            )
+    latest_predicted_class = (
+        latest.get(
+            "predicted_class",
+            "Unavailable",
         )
         if latest
         else "Unavailable"
     )
+
+    latest_category = (
+        format_class_name(
+            latest_predicted_class
+        )
+        if latest
+        else "Unavailable"
+    )
+
+    latest_style = (
+        get_category_style(
+            latest_predicted_class
+        )
+        if latest_predicted_class != "Unavailable"
+        else {
+            "color": "#2563EB",
+            "background": "#EFF6FF",
+            "border": "#BFDBFE",
+        }
+    )
+    latest_cat_color = latest_style["color"]
+    latest_cat_bg = latest_style["background"]
+    latest_cat_border = latest_style["border"]
 
     confidence_values = []
 
@@ -788,84 +924,72 @@ def _render_history_summary(
 
     st.html(
         f"""
-        <section
-            class="health-history-summary"
-        >
+        <section class="health-history-summary">
 
-            <div
-                class="health-history-stat"
-            >
-
-                <div
-                    class="
-                        health-history-stat-value
-                    "
-                >
+            <div class="health-history-stat health-history-stat--count">
+                <div class="health-history-stat-top">
+                    <span class="health-history-stat-kicker">Archive Volume</span>
+                    <div class="health-history-stat-icon health-stat-icon--blue">📊</div>
+                </div>
+                <div class="health-history-stat-value">
                     {count}
                 </div>
-
-                <div
-                    class="
-                        health-history-stat-label
-                    "
-                >
+                <div class="health-history-stat-label">
                     Saved Assessments
                 </div>
-
+                <div class="health-history-stat-sub">
+                    Historical patient profiles
+                </div>
             </div>
 
-
             <div
-                class="health-history-stat"
+                class="health-history-stat health-history-stat--category"
+                style="
+                    border-top: 3.5px solid {latest_cat_color};
+                "
             >
-
-                <div
-                    class="
-                        health-history-stat-value
-                    "
-                >
-                    {
-                        _safe_text(
-                            latest_category
-                        )
-                    }
+                <div class="health-history-stat-top">
+                    <span class="health-history-stat-kicker">Most Recent Result</span>
+                    <div
+                        class="health-history-stat-icon"
+                        style="
+                            background: {latest_cat_bg};
+                            color: {latest_cat_color};
+                            border: 1px solid {latest_cat_border};
+                        "
+                    >
+                        🎯
+                    </div>
                 </div>
-
                 <div
-                    class="
-                        health-history-stat-label
-                    "
+                    class="health-history-stat-value health-history-stat-val--cat"
+                    style="color: {latest_cat_color};"
+                    title="{escape(str(latest_category))}"
                 >
+                    {_safe_text(latest_category)}
+                </div>
+                <div class="health-history-stat-label">
                     Latest Category
                 </div>
-
+                <div class="health-history-stat-sub">
+                    Last evaluated classification
+                </div>
             </div>
 
-
-            <div
-                class="health-history-stat"
-            >
-
-                <div
-                    class="
-                        health-history-stat-value
-                    "
-                >
-                    {
-                        _safe_text(
-                            highest_confidence
-                        )
-                    }
+            <div class="health-history-stat health-history-stat--confidence">
+                <div class="health-history-stat-top">
+                    <span class="health-history-stat-kicker">Peak Certainty</span>
+                    <div class="health-history-stat-icon health-stat-icon--teal">⚡</div>
                 </div>
-
-                <div
-                    class="
-                        health-history-stat-label
-                    "
-                >
+                <div class="health-history-stat-value health-history-stat-val--conf">
+                    {_safe_text(highest_confidence)}
+                </div>
+                <div class="health-history-stat-label">
                     Highest Confidence
                 </div>
-
+                <div class="health-history-stat-sub">
+                    Maximum recorded model score
+                </div>
             </div>
 
         </section>

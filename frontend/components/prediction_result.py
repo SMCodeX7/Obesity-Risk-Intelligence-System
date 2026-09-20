@@ -147,6 +147,7 @@ def build_probability_dataframe(
 
 def _build_probability_html(
     probabilities,
+    predicted_class=None,
 ):
     sorted_classes = sorted(
         CLASS_ORDER,
@@ -162,7 +163,7 @@ def _build_probability_html(
 
     rows = []
 
-    for class_name in sorted_classes:
+    for rank, class_name in enumerate(sorted_classes, start=1):
         probability = float(
             probabilities.get(
                 class_name,
@@ -205,82 +206,138 @@ def _build_probability_html(
             * 100
         )
 
+        min_visual_pct = 1.0 if probability > 0 else 0.0
         bar_width = max(
-            0.0,
+            min_visual_pct,
             min(
                 percentage,
                 100.0,
             ),
         )
 
+        is_top = (rank == 1)
+        is_predicted = (class_name == predicted_class)
+        row_class = "health-probability-row"
+
+        if is_top:
+            row_class += " health-prob-row--top"
+        if is_predicted:
+            row_class += " health-prob-row--predicted"
+
+        if rank == 1:
+            rank_badge = '<span class="health-prob-rank health-prob-rank--gold">#1</span>'
+        elif rank == 2:
+            rank_badge = '<span class="health-prob-rank health-prob-rank--silver">#2</span>'
+        elif rank == 3:
+            rank_badge = '<span class="health-prob-rank health-prob-rank--bronze">#3</span>'
+        else:
+            rank_badge = f'<span class="health-prob-rank">#{rank}</span>'
+
+        risk_info = RISK_LEVEL_MAP.get(class_name, {})
+        raw_risk_label = risk_info.get("label", "")
+        risk_tag = raw_risk_label.split("·")[0].strip() if "·" in raw_risk_label else raw_risk_label
+
+        if is_predicted and is_top:
+            selected_indicator = (
+                f'<span class="health-prob-selected-badge" style="background: {category_background}; '
+                f'color: {category_color}; border: 1px solid {category_border};">★ Highest Probability · Primary Prediction</span>'
+            )
+        elif is_predicted:
+            selected_indicator = (
+                f'<span class="health-prob-selected-badge" style="background: {category_background}; '
+                f'color: {category_color}; border: 1px solid {category_border};">✓ Selected Prediction</span>'
+            )
+        elif is_top:
+            selected_indicator = (
+                f'<span class="health-prob-crown" style="background: {category_background}; '
+                f'color: {category_color}; border: 1px solid {category_border};" title="Highest Probability">★ Highest Probability</span>'
+            )
+        else:
+            selected_indicator = ""
+
+        if is_predicted:
+            row_inline_style = (
+                f"border-color: {category_color}; "
+                f"border-left: 4px solid {category_color}; "
+                f"background: linear-gradient(90deg, {category_background} 0%, rgba(255, 255, 255, 0.96) 24%, #FFFFFF 100%); "
+                f"box-shadow: 0 6px 20px -3px rgba(15, 23, 42, 0.08), 0 0 0 1px {category_border};"
+            )
+        elif is_top:
+            row_inline_style = (
+                f"border-color: {category_border}; "
+                f"border-left: 4px solid {category_color}; "
+                f"background: linear-gradient(90deg, {category_background} 0%, rgba(255, 255, 255, 0.98) 20%, #FFFFFF 100%); "
+                f"box-shadow: 0 4px 16px -4px rgba(15, 23, 42, 0.06), 0 0 0 1px {category_border};"
+            )
+        else:
+            row_inline_style = (
+                f"border-color: rgba(226, 232, 240, 0.85); "
+                f"background: #FFFFFF;"
+            )
+
+        val_extra_class = " health-prob-val--top" if is_top else ""
+        fill_extra_style = (
+            f"box-shadow: 0 0 8px {category_color}55; "
+            if (is_top or is_predicted)
+            else ""
+        )
+
         rows.append(
             f"""
             <div
-                class="
-                    health-probability-row
-                "
-                style="
-                    border-color:
-                    {category_border};
-
-                    background:
-                    linear-gradient(
-                        90deg,
-                        #FFFFFF 0%,
-                        #FFFFFF 82%,
-                        {category_background} 100%
-                    );
-                "
+                class="{row_class}"
+                style="{row_inline_style}"
             >
+                <div class="health-probability-header">
 
-                <div
-                    class="
-                        health-probability-header
-                    "
-                >
+                    <div class="health-prob-name-group">
+                        {rank_badge}
+                        <span
+                            class="health-prob-dot"
+                            style="
+                                background: {category_color};
+                                box-shadow: 0 0 0 3px {category_background};
+                            "
+                        ></span>
+                        <span
+                            class="health-probability-name{' health-prob-name--top' if is_top else ''}{' health-prob-name--predicted' if is_predicted else ''}"
+                            style="{'color: ' + category_color + ';' if (is_top or is_predicted) else ''}"
+                        >
+                            {category}
+                        </span>
+                        <span
+                            class="health-prob-risk-tag"
+                            style="
+                                background: {category_background};
+                                color: {category_color};
+                                border: 1px solid {category_border};
+                            "
+                        >
+                            {escape(risk_tag)}
+                        </span>
+                        {selected_indicator}
+                    </div>
 
-                    <span
-                        class="
-                            health-probability-name
-                        "
-                    >
-                        {category}
-                    </span>
-
-                    <span
-                        class="
-                            health-probability-value
-                        "
-                        style="
-                            color:
-                            {category_color};
-                        "
-                    >
-                        {percentage:.2f}%
-                    </span>
+                    <div class="health-prob-val-group">
+                        <span
+                            class="health-probability-value{val_extra_class}"
+                            style="color: {category_color};"
+                        >
+                            {percentage:.2f}%
+                        </span>
+                    </div>
 
                 </div>
 
-                <div
-                    class="
-                        health-probability-track
-                    "
-                >
-
+                <div class="health-probability-track">
                     <div
-                        class="
-                            health-probability-fill
-                        "
+                        class="health-probability-fill{' health-prob-fill--top' if is_top else ''}{' health-prob-fill--predicted' if is_predicted else ''}"
                         style="
-                            width:
-                            {bar_width:.2f}%;
-
-                            background:
-                            {category_color};
+                            width: {bar_width:.2f}%;
+                            background: {category_color};
+                            {fill_extra_style}
                         "
-                    >
-                    </div>
-
+                    ></div>
                 </div>
 
             </div>
@@ -546,10 +603,14 @@ def render_prediction_result(
     confidence_card_html = f"""
     <div
         class="health-confidence-card"
-        style="border-color: {category_border};"
+        style="
+            border-color: {category_border};
+            border-top: 3.5px solid {category_color};
+            box-shadow: 0 8px 24px -4px rgba(15, 23, 42, 0.07), 0 0 0 1px {category_border};
+        "
     >
         <div class="health-confidence-card-header">
-            <span class="health-confidence-kicker">Confidence</span>
+            <span class="health-confidence-kicker">Model Certainty</span>
             <span
                 class="health-confidence-badge"
                 style="
@@ -590,13 +651,14 @@ def render_prediction_result(
                     class="health-confidence-bar-fill"
                     style="
                         width: {max(0.0, min(confidence_percentage, 100.0)):.1f}%;
-                        background: {category_color};
+                        background: linear-gradient(90deg, {category_color}cc, {category_color});
+                        box-shadow: 0 0 8px {category_color}45;
                     "
                 ></div>
             </div>
             <div class="health-confidence-scale-labels">
                 <span>0%</span>
-                <span>Model Certainty</span>
+                <span class="health-confidence-scale-title">Calibrated Confidence</span>
                 <span>100%</span>
             </div>
         </div>
@@ -609,8 +671,9 @@ def render_prediction_result(
             class="health-result-summary"
             style="
                 border-color: {category_border};
+                border-top: 4px solid {category_color};
                 background:
-                    radial-gradient(circle at 92% 10%, {category_background} 0%, transparent 45%),
+                    radial-gradient(circle at 92% 10%, {category_background} 0%, transparent 48%),
                     linear-gradient(135deg, #FFFFFF 0%, #F8FBFF 55%, {category_background} 100%);
             "
         >
@@ -621,28 +684,47 @@ def render_prediction_result(
                             <span class="health-result-eyebrow">
                                 <span
                                     class="health-result-live-dot"
-                                    style="background: {category_color};"
+                                    style="
+                                        background: {category_color};
+                                        box-shadow: 0 0 0 3px {category_background};
+                                    "
                                 ></span>
-                                Model-Predicted Category
+                                AI Diagnostic Assessment
                             </span>
-                            <span class="health-risk-badge {risk_info['class']}">
+                            <span
+                                class="health-risk-badge {risk_info['class']}"
+                                style="
+                                    background: {category_background};
+                                    color: {category_color};
+                                    border: 1px solid {category_border};
+                                "
+                            >
                                 {risk_info["emoji"]} {risk_info["label"]}
                             </span>
                         </div>
 
-                        <div
-                            class="health-result-category"
-                            style="color: {category_color};"
-                        >
-                            {escape(readable_class)}
+                        <div class="health-result-category-container">
+                            <div class="health-result-category-kicker">Predicted Classification</div>
+                            <div
+                                class="health-result-category"
+                                style="color: {category_color};"
+                            >
+                                {escape(readable_class)}
+                            </div>
                         </div>
                     </div>
 
-                    <div class="health-result-description-card">
-                        <span class="health-result-desc-icon">💡</span>
-                        <p class="health-result-desc-text">
-                            {escape(supporting_text)}
-                        </p>
+                    <div
+                        class="health-result-description-card"
+                        style="border-left: 3px solid {category_color};"
+                    >
+                        <span class="health-result-desc-icon" style="color: {category_color};">💡</span>
+                        <div class="health-result-desc-body">
+                            <div class="health-result-desc-label">Assessment Rationale</div>
+                            <p class="health-result-desc-text">
+                                {escape(supporting_text)}
+                            </p>
+                        </div>
                     </div>
                 </div>
 
@@ -658,44 +740,31 @@ def render_prediction_result(
 
     st.html(
         f"""
-        <section
-            class="
-                health-probability-section
-            "
-        >
-
-            <div
-                class="
-                    health-section-title
-                "
-            >
-                Probability distribution
+        <section class="health-probability-section">
+            <div class="health-prob-section-header">
+                <div class="health-prob-header-left">
+                    <span class="health-prob-kicker">Multi-Class Spectrum</span>
+                    <div class="health-section-title">
+                        Probability Distribution
+                    </div>
+                    <div class="health-section-description">
+                        Comparative probability evaluated across all seven obesity-risk categories.
+                        Ranked in descending order of model confidence.
+                    </div>
+                </div>
+                <div class="health-prob-header-badge">
+                    <span class="health-prob-count-pill">7 Classes Evaluated</span>
+                </div>
             </div>
 
-            <div
-                class="
-                    health-section-description
-                "
-            >
-                The model compares all seven
-                obesity-risk categories.
-                Longer bars indicate a higher
-                predicted probability for the
-                submitted assessment.
-            </div>
-
-            <div
-                class="
-                    health-probability-list
-                "
-            >
+            <div class="health-probability-list">
                 {
                     _build_probability_html(
-                        probabilities
+                        probabilities,
+                        predicted_class=predicted_class,
                     )
                 }
             </div>
-
         </section>
         """
     )
@@ -722,72 +791,107 @@ def render_prediction_result(
         """
         <section class="health-explanation-card">
 
-            <div class="health-section-title">
-                Why did the model make this prediction?
+            <div class="health-explanation-header">
+                <span class="health-explanation-kicker">Clinical Signal Attribution</span>
+                <div class="health-section-title">
+                    Why did the model make this prediction?
+                </div>
+                <div class="health-section-description">
+                    The AI system evaluated 16 multidimensional health signals from
+                    your assessment, spanning physical measurements, nutritional patterns,
+                    and lifestyle behaviors.
+                </div>
             </div>
-
-
-            <div class="health-section-description">
-
-                The model evaluated 16
-                health-related signals from
-                your assessment, including
-                physical measurements,
-                nutrition behaviour, and
-                lifestyle patterns.
-
-            </div>
-
 
             <div class="health-explanation-grid">
 
-
                 <div class="health-explanation-item physical">
-
-                    <strong>
-                        ⚖ Physical Factors
-                    </strong>
-
-                    <br>
-
-                    Age, height, weight,
-                    and body measurements.
-
+                    <div>
+                        <div class="health-module-code">Module 01 · Anthropometric</div>
+                        <div class="health-explanation-item-header">
+                            <div class="health-explanation-item-icon">⚖️</div>
+                            <span class="health-factor-badge physical">5 Signals</span>
+                        </div>
+                        <div class="health-explanation-item-body">
+                            <div class="health-explanation-item-title">
+                                Physical Measurements
+                            </div>
+                            <div class="health-explanation-item-desc">
+                                Age, height, weight, BMI metrics, and family history indicators.
+                            </div>
+                            <div class="health-signal-chips">
+                                <span class="health-signal-chip">Age & Gender</span>
+                                <span class="health-signal-chip">Height & Weight</span>
+                                <span class="health-signal-chip">BMI Metric</span>
+                                <span class="health-signal-chip">Family History</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="health-module-impact">
+                        <span class="health-impact-label">Clinical Impact</span>
+                        <span class="health-impact-pill physical">Primary Determinant</span>
+                    </div>
                 </div>
-
 
                 <div class="health-explanation-item nutrition">
-
-                    <strong>
-                        🍎 Nutrition Factors
-                    </strong>
-
-                    <br>
-
-                    Eating behaviour,
-                    food choices, and
-                    hydration patterns.
-
+                    <div>
+                        <div class="health-module-code">Module 02 · Dietary Patterns</div>
+                        <div class="health-explanation-item-header">
+                            <div class="health-explanation-item-icon">🍎</div>
+                            <span class="health-factor-badge nutrition">6 Signals</span>
+                        </div>
+                        <div class="health-explanation-item-body">
+                            <div class="health-explanation-item-title">
+                                Nutrition & Hydration
+                            </div>
+                            <div class="health-explanation-item-desc">
+                                Meal frequency, vegetable consumption, calorie-dense foods, and fluid intake.
+                            </div>
+                            <div class="health-signal-chips">
+                                <span class="health-signal-chip">Caloric Food (FAVC)</span>
+                                <span class="health-signal-chip">Vegetable Intake (FCVC)</span>
+                                <span class="health-signal-chip">Meal Count (NCP)</span>
+                                <span class="health-signal-chip">Hydration (CH2O)</span>
+                                <span class="health-signal-chip">Snacking (CAEC)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="health-module-impact">
+                        <span class="health-impact-label">Clinical Impact</span>
+                        <span class="health-impact-pill nutrition">High Contribution</span>
+                    </div>
                 </div>
-
 
                 <div class="health-explanation-item lifestyle">
-
-                    <strong>
-                        🏃 Lifestyle Factors
-                    </strong>
-
-                    <br>
-
-                    Physical activity,
-                    technology use, and
-                    daily habits.
-
+                    <div>
+                        <div class="health-module-code">Module 03 · Behavioral Dynamics</div>
+                        <div class="health-explanation-item-header">
+                            <div class="health-explanation-item-icon">🏃</div>
+                            <span class="health-factor-badge lifestyle">5 Signals</span>
+                        </div>
+                        <div class="health-explanation-item-body">
+                            <div class="health-explanation-item-title">
+                                Lifestyle & Activity
+                            </div>
+                            <div class="health-explanation-item-desc">
+                                Physical exercise frequency, screen time duration, and daily mobility habits.
+                            </div>
+                            <div class="health-signal-chips">
+                                <span class="health-signal-chip">Exercise Freq (FAF)</span>
+                                <span class="health-signal-chip">Screen Time (TUE)</span>
+                                <span class="health-signal-chip">Commute (MTRANS)</span>
+                                <span class="health-signal-chip">Smoking Status</span>
+                                <span class="health-signal-chip">Alcohol (CALC)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="health-module-impact">
+                        <span class="health-impact-label">Clinical Impact</span>
+                        <span class="health-impact-pill lifestyle">Behavioral Factor</span>
+                    </div>
                 </div>
 
-
             </div>
-
 
         </section>
         """
@@ -795,23 +899,19 @@ def render_prediction_result(
 
     st.html(
         """
-        <div class="health-notice">
-
-            <strong>
-                How to interpret this result
-            </strong>
-
-            <br><br>
-
-            The predicted category is the
-            class assigned the highest
-            probability by the machine
-            learning model.
-
-            Confidence represents model
-            certainty for this prediction,
-            not medical certainty.
-
+        <div class="health-result-notice">
+            <div class="health-result-notice-icon">🔬</div>
+            <div class="health-result-notice-body">
+                <div class="health-result-notice-title">
+                    Clinical Result Interpretation Guide
+                </div>
+                <div class="health-result-notice-text">
+                    The predicted category represents the highest probability class
+                    assigned by the machine learning classification model. Confidence
+                    reflects statistical algorithm certainty for this specific feature profile,
+                    intended for clinical decision support and health risk stratification.
+                </div>
+            </div>
         </div>
         """
     )

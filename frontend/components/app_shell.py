@@ -253,104 +253,107 @@ def render_sidebar(
 
     with st.sidebar:
 
+        # ── Brand ──────────────────────────
         st.html(
             """
-            <div
-                class="health-sidebar-brand"
-            >
+            <div class="health-sb-brand">
 
-                <div
-                    class="health-sidebar-row"
-                >
+                <div class="health-sb-logo-row">
 
-                    <div
-                        class="health-sidebar-logo"
-                    >
-                        ORI
+                    <div class="health-sb-logo-mark">
+                        <span class="health-sb-logo-text">ORI</span>
+                        <div class="health-sb-logo-ring"></div>
                     </div>
 
-                    <div>
-
-                        <div
-                            class="
-                                health-sidebar-title
-                            "
-                        >
+                    <div class="health-sb-brand-copy">
+                        <div class="health-sb-brand-name">
                             Obesity Risk
-                            Intelligence
+                            <span class="health-sb-brand-accent">
+                                Intelligence
+                            </span>
                         </div>
-
-                        <div
-                            class="
-                                health-sidebar-subtitle
-                            "
-                        >
+                        <div class="health-sb-brand-sub">
                             ML Health Assessment
                         </div>
-
                     </div>
 
+                </div>
+
+                <div class="health-sb-tagline">
+                    <span class="health-sb-tagline-dot"></span>
+                    AI-Powered · Risk Classification
                 </div>
 
             </div>
             """
         )
 
-
-        st.caption(
-            "SYSTEM STATUS"
-        )
-
+        # ── System Status ───────────────────
         if api_connected:
 
             st.html(
                 """
-                <div class="health-status">
-
-                    <span
-                        class="
-                            health-status-dot
-                        "
-                    >
-                    </span>
-
-                    Backend API connected
-
+                <div class="health-sb-section">
+                    <div class="health-sb-section-label">System Status</div>
+                    <div class="health-sb-status-card health-sb-status-ok">
+                        <span class="health-sb-status-indicator"></span>
+                        <span class="health-sb-status-text">
+                            Backend API Connected
+                        </span>
+                        <span class="health-sb-status-live-badge">Live</span>
+                    </div>
                 </div>
                 """
             )
 
         else:
 
-            st.warning(
-                "Backend API unavailable"
+            st.html(
+                """
+                <div class="health-sb-section">
+                    <div class="health-sb-section-label">System Status</div>
+                    <div class="health-sb-status-card health-sb-status-err">
+                        <span class="health-sb-status-indicator-err"></span>
+                        <span class="health-sb-status-text">
+                            Backend API Unavailable
+                        </span>
+                    </div>
+                </div>
+                """
             )
 
-
-        st.divider()
-
-
-        st.caption(
-            "PREDICTION MODEL"
+        # ── Prediction Model ────────────────
+        st.html(
+            f"""
+            <div class="health-sb-section">
+                <div class="health-sb-section-label">Prediction Model</div>
+                <div class="health-sb-model-card">
+                    <div class="health-sb-model-icon">🤖</div>
+                    <div class="health-sb-model-info">
+                        <div class="health-sb-model-name">
+                            {_safe_text(model_name)}
+                        </div>
+                        <div class="health-sb-model-caption">
+                            Selected ML classifier
+                        </div>
+                    </div>
+                </div>
+            </div>
+            """
         )
 
-        st.markdown(
-            f"**{_safe_text(model_name)}**"
+        # ── Performance Metrics ─────────────
+        st.html(
+            """
+            <div class="health-sb-section">
+                <div class="health-sb-section-label">Performance Metrics</div>
+            </div>
+            """
         )
-
-        st.caption(
-            "Selected machine learning "
-            "classifier"
-        )
-
-
-        st.write("")
-
 
         metric_left, metric_right = (
             st.columns(2)
         )
-
 
         with metric_left:
 
@@ -372,7 +375,6 @@ def render_sidebar(
                     border=True,
                 )
 
-
         with metric_right:
 
             if macro_f1 is not None:
@@ -391,19 +393,18 @@ def render_sidebar(
                     border=True,
                 )
 
-
-        st.divider()
-
-
-        st.caption(
-            "MODEL SCOPE"
+        # ── Model Scope ─────────────────────
+        st.html(
+            """
+            <div class="health-sb-section">
+                <div class="health-sb-section-label">Model Scope</div>
+            </div>
+            """
         )
-
 
         scope_left, scope_right = (
             st.columns(2)
         )
-
 
         with scope_left:
 
@@ -413,7 +414,6 @@ def render_sidebar(
                 border=True,
             )
 
-
         with scope_right:
 
             st.metric(
@@ -422,25 +422,22 @@ def render_sidebar(
                 border=True,
             )
 
-
-        st.divider()
-
-
+        # ── Notice ──────────────────────────
         st.html(
             """
-            <div class="health-notice">
-
-                <strong>
-                    Educational system
-                </strong>
-
-                <br><br>
-
-                Predictions describe patterns
-                identified by the machine
-                learning model and are not
-                medical diagnoses.
-
+            <div class="health-sb-notice">
+                <div class="health-sb-notice-icon">⚕️</div>
+                <div class="health-sb-notice-body">
+                    <div class="health-sb-notice-title">
+                        Educational System
+                    </div>
+                    <div class="health-sb-notice-text">
+                        Predictions describe patterns
+                        identified by the machine
+                        learning model and are not
+                        medical diagnoses.
+                    </div>
+                </div>
             </div>
             """
         )
