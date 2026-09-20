@@ -246,15 +246,15 @@ def _render_stepper(
     ) in steps_data:
         if step_num < current_step:
             state_class = "complete"
-            status_badge = '<span class="health-step-badge done">✓ Done</span>'
+            status_badge = '<span class="health-step-badge done">✓ Completed</span>'
             circle_content = "✓"
         elif step_num == current_step:
             state_class = "active"
-            status_badge = '<span class="health-step-badge current">Current</span>'
+            status_badge = '<span class="health-step-badge current">● In Progress</span>'
             circle_content = str(step_num)
         else:
             state_class = "upcoming"
-            status_badge = '<span class="health-step-badge pending">Pending</span>'
+            status_badge = '<span class="health-step-badge pending">○ Upcoming</span>'
             circle_content = str(step_num)
 
         cards_html.append(
@@ -371,12 +371,15 @@ def _render_profile_step():
         ):
             st.html(
                 """
-                <div class="health-section-header">
-                    <div class="health-section-icon-wrap">👤</div>
+                <div class="health-section-header health-section-header--blue">
+                    <div class="health-section-icon-wrap health-section-icon-wrap--blue">👤</div>
                     <div class="health-section-text-wrap">
-                        <div class="health-section-kicker">Section 1</div>
+                        <div class="health-section-meta-row">
+                            <span class="health-section-kicker health-section-kicker--blue">Section 1 · Profile</span>
+                            <span class="health-section-badge health-section-badge--blue">Demographics</span>
+                        </div>
                         <h4 class="health-section-title">Personal Information</h4>
-                        <div class="health-section-subtitle">Demographic characteristics and genetic predisposition</div>
+                        <div class="health-section-subtitle">Demographic characteristics, biological sex, and genetic predisposition</div>
                     </div>
                 </div>
                 """
@@ -470,10 +473,13 @@ def _render_profile_step():
         ):
             st.html(
                 """
-                <div class="health-section-header">
-                    <div class="health-section-icon-wrap">⚖️</div>
+                <div class="health-section-header health-section-header--indigo">
+                    <div class="health-section-icon-wrap health-section-icon-wrap--indigo">⚖️</div>
                     <div class="health-section-text-wrap">
-                        <div class="health-section-kicker">Section 2</div>
+                        <div class="health-section-meta-row">
+                            <span class="health-section-kicker health-section-kicker--indigo">Section 2 · Anthropometry</span>
+                            <span class="health-section-badge health-section-badge--indigo">Biometrics</span>
+                        </div>
                         <h4 class="health-section-title">Body Measurements</h4>
                         <div class="health-section-subtitle">Height and weight to determine Body Mass Index (BMI) and physical dimensions</div>
                     </div>
@@ -580,10 +586,13 @@ def _render_nutrition_step():
         ):
             st.html(
                 """
-                <div class="health-section-header">
-                    <div class="health-section-icon-wrap">🥗</div>
+                <div class="health-section-header health-section-header--green">
+                    <div class="health-section-icon-wrap health-section-icon-wrap--green">🥗</div>
                     <div class="health-section-text-wrap">
-                        <div class="health-section-kicker">Dietary Patterns</div>
+                        <div class="health-section-meta-row">
+                            <span class="health-section-kicker health-section-kicker--green">Dietary Patterns</span>
+                            <span class="health-section-badge health-section-badge--green">Nutrition</span>
+                        </div>
                         <h4 class="health-section-title">Eating Behaviour</h4>
                         <div class="health-section-subtitle">Meal frequency, vegetable consumption, snacking, and high-calorie food intake</div>
                     </div>
@@ -686,10 +695,13 @@ def _render_nutrition_step():
         ):
             st.html(
                 """
-                <div class="health-section-header">
-                    <div class="health-section-icon-wrap">💧</div>
+                <div class="health-section-header health-section-header--cyan">
+                    <div class="health-section-icon-wrap health-section-icon-wrap--cyan">💧</div>
                     <div class="health-section-text-wrap">
-                        <div class="health-section-kicker">Intake & Hydration</div>
+                        <div class="health-section-meta-row">
+                            <span class="health-section-kicker health-section-kicker--cyan">Intake & Hydration</span>
+                            <span class="health-section-badge health-section-badge--cyan">Fluid Balance</span>
+                        </div>
                         <h4 class="health-section-title">Hydration & Alcohol Intake</h4>
                         <div class="health-section-subtitle">Daily water consumption levels and alcohol intake frequency</div>
                     </div>
@@ -828,10 +840,13 @@ def _render_lifestyle_step():
         ):
             st.html(
                 """
-                <div class="health-section-header">
-                    <div class="health-section-icon-wrap">🏃</div>
+                <div class="health-section-header health-section-header--orange">
+                    <div class="health-section-icon-wrap health-section-icon-wrap--orange">🏃</div>
                     <div class="health-section-text-wrap">
-                        <div class="health-section-kicker">Section 3 · Activity & Screen Time</div>
+                        <div class="health-section-meta-row">
+                            <span class="health-section-kicker health-section-kicker--orange">Section 3 · Activity & Screen Time</span>
+                            <span class="health-section-badge health-section-badge--orange">Physical Movement</span>
+                        </div>
                         <h4 class="health-section-title">Physical Activity & Technology Usage</h4>
                         <div class="health-section-subtitle">Weekly exercise frequency and daily screen time metrics</div>
                     </div>
@@ -886,10 +901,13 @@ def _render_lifestyle_step():
         ):
             st.html(
                 """
-                <div class="health-section-header">
-                    <div class="health-section-icon-wrap">🚲</div>
+                <div class="health-section-header health-section-header--orange">
+                    <div class="health-section-icon-wrap health-section-icon-wrap--orange">🚲</div>
                     <div class="health-section-text-wrap">
-                        <div class="health-section-kicker">Section 3 · Daily Habits & Mobility</div>
+                        <div class="health-section-meta-row">
+                            <span class="health-section-kicker health-section-kicker--orange">Section 3 · Daily Habits & Mobility</span>
+                            <span class="health-section-badge health-section-badge--orange">Transit & Habits</span>
+                        </div>
                         <h4 class="health-section-title">Daily Habits & Transportation</h4>
                         <div class="health-section-subtitle">Tobacco exposure, active calorie monitoring, and transit method</div>
                     </div>

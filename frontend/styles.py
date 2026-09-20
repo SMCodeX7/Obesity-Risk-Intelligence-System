@@ -822,108 +822,148 @@ div[data-testid="stPills"] button {
 .health-stepper-cards {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0.85rem;
+    gap: 0.95rem;
 }
 
 .health-step-card {
     display: flex;
     flex-direction: column;
-    padding: 1rem 1.15rem;
-    border: 1px solid var(--clr-border);
+    padding: 1.15rem 1.25rem;
+    border: 1.5px solid var(--clr-border);
     border-radius: var(--radius-lg);
     background: var(--clr-surface);
+    position: relative;
+    overflow: hidden;
     transition: all var(--transition-base) var(--ease-spring);
 }
 
 .health-step-card.active {
-    border-color: #93C5FD;
+    border-color: #3B82F6 !important;
     background:
-        radial-gradient(circle at 90% 10%, rgba(37, 99, 235, 0.05) 0%, transparent 50%),
-        linear-gradient(135deg, #EFF6FF 0%, #FFFFFF 100%);
+        radial-gradient(circle at 92% 10%, rgba(37, 99, 235, 0.08) 0%, transparent 55%),
+        linear-gradient(135deg, #F0F6FF 0%, #FFFFFF 100%) !important;
     box-shadow:
-        0 6px 20px -4px rgba(37, 99, 235, 0.12),
-        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+        0 8px 24px -4px rgba(37, 99, 235, 0.18),
+        inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+}
+
+.health-step-card.active::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3.5px;
+    background: linear-gradient(90deg, #2563EB 0%, #3B82F6 100%);
 }
 
 .health-step-card.complete {
-    border-color: #99F6E4;
+    border-color: #99F6E4 !important;
     background:
-        radial-gradient(circle at 90% 10%, rgba(13, 148, 136, 0.05) 0%, transparent 50%),
-        linear-gradient(135deg, #F0FDFA 0%, #FFFFFF 100%);
+        radial-gradient(circle at 92% 10%, rgba(13, 148, 136, 0.06) 0%, transparent 50%),
+        linear-gradient(135deg, #F0FDFA 0%, #FFFFFF 100%) !important;
+    box-shadow:
+        0 4px 16px -4px rgba(13, 148, 136, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+}
+
+.health-step-card.complete::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #0D9488 0%, #2DD4BF 100%);
 }
 
 .health-step-card.upcoming {
-    opacity: 0.72;
-    background: #FAFAFC;
+    border-color: #E2E8F0 !important;
+    background: #F8FAFC !important;
+    opacity: 0.88;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.02) !important;
 }
 
 .health-step-card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 0.65rem;
+    margin-bottom: 0.75rem;
 }
 
 .health-step-number-circle {
-    width: 28px;
-    height: 28px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.76rem;
+    font-size: 0.8rem;
     font-weight: 800;
     background: #F1F5F9;
     color: #64748B;
+    border: 1.5px solid #CBD5E1;
+    transition: all 0.2s ease;
 }
 
 .health-step-card.active .health-step-number-circle {
     background: #2563EB;
     color: #FFFFFF;
-    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+    border-color: #2563EB;
+    box-shadow: 0 2px 10px rgba(37, 99, 235, 0.35);
 }
 
 .health-step-card.complete .health-step-number-circle {
-    background: #CCFBF1;
-    color: #0F766E;
+    background: #0D9488;
+    color: #FFFFFF;
+    border-color: #0D9488;
+}
+
+.health-step-card.upcoming .health-step-number-circle {
+    background: #F1F5F9;
+    color: #94A3B8;
+    border-color: #E2E8F0;
 }
 
 .health-step-badge {
-    font-size: 0.64rem;
+    font-size: 0.68rem;
     font-weight: 750;
-    padding: 0.16rem 0.58rem;
+    padding: 0.2rem 0.65rem;
     border-radius: 999px;
     text-transform: uppercase;
     letter-spacing: 0.04em;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
 }
 
 .health-step-badge.current {
     background: #DBEAFE;
     color: #1D4ED8;
-    border: 1px solid rgba(29, 78, 216, 0.15);
+    border: 1px solid rgba(29, 78, 216, 0.22);
 }
 
 .health-step-badge.done {
     background: #CCFBF1;
     color: #0F766E;
-    border: 1px solid rgba(15, 118, 110, 0.15);
+    border: 1px solid rgba(15, 118, 110, 0.22);
 }
 
 .health-step-badge.pending {
     background: #F1F5F9;
-    color: #94A3B8;
+    color: #64748B;
     border: 1px solid #E2E8F0;
 }
 
 .health-step-card-title {
     font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
-    font-size: 0.92rem;
+    font-size: 0.96rem;
     font-weight: 750;
     color: #0F172A;
-    margin-bottom: 0.2rem;
+    margin-bottom: 0.25rem;
     display: flex;
     align-items: center;
-    gap: 0.35rem;
+    gap: 0.4rem;
 }
 
 .health-step-card.active .health-step-card-title {
@@ -934,8 +974,12 @@ div[data-testid="stPills"] button {
     color: #0F766E;
 }
 
+.health-step-card.upcoming .health-step-card-title {
+    color: #475569;
+}
+
 .health-step-card-desc {
-    font-size: 0.74rem;
+    font-size: 0.78rem;
     color: #64748B;
     line-height: 1.45;
 }
@@ -1073,50 +1117,132 @@ div[data-testid="stPills"] button {
 
 [data-testid="stForm"] [data-testid="stVerticalBlockBorderWrapper"] {
     border: 1px solid rgba(226, 232, 240, 0.9) !important;
-    border-radius: 20px !important;
-    background:
-        linear-gradient(135deg, #FFFFFF 0%, #F9FBFC 100%) !important;
+    border-radius: 22px !important;
+    background: linear-gradient(135deg, #FFFFFF 0%, #FAFCFD 100%) !important;
     box-shadow:
-        0 2px 10px rgba(15, 23, 42, 0.03),
-        inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
-    padding: 1.45rem 1.6rem !important;
-    margin-bottom: 1.25rem !important;
-    transition: border-color 0.22s ease, box-shadow 0.22s ease !important;
+        0 4px 18px -4px rgba(15, 23, 42, 0.04),
+        0 1px 3px rgba(15, 23, 42, 0.02),
+        inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+    padding: 1.55rem 1.75rem !important;
+    margin-bottom: 1.35rem !important;
+    transition: all 0.22s ease !important;
 }
 
 [data-testid="stForm"] [data-testid="stVerticalBlockBorderWrapper"]:hover {
     border-color: rgba(147, 197, 253, 0.75) !important;
     box-shadow:
-        0 6px 18px -4px rgba(37, 99, 235, 0.06),
+        0 8px 24px -4px rgba(37, 99, 235, 0.08),
         inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
 }
 
-/* Section Header Component */
+/* ── Themed Section Card Containers via :has() ── */
+[data-testid="stForm"] [data-testid="stVerticalBlockBorderWrapper"]:has(.health-section-header--blue) {
+    background:
+        radial-gradient(circle at 98% 4%, rgba(37, 99, 235, 0.04) 0%, transparent 40%),
+        linear-gradient(180deg, #FAFCFF 0%, #FFFFFF 100%) !important;
+    border-color: rgba(191, 219, 254, 0.85) !important;
+    box-shadow:
+        0 4px 18px -3px rgba(37, 99, 235, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+}
+
+[data-testid="stForm"] [data-testid="stVerticalBlockBorderWrapper"]:has(.health-section-header--indigo) {
+    background:
+        radial-gradient(circle at 98% 4%, rgba(79, 70, 229, 0.04) 0%, transparent 40%),
+        linear-gradient(180deg, #FAF9FE 0%, #FFFFFF 100%) !important;
+    border-color: rgba(199, 210, 254, 0.85) !important;
+    box-shadow:
+        0 4px 18px -3px rgba(79, 70, 229, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+}
+
+[data-testid="stForm"] [data-testid="stVerticalBlockBorderWrapper"]:has(.health-section-header--green) {
+    background:
+        radial-gradient(circle at 98% 4%, rgba(22, 163, 74, 0.04) 0%, transparent 40%),
+        linear-gradient(180deg, #F8FCF9 0%, #FFFFFF 100%) !important;
+    border-color: rgba(187, 247, 208, 0.85) !important;
+    box-shadow:
+        0 4px 18px -3px rgba(22, 163, 74, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+}
+
+[data-testid="stForm"] [data-testid="stVerticalBlockBorderWrapper"]:has(.health-section-header--cyan) {
+    background:
+        radial-gradient(circle at 98% 4%, rgba(2, 132, 199, 0.04) 0%, transparent 40%),
+        linear-gradient(180deg, #F6FCFE 0%, #FFFFFF 100%) !important;
+    border-color: rgba(186, 230, 253, 0.85) !important;
+    box-shadow:
+        0 4px 18px -3px rgba(2, 132, 199, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+}
+
+[data-testid="stForm"] [data-testid="stVerticalBlockBorderWrapper"]:has(.health-section-header--orange) {
+    background:
+        radial-gradient(circle at 98% 4%, rgba(234, 88, 12, 0.04) 0%, transparent 40%),
+        linear-gradient(180deg, #FFFDF9 0%, #FFFFFF 100%) !important;
+    border-color: rgba(254, 215, 170, 0.85) !important;
+    box-shadow:
+        0 4px 18px -3px rgba(234, 88, 12, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+}
+
+[data-testid="stForm"] [data-testid="stVerticalBlockBorderWrapper"]:has(.health-section-header--blue):hover {
+    border-color: #93C5FD !important;
+    box-shadow: 0 8px 24px -4px rgba(37, 99, 235, 0.12), inset 0 1px 0 #FFFFFF !important;
+}
+[data-testid="stForm"] [data-testid="stVerticalBlockBorderWrapper"]:has(.health-section-header--indigo):hover {
+    border-color: #A5B4FC !important;
+    box-shadow: 0 8px 24px -4px rgba(79, 70, 229, 0.12), inset 0 1px 0 #FFFFFF !important;
+}
+[data-testid="stForm"] [data-testid="stVerticalBlockBorderWrapper"]:has(.health-section-header--green):hover {
+    border-color: #86EFAC !important;
+    box-shadow: 0 8px 24px -4px rgba(22, 163, 74, 0.12), inset 0 1px 0 #FFFFFF !important;
+}
+[data-testid="stForm"] [data-testid="stVerticalBlockBorderWrapper"]:has(.health-section-header--cyan):hover {
+    border-color: #7DD3FC !important;
+    box-shadow: 0 8px 24px -4px rgba(2, 132, 199, 0.12), inset 0 1px 0 #FFFFFF !important;
+}
+[data-testid="stForm"] [data-testid="stVerticalBlockBorderWrapper"]:has(.health-section-header--orange):hover {
+    border-color: #FDBA74 !important;
+    box-shadow: 0 8px 24px -4px rgba(234, 88, 12, 0.12), inset 0 1px 0 #FFFFFF !important;
+}
+
+/* ── Section Header Component ── */
 .health-section-header {
     display: flex;
-    align-items: center;
-    gap: 0.9rem;
-    margin-bottom: 1.2rem;
-    padding-bottom: 0.85rem;
-    border-bottom: 1px solid rgba(226, 232, 240, 0.7);
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.35rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(226, 232, 240, 0.75);
+    position: relative;
 }
 
 .health-section-icon-wrap {
     flex-shrink: 0;
-    width: 42px;
-    height: 42px;
-    border-radius: 13px;
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
     background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
     border: 1px solid rgba(147, 197, 253, 0.6);
-    font-size: 1.25rem;
+    font-size: 1.28rem;
     display: flex;
     align-items: center;
     justify-content: center;
     box-shadow: 0 2px 8px rgba(37, 99, 235, 0.08);
+    transition: all 0.2s ease;
 }
 
 .health-section-text-wrap {
     flex: 1 1 auto;
+    min-width: 0;
+}
+
+.health-section-meta-row {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    margin-bottom: 0.22rem;
 }
 
 .health-section-kicker {
@@ -1125,12 +1251,20 @@ div[data-testid="stPills"] button {
     letter-spacing: 0.075em;
     text-transform: uppercase;
     color: #2563EB;
-    margin-bottom: 0.12rem;
+}
+
+.health-section-badge {
+    font-size: 0.64rem;
+    font-weight: 750;
+    padding: 0.12rem 0.55rem;
+    border-radius: 999px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
 }
 
 .health-section-header .health-section-title {
     font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
-    font-size: 1.15rem;
+    font-size: 1.18rem;
     font-weight: 750;
     color: #0F172A;
     letter-spacing: -0.02em;
@@ -1140,10 +1274,111 @@ div[data-testid="stPills"] button {
 }
 
 .health-section-subtitle {
-    font-size: 0.81rem;
+    font-size: 0.82rem;
     color: #64748B;
-    margin-top: 0.15rem;
+    margin-top: 0.18rem;
     line-height: 1.45;
+}
+
+/* ── Section Theme Identifiers ── */
+/* 1. Personal Information (Soft Blue) */
+.health-section-header--blue {
+    border-left: 3.5px solid #2563EB;
+    padding-left: 0.95rem;
+}
+.health-section-icon-wrap--blue {
+    background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
+    border: 1px solid rgba(147, 197, 253, 0.7);
+    color: #1D4ED8;
+    box-shadow: 0 3px 10px rgba(37, 99, 235, 0.14);
+}
+.health-section-kicker--blue {
+    color: #2563EB;
+}
+.health-section-badge--blue {
+    background: #EFF6FF;
+    color: #1D4ED8;
+    border: 1px solid rgba(147, 197, 253, 0.65);
+}
+
+/* 2. Body Measurements (Soft Purple / Indigo) */
+.health-section-header--indigo {
+    border-left: 3.5px solid #4F46E5;
+    padding-left: 0.95rem;
+}
+.health-section-icon-wrap--indigo {
+    background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%);
+    border: 1px solid rgba(199, 210, 254, 0.8);
+    color: #4338CA;
+    box-shadow: 0 3px 10px rgba(79, 70, 229, 0.14);
+}
+.health-section-kicker--indigo {
+    color: #4F46E5;
+}
+.health-section-badge--indigo {
+    background: #EEF2FF;
+    color: #4338CA;
+    border: 1px solid rgba(199, 210, 254, 0.7);
+}
+
+/* 3. Nutrition Habits (Soft Green) */
+.health-section-header--green {
+    border-left: 3.5px solid #16A34A;
+    padding-left: 0.95rem;
+}
+.health-section-icon-wrap--green {
+    background: linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%);
+    border: 1px solid rgba(187, 247, 208, 0.85);
+    color: #15803D;
+    box-shadow: 0 3px 10px rgba(22, 163, 74, 0.14);
+}
+.health-section-kicker--green {
+    color: #16A34A;
+}
+.health-section-badge--green {
+    background: #F0FDF4;
+    color: #15803D;
+    border: 1px solid rgba(187, 247, 208, 0.7);
+}
+
+/* 4. Hydration (Soft Cyan) */
+.health-section-header--cyan {
+    border-left: 3.5px solid #0284C7;
+    padding-left: 0.95rem;
+}
+.health-section-icon-wrap--cyan {
+    background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
+    border: 1px solid rgba(186, 230, 253, 0.85);
+    color: #0369A1;
+    box-shadow: 0 3px 10px rgba(2, 132, 199, 0.14);
+}
+.health-section-kicker--cyan {
+    color: #0284C7;
+}
+.health-section-badge--cyan {
+    background: #F0F9FF;
+    color: #0369A1;
+    border: 1px solid rgba(186, 230, 253, 0.7);
+}
+
+/* 5. Lifestyle Factors (Soft Orange) */
+.health-section-header--orange {
+    border-left: 3.5px solid #EA580C;
+    padding-left: 0.95rem;
+}
+.health-section-icon-wrap--orange {
+    background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%);
+    border: 1px solid rgba(254, 215, 170, 0.85);
+    color: #C2410C;
+    box-shadow: 0 3px 10px rgba(234, 88, 12, 0.14);
+}
+.health-section-kicker--orange {
+    color: #EA580C;
+}
+.health-section-badge--orange {
+    background: #FFF7ED;
+    color: #C2410C;
+    border: 1px solid rgba(254, 215, 170, 0.7);
 }
 
 /* ── Modern Form Input Polish ── */
@@ -1264,26 +1499,28 @@ div[data-testid="stPills"] button {
     flex-direction: column;
     justify-content: center;
     min-height: 68px;
-    padding: 0.75rem 1rem;
+    padding: 0.85rem 1.15rem;
     border-radius: 14px;
-    background: rgba(241, 245, 249, 0.75);
-    border: 1px dashed #CBD5E1;
+    background: linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 100%);
+    border: 1px solid #CBD5E1;
+    border-left: 3.5px solid #2563EB;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.02);
     margin-top: 1.6rem;
 }
 
 .health-hint-badge {
-    font-size: 0.65rem;
+    font-size: 0.68rem;
     font-weight: 800;
     text-transform: uppercase;
     color: #2563EB;
     letter-spacing: 0.06em;
-    margin-bottom: 0.2rem;
+    margin-bottom: 0.22rem;
 }
 
 .health-hint-desc {
-    font-size: 0.78rem;
-    color: #475569;
-    line-height: 1.45;
+    font-size: 0.8rem;
+    color: #334155;
+    line-height: 1.48;
 }
 
 
@@ -4172,16 +4409,17 @@ div[data-testid="stPills"] button {
 ═══════════════════════════════════════ */
 
 .health-report-card {
-    margin-top: 1.2rem;
-    padding: 1.55rem 1.7rem 1.4rem;
-    border-radius: 20px;
-    border: 1px solid rgba(219, 234, 254, 0.9);
+    margin-top: 1.25rem;
+    padding: 1.65rem 1.85rem 1.55rem;
+    border-radius: 22px;
+    border: 1px solid rgba(219, 234, 254, 0.95);
     background:
         radial-gradient(circle at 96% 8%, rgba(37, 99, 235, 0.07) 0%, transparent 45%),
         radial-gradient(circle at 4% 90%, rgba(13, 148, 136, 0.05) 0%, transparent 40%),
         linear-gradient(135deg, #FFFFFF 0%, #F8FBFF 100%);
     box-shadow:
-        0 4px 18px -4px rgba(15, 23, 42, 0.05),
+        0 6px 22px -4px rgba(15, 23, 42, 0.06),
+        0 1px 3px rgba(15, 23, 42, 0.02),
         inset 0 1px 0 rgba(255, 255, 255, 0.95);
 }
 
@@ -4190,7 +4428,7 @@ div[data-testid="stPills"] button {
 .health-report-header {
     display: flex;
     align-items: flex-start;
-    gap: 1.1rem;
+    gap: 1.15rem;
 }
 
 .health-report-header-text {
@@ -4200,104 +4438,190 @@ div[data-testid="stPills"] button {
 
 .health-report-icon {
     flex-shrink: 0;
-    width: 52px;
-    height: 52px;
+    width: 56px;
+    height: 56px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 14px;
+    border-radius: 16px;
     background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
-    border: 1px solid rgba(147, 197, 253, 0.5);
+    border: 1.5px solid #BFDBFE;
     color: #2563EB;
-    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
+    box-shadow:
+        0 4px 12px rgba(37, 99, 235, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.health-report-doc-badge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+.health-report-doc-symbol {
+    font-size: 1.45rem;
+    line-height: 1;
+    filter: drop-shadow(0 1px 2px rgba(37, 99, 235, 0.15));
+}
+
+.health-report-pdf-pill {
+    margin-top: 2px;
+    font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.6rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    color: #1D4ED8;
+    background: #FFFFFF;
+    border: 1px solid rgba(147, 197, 253, 0.8);
+    border-radius: 4px;
+    padding: 0.06rem 0.32rem;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.health-report-title-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
 }
 
 .health-report-title {
-    display: flex;
-    align-items: center;
-    gap: 0.55rem;
     font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
-    font-size: 1.18rem;
+    font-size: 1.25rem;
     font-weight: 750;
     color: #0F172A;
     letter-spacing: -0.02em;
+    margin: 0;
 }
 
 .health-report-ready-badge {
     display: inline-flex;
     align-items: center;
-    padding: 0.15rem 0.6rem;
+    padding: 0.18rem 0.65rem;
     border-radius: 999px;
     background: #DCFCE7;
     color: #166534;
-    border: 1px solid rgba(22, 101, 52, 0.18);
+    border: 1px solid rgba(22, 101, 52, 0.22);
     font-size: 0.68rem;
-    font-weight: 750;
-    letter-spacing: 0.04em;
+    font-weight: 800;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
 }
 
 .health-report-subtitle {
-    margin-top: 0.25rem;
-    color: #64748B;
-    font-size: 0.84rem;
-    line-height: 1.45;
+    margin-top: 0.35rem;
+    color: #475569;
+    font-size: 0.85rem;
+    line-height: 1.5;
 }
 
 /* ── Feature grid ── */
 .health-report-features {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 0.38rem 1.5rem;
-    margin-top: 1.15rem;
-    padding-top: 1rem;
-    border-top: 1px solid rgba(226, 232, 240, 0.7);
+    gap: 0.65rem 1rem;
+    margin-top: 1.25rem;
+    padding-top: 1.15rem;
+    border-top: 1px solid rgba(226, 232, 240, 0.8);
 }
 
 .health-report-feature {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    font-size: 0.8rem;
-    color: #475569;
-    font-weight: 500;
+    gap: 0.65rem;
+    padding: 0.55rem 0.85rem;
+    background: #FFFFFF;
+    border: 1px solid rgba(226, 232, 240, 0.85);
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.02);
+    transition: all 0.18s ease;
+}
+
+.health-report-feature:hover {
+    border-color: #CBD5E1;
+    background: #F8FAFC;
+    transform: translateY(-1px);
 }
 
 .health-report-feature-dot {
     flex-shrink: 0;
-    width: 7px;
-    height: 7px;
+    width: 9px;
+    height: 9px;
     border-radius: 50%;
 }
 
-.dot-blue { background: #3B82F6; }
-.dot-teal { background: #14B8A6; }
+.health-report-feature-dot.dot-blue {
+    background: #2563EB;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+}
+.health-report-feature-dot.dot-teal {
+    background: #0D9488;
+    box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.18);
+}
+.health-report-feature-dot.dot-indigo {
+    background: #6366F1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.18);
+}
+.health-report-feature-dot.dot-cyan {
+    background: #0284C7;
+    box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.18);
+}
+.health-report-feature-dot.dot-amber {
+    background: #D97706;
+    box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.18);
+}
+.health-report-feature-dot.dot-green {
+    background: #16A34A;
+    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.18);
+}
+
+.health-report-feature-name {
+    font-size: 0.83rem;
+    font-weight: 600;
+    color: #334155;
+}
 
 
 /* ── Streamlit download button override ── */
-div[data-testid="stDownloadButton"] > button[kind="primary"] {
-    margin-top: 0.85rem;
-    background: linear-gradient(135deg, #1D4ED8 0%, #2563EB 60%, #3B82F6 100%) !important;
-    border: none !important;
-    border-radius: 14px !important;
-    padding: 0.78rem 1.4rem !important;
-    font-size: 0.92rem !important;
-    font-weight: 700 !important;
-    letter-spacing: 0.01em !important;
-    box-shadow:
-        0 4px 14px rgba(37, 99, 235, 0.35),
-        inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
-    transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+div[data-testid="stDownloadButton"] {
+    margin-top: 1rem;
 }
 
-div[data-testid="stDownloadButton"] > button[kind="primary"]:hover {
-    background: linear-gradient(135deg, #1E40AF 0%, #2563EB 50%, #3B82F6 100%) !important;
+div[data-testid="stDownloadButton"] > button,
+div[data-testid="stDownloadButton"] > button[kind="primary"] {
+    width: 100% !important;
+    background: linear-gradient(135deg, #1D4ED8 0%, #2563EB 50%, #3B82F6 100%) !important;
+    color: #FFFFFF !important;
+    border: none !important;
+    border-radius: 14px !important;
+    padding: 0.85rem 1.5rem !important;
+    font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif !important;
+    font-size: 0.94rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.02em !important;
     box-shadow:
-        0 8px 24px rgba(37, 99, 235, 0.4),
-        inset 0 1px 0 rgba(255, 255, 255, 0.18) !important;
+        0 4px 14px rgba(37, 99, 235, 0.32),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+    transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.5rem !important;
+}
+
+div[data-testid="stDownloadButton"] > button:hover,
+div[data-testid="stDownloadButton"] > button[kind="primary"]:hover {
+    background: linear-gradient(135deg, #1E40AF 0%, #1D4ED8 50%, #2563EB 100%) !important;
+    box-shadow:
+        0 8px 24px rgba(37, 99, 235, 0.42),
+        inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
     transform: translateY(-2px) !important;
 }
 
+div[data-testid="stDownloadButton"] > button:active,
 div[data-testid="stDownloadButton"] > button[kind="primary"]:active {
     transform: translateY(0px) !important;
     box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3) !important;
@@ -4343,6 +4667,10 @@ div[data-testid="stDownloadButton"] > button[kind="primary"]:active {
     }
 
     .health-stepper-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .health-report-features {
         grid-template-columns: 1fr;
     }
 
