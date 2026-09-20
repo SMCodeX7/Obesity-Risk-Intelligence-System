@@ -251,7 +251,7 @@ def _sanitize_technical_details(value):
         return {
             key: _sanitize_technical_details(item)
             for key, item in value.items()
-            if key not in {"id", "prediction_id"}
+            if key not in {"id", "prediction_id", "assessment_number"}
         }
 
     if isinstance(value, list):
@@ -260,7 +260,7 @@ def _sanitize_technical_details(value):
     return value
 
 
-def render_prediction_result(result):
+def render_prediction_result(result, assessment_number=None):
     if not isinstance(result, dict):
         st.error("Prediction result is unavailable.")
         return
@@ -274,6 +274,10 @@ def render_prediction_result(result):
     if not required_fields.issubset(result.keys()):
         st.error("Prediction result is incomplete.")
         return
+
+    if assessment_number is None and isinstance(result, dict):
+        assessment_number = result.get("assessment_number")
+
 
     predicted_class = result["predicted_class"]
     readable_class = format_class_name(predicted_class)
@@ -408,6 +412,12 @@ def render_prediction_result(result):
     </div>
     """
 
+    eyebrow_text = (
+        f"AI Diagnostic Assessment · Assessment #{assessment_number}"
+        if assessment_number is not None
+        else "AI Diagnostic Assessment"
+    )
+
     st.html(
         f"""
         <section
@@ -432,7 +442,7 @@ def render_prediction_result(result):
                                         box-shadow: 0 0 0 3px {category_background};
                                     "
                                 ></span>
-                                AI Diagnostic Assessment
+                                {escape(eyebrow_text)}
                             </span>
                             <span
                                 class="health-risk-badge {risk_info['class']}"

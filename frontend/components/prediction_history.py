@@ -1006,7 +1006,7 @@ def _render_history_cards(
 
     for index, prediction in enumerate(predictions):
         is_latest = (index == 0)
-        seq_num = total_count - index
+        seq_num = index + 1
 
         predicted_class = (
             prediction.get(
@@ -1116,7 +1116,7 @@ def _render_history_cards(
                 >
                     <div class="health-vtl-card-top">
                         <div class="health-vtl-date-row">
-                            <span class="health-vtl-seq-badge">#{seq_num}</span>
+                            <span class="health-vtl-seq-badge">Assessment #{seq_num}</span>
                             <span class="health-vtl-date">
                                 📅 {_safe_text(created_at)}
                             </span>
@@ -1185,6 +1185,7 @@ def _render_history_cards(
 def _format_selector_option(
     prediction_id,
     predictions_by_id,
+    sequence_by_id=None,
 ):
     prediction = (
         predictions_by_id.get(
@@ -1217,8 +1218,20 @@ def _format_selector_option(
         else ""
     )
 
+    if sequence_by_id and prediction_id in sequence_by_id:
+        seq_num = sequence_by_id[prediction_id]
+    elif prediction_id in predictions_by_id:
+        seq_num = (
+            list(
+                predictions_by_id.keys()
+            ).index(prediction_id)
+            + 1
+        )
+    else:
+        seq_num = 1
+
     return (
-        f"Record #{prediction_id} — "
+        f"Assessment #{seq_num} — "
         f"{category}{conf_str} "
         f"({created_at})"
     )
@@ -1539,6 +1552,7 @@ def _extract_probabilities(
 def _prepare_result(
     detail,
     selected_id,
+    sequence_number=None,
 ):
     result = {}
 
@@ -1637,12 +1651,16 @@ def _prepare_result(
         or selected_id
     )
 
+    if sequence_number is not None:
+        result["assessment_number"] = sequence_number
+
     return result
 
 
 def _render_detail_header(
     detail,
     selected_id,
+    sequence_number=None,
 ):
     result = (
         detail.get(
@@ -1690,7 +1708,12 @@ def _render_detail_header(
 
     category_title = "Assessment Details"
     header_style = ""
-    eyebrow_text = f"Saved Assessment · Record #{selected_id}"
+    eyebrow_sequence = (
+        sequence_number
+        if sequence_number is not None
+        else selected_id
+    )
+    eyebrow_text = f"Saved Assessment · Assessment #{eyebrow_sequence}"
 
     if predicted_class:
         category_name = format_class_name(predicted_class)
@@ -1906,6 +1929,12 @@ def render_prediction_history(
         is not None
     }
 
+    sequence_by_id = {
+        prediction_id: index + 1
+        for index, prediction_id
+        in enumerate(prediction_ids)
+    }
+
     default_id = (
         st.session_state.get(
             "selected_history_prediction_id"
@@ -1957,6 +1986,7 @@ def render_prediction_history(
                 _format_selector_option(
                     value,
                     predictions_by_id,
+                    sequence_by_id,
                 ),
             key=(
                 "history_prediction_selector"
@@ -1992,6 +2022,11 @@ def render_prediction_history(
 
         return
 
+    selected_sequence = sequence_by_id.get(
+        selected_id,
+        default_index + 1,
+    )
+
     inputs = (
         detail.get(
             "inputs",
@@ -2004,6 +2039,7 @@ def render_prediction_history(
         _prepare_result(
             detail,
             selected_id,
+            sequence_number=selected_sequence,
         )
     )
 
@@ -2012,6 +2048,7 @@ def render_prediction_history(
     _render_detail_header(
         detail=detail,
         selected_id=selected_id,
+        sequence_number=selected_sequence,
     )
 
     st.write("")
@@ -2040,7 +2077,8 @@ def render_prediction_history(
     )
 
     render_prediction_result(
-        result
+        result,
+        assessment_number=selected_sequence,
     )
 
     st.write("")
