@@ -876,9 +876,11 @@ def _render_history_summary(
 def _render_history_cards(
     predictions,
 ):
-    cards = []
+    items = []
 
-    for prediction in predictions:
+    for index, prediction in enumerate(predictions):
+        is_latest = (index == 0)
+
         predicted_class = (
             prediction.get(
                 "predicted_class",
@@ -898,140 +900,115 @@ def _render_history_cards(
             )
         )
 
-        category_color = (
-            category_style[
-                "color"
-            ]
-        )
+        category_color = category_style["color"]
+        category_background = category_style["background"]
+        category_border = category_style["border"]
 
-        category_background = (
-            category_style[
-                "background"
-            ]
-        )
+        raw_confidence = prediction.get("confidence", 0.0)
+        try:
+            confidence_pct = float(raw_confidence) * 100
+        except (TypeError, ValueError):
+            confidence_pct = 0.0
 
-        category_border = (
-            category_style[
-                "border"
-            ]
-        )
-
-        confidence = (
-            _format_percentage(
-                prediction.get(
-                    "confidence"
-                )
-            )
-        )
+        confidence_text = _format_percentage(raw_confidence)
 
         created_at = (
             format_sri_lanka_datetime_compact(
-                prediction.get(
-                    "created_at"
-                )
+                prediction.get("created_at")
             )
         )
 
-        model_name = (
-            prediction.get(
-                "model_name",
-                "Unavailable",
-            )
+        model_name = prediction.get("model_name", "Unavailable")
+
+        bar_width = max(0.0, min(confidence_pct, 100.0))
+
+        latest_badge = (
+            '<span class="health-vtl-latest-badge">Latest</span>'
+            if is_latest
+            else ""
         )
 
-        cards.append(
+        is_last = (index == len(predictions) - 1)
+        connector = (
+            ""
+            if is_last
+            else '<div class="health-vtl-connector"></div>'
+        )
+
+        items.append(
             f"""
-            <article
-                class="health-history-card"
-                style="
-                    border-color:
-                    {category_border};
-
-                    border-left:
-                    4px solid
-                    {category_color};
-
-                    background:
-                    linear-gradient(
-                        90deg,
-                        {category_background} 0%,
-                        #FFFFFF 16%,
-                        #FFFFFF 100%
-                    );
-                "
-            >
+            <div class="health-vtl-item">
+                <div class="health-vtl-rail">
+                    <div
+                        class="health-vtl-dot{'  health-vtl-dot--latest' if is_latest else ''}"
+                        style="
+                            background: {category_color};
+                            box-shadow: 0 0 0 4px {category_background},
+                                        0 0 0 6px {category_border};
+                        "
+                    ></div>
+                    {connector}
+                </div>
 
                 <div
-                    class="
-                        health-history-header
-                    "
+                    class="health-vtl-card{'  health-vtl-card--latest' if is_latest else ''}"
+                    style="border-color: {category_border};"
                 >
+                    <div class="health-vtl-card-top">
+                        <div class="health-vtl-date-row">
+                            <span class="health-vtl-date">
+                                🕐 {_safe_text(created_at)}
+                            </span>
+                            {latest_badge}
+                        </div>
 
-                    <div
-                        class="
-                            health-history-id
-                        "
-                    >
-                        Saved Assessment
+                        <div
+                            class="health-vtl-category"
+                            style="color: {category_color};"
+                        >
+                            {_safe_text(category)}
+                        </div>
                     </div>
 
-                    <div
-                        class="
-                            health-history-date
-                        "
-                    >
-                        {_safe_text(created_at)}
+                    <div class="health-vtl-meta-row">
+                        <div class="health-vtl-confidence-block">
+                            <div class="health-vtl-meta-label">Confidence</div>
+                            <div class="health-vtl-confidence-bar-wrap">
+                                <div class="health-vtl-bar-track">
+                                    <div
+                                        class="health-vtl-bar-fill"
+                                        style="
+                                            width: {bar_width:.1f}%;
+                                            background: {category_color};
+                                        "
+                                    ></div>
+                                </div>
+                                <span
+                                    class="health-vtl-confidence-value"
+                                    style="color: {category_color};"
+                                >
+                                    {_safe_text(confidence_text)}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="health-vtl-chip">
+                            <span class="health-vtl-chip-label">Model</span>
+                            <span class="health-vtl-chip-value">
+                                {_safe_text(model_name)}
+                            </span>
+                        </div>
                     </div>
-
                 </div>
-
-
-                <div
-                    class="
-                        health-history-category
-                    "
-                    style="
-                        color:
-                        {category_color};
-                    "
-                >
-                    {_safe_text(category)}
-                </div>
-
-
-                <div
-                    class="
-                        health-history-details
-                    "
-                >
-
-                    <span>
-                        Confidence
-                        <strong>
-                            {_safe_text(confidence)}
-                        </strong>
-                    </span>
-
-                    <span>
-                        Model
-                        <strong>
-                            {_safe_text(model_name)}
-                        </strong>
-                    </span>
-
-                </div>
-
-            </article>
+            </div>
             """
         )
 
     st.html(
         f"""
-        <section
-            class="health-history-list"
-        >
-            {"".join(cards)}
-        </section>
+        <div class="health-vtl-container">
+            {"".join(items)}
+        </div>
         """
     )
 

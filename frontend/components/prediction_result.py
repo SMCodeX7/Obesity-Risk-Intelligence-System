@@ -48,45 +48,45 @@ CLASS_ORDER = [
 
 RISK_LEVEL_MAP = {
     "Insufficient_Weight": {
-        "label": "Low Risk",
-        "emoji": "🟢",
-        "class": "low",
+        "label": "Low Risk · Underweight",
+        "emoji": "🔵",
+        "class": "insufficient",
     },
 
     "Normal_Weight": {
-        "label": "Low Risk",
+        "label": "Optimal Range · Low Risk",
         "emoji": "🟢",
         "class": "low",
     },
 
     "Overweight_Level_I": {
-        "label": "Moderate Risk",
+        "label": "Moderate Risk · Grade I",
         "emoji": "🟡",
         "class": "moderate",
     },
 
     "Overweight_Level_II": {
-        "label": "Moderate Risk",
-        "emoji": "🟡",
-        "class": "moderate",
+        "label": "Elevated Risk · Grade II",
+        "emoji": "🟠",
+        "class": "moderate-high",
     },
 
     "Obesity_Type_I": {
-        "label": "High Risk",
-        "emoji": "🟠",
+        "label": "High Risk · Class I",
+        "emoji": "🔴",
         "class": "high",
     },
 
     "Obesity_Type_II": {
-        "label": "High Risk",
+        "label": "Very High Risk · Class II",
         "emoji": "🔴",
-        "class": "high",
+        "class": "very-high",
     },
 
     "Obesity_Type_III": {
-        "label": "Very High Risk",
-        "emoji": "🔴",
-        "class": "very-high",
+        "label": "Severe Clinical Risk · Class III",
+        "emoji": "🚨",
+        "class": "severe",
     },
 }
 
@@ -497,210 +497,161 @@ def render_prediction_result(
             f"{second_highest['probability'] * 100:.2f}%."
         )
 
+    if confidence_percentage >= 90:
+        certainty_level = "Very High"
+    elif confidence_percentage >= 75:
+        certainty_level = "High"
+    elif confidence_percentage >= 50:
+        certainty_level = "Moderate"
+    else:
+        certainty_level = "Low"
+
     metadata_items = [
         (
             "Top Category",
             readable_class,
+            "🎯",
+            "Highest probability class",
         ),
         (
             "Model",
-            str(
-                model_name
-            ),
+            str(model_name),
+            "🤖",
+            "Inference engine",
         ),
         (
             "Classes Evaluated",
-            str(
-                len(
-                    probabilities
-                )
-            ),
+            str(len(probabilities)),
+            "📊",
+            "Multi-class evaluation",
         ),
     ]
 
     metadata_html = []
 
-    for (
-        label,
-        value,
-    ) in metadata_items:
+    for label, value, icon, subtext in metadata_items:
         metadata_html.append(
             f"""
-            <div
-                class="
-                    health-result-meta-item
-                "
-            >
-
-                <div
-                    class="
-                        health-result-meta-label
-                    "
-                >
-                    {
-                        escape(
-                            str(
-                                label
-                            )
-                        )
-                    }
+            <div class="health-result-meta-item">
+                <div class="health-meta-icon-box">{icon}</div>
+                <div class="health-meta-content">
+                    <div class="health-result-meta-label">{escape(str(label))}</div>
+                    <div class="health-result-meta-value" title="{escape(str(value))}">{escape(str(value))}</div>
+                    <div class="health-meta-sub">{escape(str(subtext))}</div>
                 </div>
-
-                <div
-                    class="
-                        health-result-meta-value
-                    "
-                >
-                    {
-                        escape(
-                            str(
-                                value
-                            )
-                        )
-                    }
-                </div>
-
             </div>
             """
         )
 
+    confidence_card_html = f"""
+    <div
+        class="health-confidence-card"
+        style="border-color: {category_border};"
+    >
+        <div class="health-confidence-card-header">
+            <span class="health-confidence-kicker">Confidence</span>
+            <span
+                class="health-confidence-badge"
+                style="
+                    background: {category_background};
+                    color: {category_color};
+                    border: 1px solid {category_border};
+                "
+            >
+                {certainty_level}
+            </span>
+        </div>
+
+        <div class="health-confidence-dial-wrap">
+            <div
+                class="health-confidence-dial"
+                style="
+                    background: conic-gradient(
+                        {category_color} 0% {confidence_percentage:.1f}%,
+                        #E2E8F0 {confidence_percentage:.1f}% 100%
+                    );
+                "
+            >
+                <div class="health-confidence-dial-inner">
+                    <div
+                        class="health-confidence-number"
+                        style="color: {category_color};"
+                    >
+                        {confidence_percentage:.1f}<span class="health-confidence-pct-sign">%</span>
+                    </div>
+                    <div class="health-confidence-caption">Certainty</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="health-confidence-meter-container">
+            <div class="health-confidence-bar-track">
+                <div
+                    class="health-confidence-bar-fill"
+                    style="
+                        width: {max(0.0, min(confidence_percentage, 100.0)):.1f}%;
+                        background: {category_color};
+                    "
+                ></div>
+            </div>
+            <div class="health-confidence-scale-labels">
+                <span>0%</span>
+                <span>Model Certainty</span>
+                <span>100%</span>
+            </div>
+        </div>
+    </div>
+    """
+
     st.html(
         f"""
         <section
-            class="
-                health-result-summary
-            "
+            class="health-result-summary"
             style="
-                border-color:
-                {category_border};
-
+                border-color: {category_border};
                 background:
-                linear-gradient(
-                    135deg,
-                    #FFFFFF 0%,
-                    #FFFFFF 58%,
-                    {category_background} 100%
-                );
+                    radial-gradient(circle at 92% 10%, {category_background} 0%, transparent 45%),
+                    linear-gradient(135deg, #FFFFFF 0%, #F8FBFF 55%, {category_background} 100%);
             "
         >
+            <div class="health-result-top">
+                <div class="health-result-main-col">
+                    <div>
+                        <div class="health-result-eyebrow-row">
+                            <span class="health-result-eyebrow">
+                                <span
+                                    class="health-result-live-dot"
+                                    style="background: {category_color};"
+                                ></span>
+                                Model-Predicted Category
+                            </span>
+                            <span class="health-risk-badge {risk_info['class']}">
+                                {risk_info["emoji"]} {risk_info["label"]}
+                            </span>
+                        </div>
 
-            <div
-                class="
-                    health-result-top
-                "
-            >
-
-                <div>
-
-                    <div
-                        class="
-                            health-result-eyebrow
-                        "
-                    >
-                        Model-Predicted Category
-                    </div>
-
-                    <div
-                        class="
-                            health-result-category
-                        "
-                        style="
-                            color:
-                            {category_color};
-                        "
-                    >
-                        {
-                            escape(
-                                readable_class
-                            )
-                        }
-                    </div>
-
-                    <div
-                        class="
-                            health-risk-badge {risk_info['class']}
-                        "
-                    >
-                        {risk_info["emoji"]}
-                        {risk_info["label"]}
-                    </div>
-
-                    <div
-                        class="
-                            health-result-description
-                        "
-                    >
-                        {
-                            escape(
-                                supporting_text
-                            )
-                        }
-                    </div>
-
-                </div>
-
-
-                <div
-                    class="
-                        health-confidence-box
-                    "
-                    style="
-                        border-color:
-                        {category_border};
-
-                        background:
-                        {category_background};
-                    "
-                >
-
-                    <div
-                        class="
-                            health-confidence-label
-                        "
-                    >
-                        Model Confidence
-                    </div>
-
-                    <div
-                        class="
-                            health-confidence-value
-                        "
-                        style="
-                            color:
-                            {category_color};
-                        "
-                    >
-                        {
-                            confidence_percentage
-                        :.2f}%
                         <div
-                            style="
-                                margin-top:0.4rem;
-                                font-size:0.85rem;
-                                font-weight:600;
-                            "
+                            class="health-result-category"
+                            style="color: {category_color};"
                         >
-                            Prediction confidence
+                            {escape(readable_class)}
                         </div>
                     </div>
 
+                    <div class="health-result-description-card">
+                        <span class="health-result-desc-icon">💡</span>
+                        <p class="health-result-desc-text">
+                            {escape(supporting_text)}
+                        </p>
+                    </div>
                 </div>
 
+                {confidence_card_html}
             </div>
 
-
-            <div
-                class="
-                    health-result-meta
-                "
-            >
-                {
-                    "".join(
-                        metadata_html
-                    )
-                }
+            <div class="health-result-meta">
+                {"".join(metadata_html)}
             </div>
-
         </section>
         """
     )

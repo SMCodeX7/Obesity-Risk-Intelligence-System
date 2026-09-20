@@ -10,19 +10,19 @@ CATEGORY_STYLES = {
         "border": "#BBF7D0",
     },
     "Overweight_Level_I": {
-        "color": "#CA8A04",
+        "color": "#D97706",
         "background": "#FEFCE8",
         "border": "#FEF08A",
     },
     "Overweight_Level_II": {
-        "color": "#D97706",
+        "color": "#EA580C",
         "background": "#FFF7ED",
         "border": "#FED7AA",
     },
     "Obesity_Type_I": {
-        "color": "#EA580C",
-        "background": "#FFF7ED",
-        "border": "#FDBA74",
+        "color": "#E11D48",
+        "background": "#FFF1F2",
+        "border": "#FECDD3",
     },
     "Obesity_Type_II": {
         "color": "#DC2626",
@@ -35,6 +35,7 @@ CATEGORY_STYLES = {
         "border": "#FCA5A5",
     },
 }
+
 
 
 DEFAULT_CATEGORY_STYLE = {
