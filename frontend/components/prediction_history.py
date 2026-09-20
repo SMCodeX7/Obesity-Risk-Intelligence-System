@@ -36,14 +36,14 @@ CATEGORY_COLOR_SCALE = alt.Scale(
         "Unavailable",
     ],
     range=[
-        "#16A34A",  # Normal Weight = green
-        "#0284C7",  # Insufficient Weight = blue
-        "#D97706",  # Overweight Level I = amber
-        "#EA580C",  # Overweight Level II = orange
-        "#E11D48",  # Obesity Type I = red
-        "#DC2626",  # Obesity Type II = red
-        "#991B1B",  # Obesity Type III = dark red
-        "#64748B",  # Unavailable = gray
+        "#16A34A",
+        "#0284C7",
+        "#D97706",
+        "#EA580C",
+        "#E11D48",
+        "#DC2626",
+        "#991B1B",
+        "#64748B",
     ],
 )
 
@@ -263,10 +263,10 @@ def _render_clear_history_controls(
     st.write("")
 
     with st.expander(
-        "History management"
+        "History Management"
     ):
         st.markdown(
-            "#### Clear prediction history"
+            "#### Clear Prediction History"
         )
 
         st.caption(
@@ -366,7 +366,7 @@ def _render_clear_history_controls(
                         )
 
                         with st.expander(
-                            "Technical details"
+                            "Technical Details"
                         ):
                             st.code(
                                 str(
@@ -1247,7 +1247,7 @@ DETAIL_GROUP_CONFIG = {
         "theme": "lifestyle",
         "icon": "⚡",
         "kicker": "Lifestyle Factors",
-        "title": "Physical Activity & Behaviors",
+        "title": "Physical Activity & Behaviours",
         "description": "Daily movement, sedentary screen duration, smoking habits, and commute mode.",
         "badge": "5 Parameters",
         "card_class": "health-detail-card--lifestyle",
@@ -1315,7 +1315,6 @@ def _render_detail_group(
         elif value == "no":
             value = "No"
 
-        # Format numeric floats with standard units
         if isinstance(value, float):
             if feature == "Height":
                 value_display = f"{value:.2f} m"
@@ -1376,7 +1375,7 @@ def _render_assessment_inputs(
                     Submitted Assessment Parameters
                 </div>
                 <div class="health-page-description" style="font-size: 0.84rem; margin-top: 0.25rem;">
-                    All 16 clinical parameters stored for this assessment, grouped into biological profile, nutritional habits, and behavioral lifestyle factors.
+                    All 16 clinical parameters stored for this assessment, grouped into biological profile, nutritional habits, and behavioural lifestyle factors.
                 </div>
             </div>
             <span class="health-inputs-count-pill">16 Parameters Recorded</span>
@@ -1800,7 +1799,7 @@ def render_prediction_history(
         )
 
         with st.expander(
-            "Technical details"
+            "Technical Details"
         ):
             st.code(
                 str(
@@ -1983,7 +1982,7 @@ def render_prediction_history(
         )
 
         with st.expander(
-            "Technical details"
+            "Technical Details"
         ):
             st.code(
                 str(
@@ -2022,7 +2021,7 @@ def render_prediction_history(
     )
 
     with st.expander(
-        "View inputs as table"
+        "View Inputs as Table"
     ):
         st.dataframe(
             build_input_dataframe(
@@ -2037,7 +2036,7 @@ def render_prediction_history(
     st.divider()
 
     st.markdown(
-        "### Model result"
+        "### Model Result"
     )
 
     render_prediction_result(
@@ -2049,7 +2048,7 @@ def render_prediction_history(
     st.divider()
 
     st.markdown(
-        "### Assessment report"
+        "### Assessment Report"
     )
 
     st.caption(

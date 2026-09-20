@@ -588,21 +588,6 @@ div[data-testid="stPills"] button {
     transition: all 0.2s ease !important;
 }
 
-/* Sidebar Polish */
-[data-testid="stSidebar"] [data-testid="stMetricValue"] {
-    font-size: 1.32rem !important;
-    white-space: nowrap !important;
-    text-overflow: clip !important;
-    overflow: visible !important;
-}
-
-[data-testid="stSidebar"] [data-testid="stMetricLabel"] {
-    font-size: 0.72rem !important;
-    font-weight: 650 !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.06em !important;
-}
-
 
 .health-page-header {
     margin:
@@ -984,72 +969,6 @@ div[data-testid="stPills"] button {
     line-height: 1.45;
 }
 
-/* Legacy Stepper Compatibility */
-.health-stepper {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0.7rem;
-    margin: 1.3rem 0 1.4rem;
-}
-
-.health-step {
-    display: flex;
-    align-items: center;
-    gap: 0.7rem;
-    padding: 0.82rem 0.95rem;
-    border: 1px solid #E2E8F0;
-    border-radius: 17px;
-    background: #FFFFFF;
-    transition: border-color 0.2s ease, background 0.2s ease;
-}
-
-.health-step.active {
-    border-color: #93C5FD;
-    background: #EFF6FF;
-}
-
-.health-step.complete {
-    border-color: #CCFBF1;
-    background: #F0FDFA;
-}
-
-.health-step-number {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 31px;
-    height: 31px;
-    flex: 0 0 31px;
-    border-radius: 50%;
-    background: #F1F5F9;
-    color: #64748B;
-    font-size: 0.78rem;
-    font-weight: 750;
-}
-
-.health-step.active .health-step-number {
-    background: #2563EB;
-    color: #FFFFFF;
-}
-
-.health-step.complete .health-step-number {
-    background: #CCFBF1;
-    color: #0F766E;
-}
-
-.health-step-name {
-    color: #475569;
-    font-size: 0.83rem;
-    font-weight: 650;
-}
-
-.health-step.active .health-step-name {
-    color: #1D4ED8;
-}
-
-.health-step.complete .health-step-name {
-    color: #0F766E;
-}
 
 /* Step Information Card */
 .health-info-card {
@@ -1524,57 +1443,6 @@ div[data-testid="stPills"] button {
 }
 
 
-
-.health-card {
-    padding: 1.4rem;
-    border: 1px solid var(--clr-border);
-    border-radius: var(--radius-xl);
-    background: var(--clr-surface);
-    box-shadow: var(--shadow-md);
-    transition: transform var(--transition-base) var(--ease-spring),
-                box-shadow var(--transition-base) var(--ease-out);
-}
-
-.health-card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
-}
-
-.health-result-card {
-    padding: 1.5rem;
-    border: 1px solid var(--clr-primary-border);
-    border-radius: var(--radius-xl);
-    background: linear-gradient(135deg, #FFFFFF, #F8FBFF);
-    box-shadow: var(--shadow-md);
-}
-
-
-.health-result-label {
-    color: #64748B;
-
-    font-size: 0.74rem;
-
-    font-weight: 700;
-
-    letter-spacing: 0.075em;
-
-    text-transform: uppercase;
-}
-
-
-.health-result-title {
-    margin-top: 0.35rem;
-
-    color: #0F172A;
-
-    font-size: 2rem;
-
-    font-weight: 780;
-
-    letter-spacing: -0.04em;
-}
-
-
 .health-notice {
     display: flex;
     align-items: flex-start;
@@ -2046,8 +1914,7 @@ div[data-testid="stPills"] button {
     }
 }
 
-.health-risk-badge,
-.health-result-risk-pill {
+.health-risk-badge {
     display: inline-flex;
     align-items: center;
     gap: 0.38rem;
@@ -2312,10 +2179,6 @@ div[data-testid="stPills"] button {
     font-size: 0.6rem;
 }
 
-/* Fallback box */
-.health-confidence-box {
-    display: none;
-}
 
 /* ── Metadata Cards ── */
 .health-result-meta {
@@ -2940,100 +2803,6 @@ div[data-testid="stPills"] button {
 }
 
 
-.health-history-list {
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 0.85rem;
-
-    margin-top: 1rem;
-}
-
-
-.health-history-card {
-    padding: 1rem 1.1rem;
-    border: 1px solid var(--clr-border);
-    border-radius: var(--radius-lg);
-    background: var(--clr-surface);
-    box-shadow: var(--shadow-xs);
-    transition:
-        transform var(--transition-fast) var(--ease-spring),
-        border-color var(--transition-fast) ease,
-        box-shadow var(--transition-fast) ease;
-}
-
-
-.health-history-card:hover {
-    transform: translateY(-1px);
-
-    border-color: #BFDBFE;
-
-    box-shadow:
-        0 10px 24px
-        rgba(
-            15,
-            23,
-            42,
-            0.045
-        );
-}
-
-
-.health-history-header {
-    display: flex;
-
-    justify-content: space-between;
-    align-items: center;
-
-    gap: 1rem;
-
-    flex-wrap: wrap;
-}
-
-
-.health-history-id {
-    color: #2563EB;
-
-    font-size: 0.75rem;
-
-    font-weight: 740;
-}
-
-
-.health-history-date {
-    color: #94A3B8;
-
-    font-size: 0.75rem;
-}
-
-
-.health-history-category {
-    margin-top: 0.45rem;
-
-    color: #0F172A;
-
-    font-size: 1.05rem;
-
-    font-weight: 720;
-}
-
-
-.health-history-details {
-    display: flex;
-
-    gap: 1rem;
-
-    flex-wrap: wrap;
-
-    margin-top: 0.45rem;
-
-    color: #64748B;
-
-    font-size: 0.78rem;
-}
-
-
 .health-empty-state {
     padding: 2rem 1.5rem;
 
@@ -3332,67 +3101,6 @@ div[data-testid="stPills"] button {
     font-weight: 780;
     letter-spacing: -0.015em;
     line-height: 1.25;
-}
-
-
-.health-risk-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.35rem 0.85rem;
-    border-radius: 999px;
-    font-size: 0.78rem;
-    font-weight: 750;
-    letter-spacing: 0.02em;
-    transition: transform 0.2s ease;
-}
-
-.health-risk-badge.insufficient {
-    background: #E0F2FE;
-    color: #0369A1;
-    border: 1px solid rgba(3, 105, 161, 0.2);
-}
-
-.health-risk-badge.low {
-    background: #DCFCE7;
-    color: #166534;
-    border: 1px solid rgba(22, 101, 52, 0.2);
-}
-
-.health-risk-badge.moderate {
-    background: #FEF9C3;
-    color: #854D0E;
-    border: 1px solid rgba(133, 77, 14, 0.2);
-}
-
-.health-risk-badge.moderate-high {
-    background: #FFEDD5;
-    color: #9A3412;
-    border: 1px solid rgba(154, 52, 18, 0.2);
-}
-
-.health-risk-badge.high {
-    background: #FFE4E6;
-    color: #BE123C;
-    border: 1px solid rgba(190, 18, 60, 0.2);
-}
-
-.health-risk-badge.very-high {
-    background: #FEE2E2;
-    color: #B91C1C;
-    border: 1px solid rgba(185, 28, 28, 0.2);
-}
-
-.health-risk-badge.severe {
-    background: #FECACA;
-    color: #7F1D1D;
-    border: 1px solid rgba(127, 29, 29, 0.25);
-}
-
-.health-risk-badge.unknown {
-    background: #F1F5F9;
-    color: #475569;
-    border: 1px solid #E2E8F0;
 }
 
 
@@ -4306,11 +4014,6 @@ div[data-testid="stPills"] button {
     opacity: 0.82;
 }
 
-.bmi-ref-underweight { background: rgba(224, 242, 254, 0.65); color: #0369A1; }
-.bmi-ref-normal      { background: rgba(220, 252, 231, 0.65); color: #166534; }
-.bmi-ref-overweight  { background: rgba(254, 249, 195, 0.65); color: #854D0E; }
-.bmi-ref-obesity     { background: rgba(254, 226, 226, 0.65); color: #991B1B; }
-
 
 /* ── Segmented colour scale ── */
 .health-bmi-scale-wrap {
@@ -4395,13 +4098,6 @@ div[data-testid="stPills"] button {
     color: #94A3B8;
     margin-top: 0.04rem;
 }
-
-/* ── Keep old classes inert (referenced nowhere new but harmless) ── */
-.health-bmi-title,
-.health-bmi-details,
-.health-bmi-age-note,
-.health-bmi-category { display: none; }
-
 
 
 /* ═══════════════════════════════════════
@@ -4628,14 +4324,6 @@ div[data-testid="stDownloadButton"] > button[kind="primary"]:active {
 }
 
 
-/* ── Legacy classes (kept to avoid any breakage) ── */
-.health-report-content,
-.health-report-content ul,
-.health-report-content li,
-.health-report-reference { display: none; }
-
-
-
 @media (
     max-width: 800px
 ) {
@@ -4662,9 +4350,6 @@ div[data-testid="stDownloadButton"] > button[kind="primary"]:active {
         grid-template-columns: 1fr;
     }
 
-    .health-stepper {
-        grid-template-columns: 1fr;
-    }
 
     .health-stepper-cards {
         grid-template-columns: 1fr;
@@ -4735,9 +4420,6 @@ div[data-testid="stDownloadButton"] > button[kind="primary"]:active {
         padding: 1.3rem 1.2rem;
     }
 
-    .health-confidence-box {
-        width: 100%;
-    }
 
     .health-timeline-header {
         flex-direction: column;

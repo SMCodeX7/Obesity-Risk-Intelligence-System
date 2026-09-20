@@ -20,13 +20,11 @@ FORM_WIDGET_KEYS = [
     "input_mtrans",
 ]
 
-
 STEP_NAMES = {
     1: "Personal Information",
     2: "Nutrition Habits",
     3: "Lifestyle Factors",
 }
-
 
 DEFAULT_ASSESSMENT_DATA = {
     "Age": 25.0,
@@ -49,201 +47,70 @@ DEFAULT_ASSESSMENT_DATA = {
 
 
 def initialize_assessment_data():
-    if (
-        "assessment_data"
-        not in st.session_state
-    ):
-        st.session_state[
-            "assessment_data"
-        ] = (
-            DEFAULT_ASSESSMENT_DATA.copy()
-        )
+    if "assessment_data" not in st.session_state:
+        st.session_state["assessment_data"] = DEFAULT_ASSESSMENT_DATA.copy()
 
 
 def get_assessment_data():
     initialize_assessment_data()
-
-    return st.session_state[
-        "assessment_data"
-    ]
+    return st.session_state["assessment_data"]
 
 
-def update_assessment_data(
-    values,
-):
-    current_data = (
-        get_assessment_data().copy()
-    )
-
-    current_data.update(
-        values
-    )
-
-    st.session_state[
-        "assessment_data"
-    ] = current_data
+def update_assessment_data(values):
+    current_data = get_assessment_data().copy()
+    current_data.update(values)
+    st.session_state["assessment_data"] = current_data
 
 
 def reset_assessment_form():
     for key in FORM_WIDGET_KEYS:
-        st.session_state.pop(
-            key,
-            None,
-        )
+        st.session_state.pop(key, None)
 
-    st.session_state.pop(
-        "assessment_data",
-        None,
-    )
-
-    st.session_state[
-        "assessment_step"
-    ] = 1
-
-    st.session_state[
-        "prediction_result"
-    ] = None
+    st.session_state.pop("assessment_data", None)
+    st.session_state["assessment_step"] = 1
+    st.session_state["prediction_result"] = None
 
 
-def build_assessment_payload(
-    data,
-):
+def build_assessment_payload(data):
     return {
-        "Age":
-            float(
-                data[
-                    "Age"
-                ]
-            ),
-
-        "Height":
-            float(
-                data[
-                    "Height"
-                ]
-            ),
-
-        "Weight":
-            float(
-                data[
-                    "Weight"
-                ]
-            ),
-
-        "FCVC":
-            float(
-                data[
-                    "FCVC"
-                ]
-            ),
-
-        "NCP":
-            float(
-                data[
-                    "NCP"
-                ]
-            ),
-
-        "CH2O":
-            float(
-                data[
-                    "CH2O"
-                ]
-            ),
-
-        "FAF":
-            float(
-                data[
-                    "FAF"
-                ]
-            ),
-
-        "TUE":
-            float(
-                data[
-                    "TUE"
-                ]
-            ),
-
-        "CAEC":
-            data[
-                "CAEC"
-            ],
-
-        "CALC":
-            data[
-                "CALC"
-            ],
-
-        "Gender":
-            data[
-                "Gender"
-            ],
-
-        "family_history_with_overweight":
-            data[
-                "family_history_with_overweight"
-            ],
-
-        "FAVC":
-            data[
-                "FAVC"
-            ],
-
-        "SMOKE":
-            data[
-                "SMOKE"
-            ],
-
-        "SCC":
-            data[
-                "SCC"
-            ],
-
-        "MTRANS":
-            data[
-                "MTRANS"
-            ],
+        "Age": float(data["Age"]),
+        "Height": float(data["Height"]),
+        "Weight": float(data["Weight"]),
+        "FCVC": float(data["FCVC"]),
+        "NCP": float(data["NCP"]),
+        "CH2O": float(data["CH2O"]),
+        "FAF": float(data["FAF"]),
+        "TUE": float(data["TUE"]),
+        "CAEC": data["CAEC"],
+        "CALC": data["CALC"],
+        "Gender": data["Gender"],
+        "family_history_with_overweight": data["family_history_with_overweight"],
+        "FAVC": data["FAVC"],
+        "SMOKE": data["SMOKE"],
+        "SCC": data["SCC"],
+        "MTRANS": data["MTRANS"],
     }
 
 
-def _option_index(
-    options,
-    value,
-):
+def _option_index(options, value):
     try:
-        return options.index(
-            value
-        )
-
+        return options.index(value)
     except ValueError:
         return 0
 
 
-def _render_stepper(
-    current_step,
-):
+def _render_stepper(current_step):
     steps_data = [
         (1, "Personal Information", "👤", "Age, gender & measurements"),
         (2, "Nutrition Habits", "🥗", "Eating behaviour & hydration"),
         (3, "Lifestyle Factors", "🏃", "Physical activity & habits"),
     ]
 
-    current_name = STEP_NAMES.get(
-        current_step,
-        "Personal Information",
-    )
-    progress_percent = int(
-        (current_step / 3) * 100
-    )
+    current_name = STEP_NAMES.get(current_step, "Personal Information")
+    progress_percent = int((current_step / 3) * 100)
 
     cards_html = []
-    for (
-        step_num,
-        step_name,
-        icon,
-        step_desc,
-    ) in steps_data:
+    for step_num, step_name, icon, step_desc in steps_data:
         if step_num < current_step:
             state_class = "complete"
             status_badge = '<span class="health-step-badge done">✓ Completed</span>'
@@ -281,7 +148,6 @@ def _render_stepper(
 
     stepper_html = f"""
     <div class="health-stepper-container">
-        <!-- Progress Indicator Panel: Step X of 3 / Title / ━━━━━━○○○ style -->
         <div class="health-progress-panel">
             <div class="health-progress-row">
                 <div class="health-progress-meta">
@@ -311,7 +177,6 @@ def _render_stepper(
             </div>
         </div>
 
-        <!-- 3 Step Cards Grid -->
         <div class="health-stepper-cards">
             {"".join(cards_html)}
         </div>
@@ -321,11 +186,7 @@ def _render_stepper(
     st.html(stepper_html)
 
 
-def _render_step_information(
-    number,
-    title,
-    description,
-):
+def _render_step_information(number, title, description):
     st.html(
         f"""
         <div class="health-info-card">
@@ -345,30 +206,20 @@ def _render_step_information(
     )
 
 
-
 def _render_profile_step():
-    data = (
-        get_assessment_data()
-    )
+    data = get_assessment_data()
 
     _render_step_information(
         number=1,
-        title=(
-            "Personal Information & Body Measurements"
-        ),
+        title="Personal Information & Body Measurements",
         description=(
             "Enter demographic characteristics and anthropometric measurements. "
             "These inputs establish the metabolic baseline for the machine learning risk model."
         ),
     )
 
-    with st.form(
-        "assessment_profile_form"
-    ):
-        # Section 1: Personal Information
-        with st.container(
-            border=True
-        ):
+    with st.form("assessment_profile_form"):
+        with st.container(border=True):
             st.html(
                 """
                 <div class="health-section-header health-section-header--blue">
@@ -385,76 +236,40 @@ def _render_profile_step():
                 """
             )
 
-            col1, col2 = (
-                st.columns(
-                    2,
-                    gap="large",
-                )
-            )
+            col1, col2 = st.columns(2, gap="large")
 
             with col1:
                 age = st.number_input(
                     "Age",
                     min_value=1.0,
                     max_value=120.0,
-                    value=float(
-                        data["Age"]
-                    ),
+                    value=float(data["Age"]),
                     step=1.0,
                     key="input_age",
                     help="Enter age in years.",
                 )
 
             with col2:
-                gender_options = [
-                    "Female",
-                    "Male",
-                ]
-
+                gender_options = ["Female", "Male"]
                 gender = st.selectbox(
                     "Gender",
                     options=gender_options,
-                    index=_option_index(
-                        gender_options,
-                        data["Gender"],
-                    ),
+                    index=_option_index(gender_options, data["Gender"]),
                     key="input_gender",
                     help="Select biological sex category used in clinical model training.",
                 )
 
-            col3, col4 = (
-                st.columns(
-                    2,
-                    gap="large",
-                )
-            )
+            col3, col4 = st.columns(2, gap="large")
 
             with col3:
-                family_options = [
-                    "yes",
-                    "no",
-                ]
-
-                family_history = (
-                    st.selectbox(
-                        (
-                            "Family history of overweight"
-                        ),
-                        options=family_options,
-                        index=_option_index(
-                            family_options,
-                            data[
-                                "family_history_with_overweight"
-                            ],
-                        ),
-                        key="input_family_history",
-                        format_func=lambda value: (
-                            "Yes"
-                            if value == "yes"
-                            else "No"
-                        ),
-                        help="Indicates whether overweight has occurred within the family.",
-                    )
+                family_options = ["yes", "no"]
+                family_history = st.selectbox(
+                    "Family history of overweight",
+                    options=family_options,
+                    index=_option_index(family_options, data["family_history_with_overweight"]),
+                    key="input_family_history",
+                    format_func=lambda value: "Yes" if value == "yes" else "No",
+                    help="Indicates whether overweight has occurred within the family.",
                 )
 
             with col4:
@@ -467,10 +282,7 @@ def _render_profile_step():
                     """
                 )
 
-        # Section 2: Body Measurements
-        with st.container(
-            border=True
-        ):
+        with st.container(border=True):
             st.html(
                 """
                 <div class="health-section-header health-section-header--indigo">
@@ -487,21 +299,14 @@ def _render_profile_step():
                 """
             )
 
-            m_col1, m_col2 = (
-                st.columns(
-                    2,
-                    gap="large",
-                )
-            )
+            m_col1, m_col2 = st.columns(2, gap="large")
 
             with m_col1:
                 height = st.number_input(
                     "Height (metres)",
                     min_value=0.50,
                     max_value=2.50,
-                    value=float(
-                        data["Height"]
-                    ),
+                    value=float(data["Height"]),
                     step=0.01,
                     format="%.2f",
                     key="input_height",
@@ -513,9 +318,7 @@ def _render_profile_step():
                     "Weight (kg)",
                     min_value=10.0,
                     max_value=350.0,
-                    value=float(
-                        data["Weight"]
-                    ),
+                    value=float(data["Weight"]),
                     step=0.5,
                     format="%.1f",
                     key="input_weight",
@@ -536,12 +339,10 @@ def _render_profile_step():
 
         st.write("")
 
-        submitted = (
-            st.form_submit_button(
-                "Continue to Nutrition Habits →",
-                type="primary",
-                width="stretch",
-            )
+        submitted = st.form_submit_button(
+            "Continue to Nutrition Habits →",
+            type="primary",
+            width="stretch",
         )
 
     if submitted:
@@ -554,19 +355,12 @@ def _render_profile_step():
                 "family_history_with_overweight": family_history,
             }
         )
-
-        st.session_state[
-            "assessment_step"
-        ] = 2
-
+        st.session_state["assessment_step"] = 2
         st.rerun()
 
 
-
 def _render_nutrition_step():
-    data = (
-        get_assessment_data()
-    )
+    data = get_assessment_data()
 
     _render_step_information(
         number=2,
@@ -577,13 +371,8 @@ def _render_nutrition_step():
         ),
     )
 
-    with st.form(
-        "assessment_nutrition_form"
-    ):
-        # Eating Behaviour Card
-        with st.container(
-            border=True
-        ):
+    with st.form("assessment_nutrition_form"):
+        with st.container(border=True):
             st.html(
                 """
                 <div class="health-section-header health-section-header--green">
@@ -600,42 +389,27 @@ def _render_nutrition_step():
                 """
             )
 
-            left, right = (
-                st.columns(
-                    2,
-                    gap="large",
-                )
-            )
+            left, right = st.columns(2, gap="large")
 
             with left:
                 fcvc = st.slider(
-                    (
-                        "Vegetable consumption score"
-                    ),
+                    "Vegetable consumption score",
                     min_value=1.0,
                     max_value=3.0,
-                    value=float(
-                        data["FCVC"]
-                    ),
+                    value=float(data["FCVC"]),
                     step=0.1,
                     key="input_fcvc",
-                    help=(
-                        "Model feature FCVC. Scale ranges from 1 (rarely) to 3 (always)."
-                    ),
+                    help="Model feature FCVC. Scale ranges from 1 (rarely) to 3 (always).",
                 )
 
                 ncp = st.slider(
                     "Main meal score",
                     min_value=1.0,
                     max_value=4.0,
-                    value=float(
-                        data["NCP"]
-                    ),
+                    value=float(data["NCP"]),
                     step=0.1,
                     key="input_ncp",
-                    help=(
-                        "Model feature NCP. Number of main meals per day (1 to 4)."
-                    ),
+                    help="Model feature NCP. Number of main meals per day (1 to 4).",
                 )
 
             with right:
@@ -645,54 +419,26 @@ def _render_nutrition_step():
                     "Frequently",
                     "Always",
                 ]
-
                 caec = st.selectbox(
                     "Food between meals",
                     options=caec_options,
-                    index=_option_index(
-                        caec_options,
-                        data["CAEC"],
-                    ),
+                    index=_option_index(caec_options, data["CAEC"]),
                     key="input_caec",
-                    format_func=lambda value: (
-                        "No"
-                        if value == "no"
-                        else value
-                    ),
-                    help=(
-                        "How frequently food is consumed between main meals."
-                    ),
+                    format_func=lambda value: "No" if value == "no" else value,
+                    help="How frequently food is consumed between main meals.",
                 )
 
-                favc_options = [
-                    "yes",
-                    "no",
-                ]
-
+                favc_options = ["yes", "no"]
                 favc = st.selectbox(
-                    (
-                        "Frequent high-calorie food consumption"
-                    ),
+                    "Frequent high-calorie food consumption",
                     options=favc_options,
-                    index=_option_index(
-                        favc_options,
-                        data["FAVC"],
-                    ),
+                    index=_option_index(favc_options, data["FAVC"]),
                     key="input_favc",
-                    format_func=lambda value: (
-                        "Yes"
-                        if value == "yes"
-                        else "No"
-                    ),
-                    help=(
-                        "Whether high-calorie or processed foods are consumed frequently."
-                    ),
+                    format_func=lambda value: "Yes" if value == "yes" else "No",
+                    help="Whether high-calorie or processed foods are consumed frequently.",
                 )
 
-        # Hydration & Intake Card
-        with st.container(
-            border=True
-        ):
+        with st.container(border=True):
             st.html(
                 """
                 <div class="health-section-header health-section-header--cyan">
@@ -709,28 +455,17 @@ def _render_nutrition_step():
                 """
             )
 
-            h_left, h_right = (
-                st.columns(
-                    2,
-                    gap="large",
-                )
-            )
+            h_left, h_right = st.columns(2, gap="large")
 
             with h_left:
                 ch2o = st.slider(
-                    (
-                        "Daily water consumption score"
-                    ),
+                    "Daily water consumption score",
                     min_value=1.0,
                     max_value=3.0,
-                    value=float(
-                        data["CH2O"]
-                    ),
+                    value=float(data["CH2O"]),
                     step=0.1,
                     key="input_ch2o",
-                    help=(
-                        "Model feature CH2O. Daily hydration scale (1: <1L, 2: 1-2L, 3: >2L)."
-                    ),
+                    help="Model feature CH2O. Daily hydration scale (1: <1L, 2: 1-2L, 3: >2L).",
                 )
 
             with h_right:
@@ -739,57 +474,33 @@ def _render_nutrition_step():
                     "Sometimes",
                     "Frequently",
                 ]
-
                 calc = st.selectbox(
                     "Alcohol consumption",
                     options=calc_options,
-                    index=_option_index(
-                        calc_options,
-                        data["CALC"],
-                    ),
+                    index=_option_index(calc_options, data["CALC"]),
                     key="input_calc",
-                    format_func=lambda value: (
-                        "No"
-                        if value == "no"
-                        else value
-                    ),
-                    help=(
-                        "Frequency of alcohol consumption represented by model feature CALC."
-                    ),
+                    format_func=lambda value: "No" if value == "no" else value,
+                    help="Frequency of alcohol consumption represented by model feature CALC.",
                 )
 
         st.write("")
 
-        navigation_left, (
-            navigation_right
-        ) = st.columns(
-            2,
-            gap="medium",
-        )
+        navigation_left, navigation_right = st.columns(2, gap="medium")
 
         with navigation_left:
-            back_button = (
-                st.form_submit_button(
-                    "← Back to Profile",
-                    width="stretch",
-                )
+            back_button = st.form_submit_button(
+                "← Back to Profile",
+                width="stretch",
             )
 
         with navigation_right:
-            continue_button = (
-                st.form_submit_button(
-                    (
-                        "Continue to Lifestyle Factors →"
-                    ),
-                    type="primary",
-                    width="stretch",
-                )
+            continue_button = st.form_submit_button(
+                "Continue to Lifestyle Factors →",
+                type="primary",
+                width="stretch",
             )
 
-    if (
-        back_button
-        or continue_button
-    ):
+    if back_button or continue_button:
         update_assessment_data(
             {
                 "FCVC": float(fcvc),
@@ -802,25 +513,16 @@ def _render_nutrition_step():
         )
 
     if back_button:
-        st.session_state[
-            "assessment_step"
-        ] = 1
-
+        st.session_state["assessment_step"] = 1
         st.rerun()
 
     if continue_button:
-        st.session_state[
-            "assessment_step"
-        ] = 3
-
+        st.session_state["assessment_step"] = 3
         st.rerun()
 
 
-
 def _render_lifestyle_step():
-    data = (
-        get_assessment_data()
-    )
+    data = get_assessment_data()
 
     _render_step_information(
         number=3,
@@ -831,13 +533,8 @@ def _render_lifestyle_step():
         ),
     )
 
-    with st.form(
-        "assessment_lifestyle_form"
-    ):
-        # Section 3: Activity & Technology
-        with st.container(
-            border=True
-        ):
+    with st.form("assessment_lifestyle_form"):
+        with st.container(border=True):
             st.html(
                 """
                 <div class="health-section-header health-section-header--orange">
@@ -854,51 +551,31 @@ def _render_lifestyle_step():
                 """
             )
 
-            left, right = (
-                st.columns(
-                    2,
-                    gap="large",
-                )
-            )
+            left, right = st.columns(2, gap="large")
 
             with left:
                 faf = st.slider(
-                    (
-                        "Physical activity score"
-                    ),
+                    "Physical activity score",
                     min_value=0.0,
                     max_value=3.0,
-                    value=float(
-                        data["FAF"]
-                    ),
+                    value=float(data["FAF"]),
                     step=0.1,
                     key="input_faf",
-                    help=(
-                        "Model feature FAF. Physical activity frequency (0: none, 3: high)."
-                    ),
+                    help="Model feature FAF. Physical activity frequency (0: none, 3: high).",
                 )
 
             with right:
                 tue = st.slider(
-                    (
-                        "Technology usage score"
-                    ),
+                    "Technology usage score",
                     min_value=0.0,
                     max_value=2.0,
-                    value=float(
-                        data["TUE"]
-                    ),
+                    value=float(data["TUE"]),
                     step=0.1,
                     key="input_tue",
-                    help=(
-                        "Model feature TUE. Daily hours spent on electronic devices (0 to 2)."
-                    ),
+                    help="Model feature TUE. Daily hours spent on electronic devices (0 to 2).",
                 )
 
-        # Section 3: Daily Habits & Mobility
-        with st.container(
-            border=True
-        ):
+        with st.container(border=True):
             st.html(
                 """
                 <div class="health-section-header health-section-header--orange">
@@ -915,57 +592,28 @@ def _render_lifestyle_step():
                 """
             )
 
-            col1, col2, col3 = (
-                st.columns(
-                    3,
-                    gap="medium",
-                )
-            )
+            col1, col2, col3 = st.columns(3, gap="medium")
 
             with col1:
-                smoke_options = [
-                    "no",
-                    "yes",
-                ]
-
+                smoke_options = ["no", "yes"]
                 smoke = st.selectbox(
                     "Smoking status",
                     options=smoke_options,
-                    index=_option_index(
-                        smoke_options,
-                        data["SMOKE"],
-                    ),
+                    index=_option_index(smoke_options, data["SMOKE"]),
                     key="input_smoke",
-                    format_func=lambda value: (
-                        "No"
-                        if value == "no"
-                        else "Yes"
-                    ),
+                    format_func=lambda value: "No" if value == "no" else "Yes",
                     help="Indicates active tobacco smoking.",
                 )
 
             with col2:
-                scc_options = [
-                    "no",
-                    "yes",
-                ]
-
+                scc_options = ["no", "yes"]
                 scc = st.selectbox(
                     "Calorie monitoring",
                     options=scc_options,
-                    index=_option_index(
-                        scc_options,
-                        data["SCC"],
-                    ),
+                    index=_option_index(scc_options, data["SCC"]),
                     key="input_scc",
-                    format_func=lambda value: (
-                        "No"
-                        if value == "no"
-                        else "Yes"
-                    ),
-                    help=(
-                        "Whether daily calorie consumption is actively tracked."
-                    ),
+                    format_func=lambda value: "No" if value == "no" else "Yes",
+                    help="Whether daily calorie consumption is actively tracked.",
                 )
 
             with col3:
@@ -976,25 +624,12 @@ def _render_lifestyle_step():
                     "Motorbike",
                     "Bike",
                 ]
-
                 mtrans = st.selectbox(
-                    (
-                        "Primary transportation"
-                    ),
-                    options=(
-                        transport_options
-                    ),
-                    index=_option_index(
-                        transport_options,
-                        data["MTRANS"],
-                    ),
+                    "Primary transportation",
+                    options=transport_options,
+                    index=_option_index(transport_options, data["MTRANS"]),
                     key="input_mtrans",
-                    format_func=lambda value: (
-                        value.replace(
-                            "_",
-                            " ",
-                        )
-                    ),
+                    format_func=lambda value: value.replace("_", " "),
                     help="Primary commuting method for physical exertion calculation.",
                 )
 
@@ -1012,34 +647,22 @@ def _render_lifestyle_step():
 
         st.write("")
 
-        navigation_left, (
-            navigation_right
-        ) = st.columns(
-            2,
-            gap="medium",
-        )
+        navigation_left, navigation_right = st.columns(2, gap="medium")
 
         with navigation_left:
-            back_button = (
-                st.form_submit_button(
-                    "← Back to Nutrition",
-                    width="stretch",
-                )
+            back_button = st.form_submit_button(
+                "← Back to Nutrition",
+                width="stretch",
             )
 
         with navigation_right:
-            submit_button = (
-                st.form_submit_button(
-                    "Run Risk Assessment 🚀",
-                    type="primary",
-                    width="stretch",
-                )
+            submit_button = st.form_submit_button(
+                "Run Risk Assessment",
+                type="primary",
+                width="stretch",
             )
 
-    if (
-        back_button
-        or submit_button
-    ):
+    if back_button or submit_button:
         update_assessment_data(
             {
                 "FAF": float(faf),
@@ -1051,73 +674,37 @@ def _render_lifestyle_step():
         )
 
     if back_button:
-        st.session_state[
-            "assessment_step"
-        ] = 2
-
+        st.session_state["assessment_step"] = 2
         st.rerun()
 
     if submit_button:
-        return (
-            build_assessment_payload(
-                get_assessment_data()
-            )
-        )
+        return build_assessment_payload(get_assessment_data())
 
     return None
 
 
-
 def render_assessment_form():
-    is_new_assessment_state = (
-        "assessment_data"
-        not in st.session_state
-    )
+    is_new_assessment_state = "assessment_data" not in st.session_state
 
     initialize_assessment_data()
 
-    if (
-        "assessment_step"
-        not in st.session_state
-        or is_new_assessment_state
-    ):
-        st.session_state[
-            "assessment_step"
-        ] = 1
+    if "assessment_step" not in st.session_state or is_new_assessment_state:
+        st.session_state["assessment_step"] = 1
 
-    current_step = (
-        st.session_state[
-            "assessment_step"
-        ]
-    )
+    current_step = st.session_state["assessment_step"]
 
-    if current_step not in (
-        1,
-        2,
-        3,
-    ):
+    if current_step not in (1, 2, 3):
         current_step = 1
+        st.session_state["assessment_step"] = 1
 
-        st.session_state[
-            "assessment_step"
-        ] = 1
-
-    _render_stepper(
-        current_step
-    )
+    _render_stepper(current_step)
 
     if current_step == 1:
-
         _render_profile_step()
-
         return None
 
     if current_step == 2:
-
         _render_nutrition_step()
-
         return None
 
-    return (
-        _render_lifestyle_step()
-    )
+    return _render_lifestyle_step()

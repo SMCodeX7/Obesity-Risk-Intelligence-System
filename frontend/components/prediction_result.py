@@ -3,37 +3,19 @@ from html import escape
 import pandas as pd
 import streamlit as st
 
-from frontend.category_styles import (
-    get_category_style,
-)
-from frontend.time_utils import (
-    format_sri_lanka_datetime,
-)
+from frontend.category_styles import get_category_style
+from frontend.time_utils import format_sri_lanka_datetime
 
 
 CLASS_LABELS = {
-    "Insufficient_Weight":
-        "Insufficient Weight",
-
-    "Normal_Weight":
-        "Normal Weight",
-
-    "Overweight_Level_I":
-        "Overweight Level I",
-
-    "Overweight_Level_II":
-        "Overweight Level II",
-
-    "Obesity_Type_I":
-        "Obesity Type I",
-
-    "Obesity_Type_II":
-        "Obesity Type II",
-
-    "Obesity_Type_III":
-        "Obesity Type III",
+    "Insufficient_Weight": "Insufficient Weight",
+    "Normal_Weight": "Normal Weight",
+    "Overweight_Level_I": "Overweight Level I",
+    "Overweight_Level_II": "Overweight Level II",
+    "Obesity_Type_I": "Obesity Type I",
+    "Obesity_Type_II": "Obesity Type II",
+    "Obesity_Type_III": "Obesity Type III",
 }
-
 
 CLASS_ORDER = [
     "Insufficient_Weight",
@@ -45,44 +27,37 @@ CLASS_ORDER = [
     "Obesity_Type_III",
 ]
 
-
 RISK_LEVEL_MAP = {
     "Insufficient_Weight": {
         "label": "Low Risk · Underweight",
         "emoji": "🔵",
         "class": "insufficient",
     },
-
     "Normal_Weight": {
         "label": "Optimal Range · Low Risk",
         "emoji": "🟢",
         "class": "low",
     },
-
     "Overweight_Level_I": {
         "label": "Moderate Risk · Grade I",
         "emoji": "🟡",
         "class": "moderate",
     },
-
     "Overweight_Level_II": {
         "label": "Elevated Risk · Grade II",
         "emoji": "🟠",
         "class": "moderate-high",
     },
-
     "Obesity_Type_I": {
         "label": "High Risk · Class I",
         "emoji": "🔴",
         "class": "high",
     },
-
     "Obesity_Type_II": {
         "label": "Very High Risk · Class II",
         "emoji": "🔴",
         "class": "very-high",
     },
-
     "Obesity_Type_III": {
         "label": "Severe Clinical Risk · Class III",
         "emoji": "🚨",
@@ -91,129 +66,45 @@ RISK_LEVEL_MAP = {
 }
 
 
-def format_class_name(
-    class_name,
-):
-    return CLASS_LABELS.get(
-        class_name,
-        str(
-            class_name
-        ).replace(
-            "_",
-            " ",
-        ),
-    )
+def format_class_name(class_name):
+    return CLASS_LABELS.get(class_name, str(class_name).replace("_", " "))
 
 
-def build_probability_dataframe(
-    probabilities,
-):
+def build_probability_dataframe(probabilities):
     rows = []
-
     for class_name in CLASS_ORDER:
-        probability = float(
-            probabilities.get(
-                class_name,
-                0.0,
-            )
-        )
-
+        probability = float(probabilities.get(class_name, 0.0))
         rows.append(
             {
-                "Category":
-                    format_class_name(
-                        class_name
-                    ),
-
-                "Probability":
-                    probability,
-
-                "Probability (%)":
-                    probability
-                    * 100,
+                "Category": format_class_name(class_name),
+                "Probability": probability,
+                "Probability (%)": probability * 100,
             }
         )
 
-    dataframe = pd.DataFrame(
-        rows
-    )
-
-    return dataframe.sort_values(
-        by="Probability",
-        ascending=False,
-        ignore_index=True,
-    )
+    dataframe = pd.DataFrame(rows)
+    return dataframe.sort_values(by="Probability", ascending=False, ignore_index=True)
 
 
-def _build_probability_html(
-    probabilities,
-    predicted_class=None,
-):
+def _build_probability_html(probabilities, predicted_class=None):
     sorted_classes = sorted(
         CLASS_ORDER,
-        key=lambda class_name:
-            float(
-                probabilities.get(
-                    class_name,
-                    0.0,
-                )
-            ),
+        key=lambda class_name: float(probabilities.get(class_name, 0.0)),
         reverse=True,
     )
 
     rows = []
-
     for rank, class_name in enumerate(sorted_classes, start=1):
-        probability = float(
-            probabilities.get(
-                class_name,
-                0.0,
-            )
-        )
+        probability = float(probabilities.get(class_name, 0.0))
+        category = escape(format_class_name(class_name))
+        category_style = get_category_style(class_name)
+        category_color = category_style["color"]
+        category_background = category_style["background"]
+        category_border = category_style["border"]
 
-        category = escape(
-            format_class_name(
-                class_name
-            )
-        )
-
-        category_style = (
-            get_category_style(
-                class_name
-            )
-        )
-
-        category_color = (
-            category_style[
-                "color"
-            ]
-        )
-
-        category_background = (
-            category_style[
-                "background"
-            ]
-        )
-
-        category_border = (
-            category_style[
-                "border"
-            ]
-        )
-
-        percentage = (
-            probability
-            * 100
-        )
-
+        percentage = probability * 100
         min_visual_pct = 1.0 if probability > 0 else 0.0
-        bar_width = max(
-            min_visual_pct,
-            min(
-                percentage,
-                100.0,
-            ),
-        )
+        bar_width = max(min_visual_pct, min(percentage, 100.0))
 
         is_top = (rank == 1)
         is_predicted = (class_name == predicted_class)
@@ -271,8 +162,8 @@ def _build_probability_html(
             )
         else:
             row_inline_style = (
-                f"border-color: rgba(226, 232, 240, 0.85); "
-                f"background: #FFFFFF;"
+                "border-color: rgba(226, 232, 240, 0.85); "
+                "background: #FFFFFF;"
             )
 
         val_extra_class = " health-prob-val--top" if is_top else ""
@@ -289,7 +180,6 @@ def _build_probability_html(
                 style="{row_inline_style}"
             >
                 <div class="health-probability-header">
-
                     <div class="health-prob-name-group">
                         {rank_badge}
                         <span
@@ -326,7 +216,6 @@ def _build_probability_html(
                             {percentage:.2f}%
                         </span>
                     </div>
-
                 </div>
 
                 <div class="health-probability-track">
@@ -339,95 +228,41 @@ def _build_probability_html(
                         "
                     ></div>
                 </div>
-
             </div>
             """
         )
 
-    return "".join(
-        rows
-    )
+    return "".join(rows)
 
 
-def _get_second_highest_class(
-    probabilities,
-):
-    dataframe = (
-        build_probability_dataframe(
-            probabilities
-        )
-    )
-
-    if len(
-        dataframe
-    ) < 2:
+def _get_second_highest_class(probabilities):
+    dataframe = build_probability_dataframe(probabilities)
+    if len(dataframe) < 2:
         return None
 
     return {
-        "category":
-            dataframe.iloc[
-                1
-            ][
-                "Category"
-            ],
-
-        "probability":
-            float(
-                dataframe.iloc[
-                    1
-                ][
-                    "Probability"
-                ]
-            ),
+        "category": dataframe.iloc[1]["Category"],
+        "probability": float(dataframe.iloc[1]["Probability"]),
     }
 
 
-def _sanitize_technical_details(
-    value,
-):
-    if isinstance(
-        value,
-        dict,
-    ):
+def _sanitize_technical_details(value):
+    if isinstance(value, dict):
         return {
-            key:
-                _sanitize_technical_details(
-                    item
-                )
-            for key, item
-            in value.items()
-            if key not in {
-                "id",
-                "prediction_id",
-            }
+            key: _sanitize_technical_details(item)
+            for key, item in value.items()
+            if key not in {"id", "prediction_id"}
         }
 
-    if isinstance(
-        value,
-        list,
-    ):
-        return [
-            _sanitize_technical_details(
-                item
-            )
-            for item in value
-        ]
+    if isinstance(value, list):
+        return [_sanitize_technical_details(item) for item in value]
 
     return value
 
 
-def render_prediction_result(
-    result,
-):
-    if not isinstance(
-        result,
-        dict,
-    ):
-        st.error(
-            "Prediction result "
-            "is unavailable."
-        )
-
+def render_prediction_result(result):
+    if not isinstance(result, dict):
+        st.error("Prediction result is unavailable.")
         return
 
     required_fields = {
@@ -436,27 +271,12 @@ def render_prediction_result(
         "probabilities",
     }
 
-    if not required_fields.issubset(
-        result.keys()
-    ):
-        st.error(
-            "Prediction result "
-            "is incomplete."
-        )
-
+    if not required_fields.issubset(result.keys()):
+        st.error("Prediction result is incomplete.")
         return
 
-    predicted_class = (
-        result[
-            "predicted_class"
-        ]
-    )
-
-    readable_class = (
-        format_class_name(
-            predicted_class
-        )
-    )
+    predicted_class = result["predicted_class"]
+    readable_class = format_class_name(predicted_class)
 
     risk_info = RISK_LEVEL_MAP.get(
         predicted_class,
@@ -466,92 +286,31 @@ def render_prediction_result(
             "class": "unknown",
         },
     )
-    
-    category_style = (
-        get_category_style(
-            predicted_class
-        )
-    )
 
-    category_color = (
-        category_style[
-            "color"
-        ]
-    )
+    category_style = get_category_style(predicted_class)
+    category_color = category_style["color"]
+    category_background = category_style["background"]
+    category_border = category_style["border"]
 
-    category_background = (
-        category_style[
-            "background"
-        ]
-    )
+    confidence = float(result["confidence"])
+    confidence_percentage = confidence * 100
+    probabilities = result.get("probabilities") or {}
+    model_name = result.get("model_name") or "Unavailable"
 
-    category_border = (
-        category_style[
-            "border"
-        ]
-    )
+    created_at_value = result.get("created_at")
+    created_at = format_sri_lanka_datetime(created_at_value) if created_at_value else None
 
-    confidence = float(
-        result[
-            "confidence"
-        ]
-    )
-
-    confidence_percentage = (
-        confidence
-        * 100
-    )
-
-    probabilities = (
-        result[
-            "probabilities"
-        ]
-        or {}
-    )
-
-    model_name = (
-        result.get(
-            "model_name"
-        )
-        or "Unavailable"
-    )
-
-    created_at_value = (
-        result.get(
-            "created_at"
-        )
-    )
-
-    created_at = (
-        format_sri_lanka_datetime(
-            created_at_value
-        )
-        if created_at_value
-        else None
-    )
-
-    second_highest = (
-        _get_second_highest_class(
-            probabilities
-        )
-    )
+    second_highest = _get_second_highest_class(probabilities)
 
     if second_highest is None:
         supporting_text = (
-            "The model assigned this "
-            "category the highest "
-            "predicted probability."
+            "The model assigned this category the highest predicted probability."
         )
-
     else:
         supporting_text = (
-            "The model assigned the "
-            "highest probability to "
-            f"{readable_class}. The "
-            "next most likely category "
-            f"was {second_highest['category']} "
-            f"at "
-            f"{second_highest['probability'] * 100:.2f}%."
+            f"The model assigned the highest probability to {readable_class}. "
+            f"The next most likely category was {second_highest['category']} "
+            f"at {second_highest['probability'] * 100:.2f}%."
         )
 
     if confidence_percentage >= 90:
@@ -564,28 +323,12 @@ def render_prediction_result(
         certainty_level = "Low"
 
     metadata_items = [
-        (
-            "Top Category",
-            readable_class,
-            "🎯",
-            "Highest probability class",
-        ),
-        (
-            "Model",
-            str(model_name),
-            "🤖",
-            "Inference engine",
-        ),
-        (
-            "Classes Evaluated",
-            str(len(probabilities)),
-            "📊",
-            "Multi-class evaluation",
-        ),
+        ("Top Category", readable_class, "🎯", "Highest probability class"),
+        ("Model", str(model_name), "🤖", "Inference engine"),
+        ("Classes Evaluated", str(len(probabilities)), "📊", "Multi-class evaluation"),
     ]
 
     metadata_html = []
-
     for label, value, icon, subtext in metadata_items:
         metadata_html.append(
             f"""
@@ -758,39 +501,20 @@ def render_prediction_result(
             </div>
 
             <div class="health-probability-list">
-                {
-                    _build_probability_html(
-                        probabilities,
-                        predicted_class=predicted_class,
-                    )
-                }
+                {_build_probability_html(probabilities, predicted_class=predicted_class)}
             </div>
         </section>
         """
     )
 
-    probability_sum = sum(
-        float(
-            value
-        )
-        for value
-        in probabilities.values()
-    )
+    probability_sum = sum(float(value) for value in probabilities.values())
 
-    if abs(
-        probability_sum
-        - 1.0
-    ) > 0.01:
-        st.warning(
-            "The returned class "
-            "probabilities do not sum "
-            "to approximately 100%."
-        )
+    if abs(probability_sum - 1.0) > 0.01:
+        st.warning("The returned class probabilities do not sum to approximately 100%.")
 
     st.html(
         """
         <section class="health-explanation-card">
-
             <div class="health-explanation-header">
                 <span class="health-explanation-kicker">Clinical Signal Attribution</span>
                 <div class="health-section-title">
@@ -799,12 +523,11 @@ def render_prediction_result(
                 <div class="health-section-description">
                     The AI system evaluated 16 multidimensional health signals from
                     your assessment, spanning physical measurements, nutritional patterns,
-                    and lifestyle behaviors.
+                    and lifestyle behaviours.
                 </div>
             </div>
 
             <div class="health-explanation-grid">
-
                 <div class="health-explanation-item physical">
                     <div>
                         <div class="health-module-code">Module 01 · Anthropometric</div>
@@ -864,7 +587,7 @@ def render_prediction_result(
 
                 <div class="health-explanation-item lifestyle">
                     <div>
-                        <div class="health-module-code">Module 03 · Behavioral Dynamics</div>
+                        <div class="health-module-code">Module 03 · Behavioural Dynamics</div>
                         <div class="health-explanation-item-header">
                             <div class="health-explanation-item-icon">🏃</div>
                             <span class="health-factor-badge lifestyle">5 Signals</span>
@@ -887,12 +610,10 @@ def render_prediction_result(
                     </div>
                     <div class="health-module-impact">
                         <span class="health-impact-label">Clinical Impact</span>
-                        <span class="health-impact-pill lifestyle">Behavioral Factor</span>
+                        <span class="health-impact-pill lifestyle">Behavioural Factor</span>
                     </div>
                 </div>
-
             </div>
-
         </section>
         """
     )
@@ -917,20 +638,9 @@ def render_prediction_result(
     )
 
     if created_at:
-        st.caption(
-            f"Assessment recorded: "
-            f"{created_at}"
-        )
+        st.caption(f"Assessment recorded: {created_at}")
 
-    technical_details = (
-        _sanitize_technical_details(
-            result
-        )
-    )
+    technical_details = _sanitize_technical_details(result)
 
-    with st.expander(
-        "Technical prediction details"
-    ):
-        st.json(
-            technical_details
-        )
+    with st.expander("Technical Prediction Details"):
+        st.json(technical_details)

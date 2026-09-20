@@ -1,90 +1,56 @@
 import streamlit as st
 
 
-def _calculate_bmi(
-    height,
-    weight,
-):
+def _calculate_bmi(height, weight):
     if height <= 0:
         return None
-
-    return weight / (
-        height ** 2
-    )
+    return weight / (height ** 2)
 
 
-def _get_bmi_category(
-    bmi,
-    age,
-):
+def _get_bmi_category(bmi, age):
     if age < 20:
         return {
-            "label":
-                "Age-specific BMI interpretation required",
-            "class":
-                "age-specific",
+            "label": "Age-specific BMI interpretation required",
+            "class": "age-specific",
         }
 
     if bmi < 18.5:
         return {
-            "label":
-                "Underweight range",
-            "class":
-                "underweight",
+            "label": "Underweight range",
+            "class": "underweight",
         }
 
     if bmi < 25:
         return {
-            "label":
-                "Normal range",
-            "class":
-                "normal",
+            "label": "Normal range",
+            "class": "normal",
         }
 
     if bmi < 30:
         return {
-            "label":
-                "Overweight range",
-            "class":
-                "overweight",
+            "label": "Overweight range",
+            "class": "overweight",
         }
 
     return {
-        "label":
-            "Obesity range",
-        "class":
-            "obesity",
+        "label": "Obesity range",
+        "class": "obesity",
     }
 
 
-def render_bmi_indicator(
-    age,
-    height,
-    weight,
-):
+def render_bmi_indicator(age, height, weight):
     try:
         age = float(age)
         height = float(height)
         weight = float(weight)
-
-    except (
-        TypeError,
-        ValueError,
-    ):
+    except (TypeError, ValueError):
         return
 
-    bmi = _calculate_bmi(
-        height,
-        weight,
-    )
-
+    bmi = _calculate_bmi(height, weight)
     if bmi is None:
         return
 
-    category = _get_bmi_category(
-        bmi,
-        age,
-    )
+    category = _get_bmi_category(bmi, age)
 
     if age < 20:
         bmi_notice_extra = """
@@ -97,21 +63,8 @@ def render_bmi_indicator(
     else:
         bmi_notice_extra = ""
 
-    bmi_position = max(
-        0,
-        min(
-            (
-                (bmi - 10)
-                / (45 - 10)
-            )
-            * 100,
-            100,
-        ),
-    )
+    bmi_position = max(0, min(((bmi - 10) / (45 - 10)) * 100, 100))
 
-
-
-    # Build per-segment reference rows (value ranges fixed — no logic change)
     ranges = [
         ("Underweight", "&lt; 18.5", "underweight"),
         ("Normal weight", "18.5 – 24.9", "normal"),
@@ -129,8 +82,6 @@ def render_bmi_indicator(
     st.html(
         f"""
         <section class="health-bmi-card">
-
-            <!-- ── Header ── -->
             <div class="health-bmi-header">
                 <div class="health-bmi-header-left">
                     <span class="health-bmi-kicker">Body Mass Index</span>
@@ -152,7 +103,6 @@ def render_bmi_indicator(
                 </div>
             </div>
 
-            <!-- ── Scale ── -->
             <div class="health-bmi-scale-wrap">
                 <div class="health-bmi-scale">
                     <div class="health-bmi-marker" style="left:{bmi_position:.1f}%;">
@@ -172,13 +122,12 @@ def render_bmi_indicator(
                 </div>
             </div>
 
-            <!-- ── Footer notice ── -->
             <div class="health-bmi-notice">
                 <span class="health-bmi-notice-icon">ⓘ</span>
                 BMI is shown as supporting information only — it is not passed to the
                 classification model.{bmi_notice_extra}
             </div>
-
         </section>
         """
-    )
+    )
+

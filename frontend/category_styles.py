@@ -37,7 +37,6 @@ CATEGORY_STYLES = {
 }
 
 
-
 DEFAULT_CATEGORY_STYLE = {
     "color": "#475569",
     "background": "#F8FAFC",
@@ -46,25 +45,16 @@ DEFAULT_CATEGORY_STYLE = {
 
 
 def get_category_style(class_name):
-    return CATEGORY_STYLES.get(
-        class_name,
-        DEFAULT_CATEGORY_STYLE,
-    )
+    return CATEGORY_STYLES.get(class_name, DEFAULT_CATEGORY_STYLE)
 
 
 def get_category_color(class_name):
-    return get_category_style(
-        class_name
-    )["color"]
+    return get_category_style(class_name)["color"]
 
 
 def get_category_background(class_name):
-    return get_category_style(
-        class_name
-    )["background"]
+    return get_category_style(class_name)["background"]
 
 
 def get_category_border(class_name):
-    return get_category_style(
-        class_name
-    )["border"]
+    return get_category_style(class_name)["border"]
