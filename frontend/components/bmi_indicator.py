@@ -109,112 +109,76 @@ def render_bmi_indicator(
         ),
     )
 
-    scale_html = f"""
-    <div class="health-bmi-scale">
-
-        <div
-            class="health-bmi-marker"
-            style="
-                left:
-                {bmi_position:.1f}%;
-            "
-        >
-        </div>
-
-    </div>
 
 
-    <div class="health-bmi-scale-labels">
-
-        <span>
-            Underweight
-        </span>
-
-        <span>
-            Normal
-        </span>
-
-        <span>
-            Overweight
-        </span>
-
-        <span>
-            Obesity
-        </span>
-
-    </div>
-    """
+    # Build per-segment reference rows (value ranges fixed — no logic change)
+    ranges = [
+        ("Underweight", "&lt; 18.5", "underweight"),
+        ("Normal weight", "18.5 – 24.9", "normal"),
+        ("Overweight", "25 – 29.9", "overweight"),
+        ("Obesity", "≥ 30", "obesity"),
+    ]
+    ranges_html = "".join(
+        f'<div class="health-bmi-ref-row bmi-ref-{r[2]}">'
+        f'<span class="health-bmi-ref-label">{r[0]}</span>'
+        f'<span class="health-bmi-ref-range">{r[1]}</span>'
+        f'</div>'
+        for r in ranges
+    )
 
     st.html(
         f"""
         <section class="health-bmi-card">
 
+            <!-- ── Header ── -->
             <div class="health-bmi-header">
-
-                <div>
-
-                    <div
-                        class="health-result-eyebrow"
-                    >
-                        Supporting Health Indicator
+                <div class="health-bmi-header-left">
+                    <span class="health-bmi-kicker">Body Mass Index</span>
+                    <div class="health-bmi-hero-row">
+                        <span class="health-bmi-value">{bmi:.1f}</span>
+                        <span class="health-bmi-unit">kg/m²</span>
+                        <span class="health-bmi-badge {category["class"]}">
+                            {category["label"]}
+                        </span>
                     </div>
-
-                    <div
-                        class="health-bmi-title"
-                    >
-                        Body Mass Index
+                    <div class="health-bmi-inputs">
+                        Height&nbsp;<strong>{height:.2f}&thinsp;m</strong>
+                        &nbsp;·&nbsp;
+                        Weight&nbsp;<strong>{weight:.1f}&thinsp;kg</strong>
                     </div>
-
                 </div>
-
-                <div
-                    class="
-                        health-bmi-category
-                        {category["class"]}
-                    "
-                >
-                    {category["label"]}
+                <div class="health-bmi-ref-table">
+                    {ranges_html}
                 </div>
-
             </div>
 
-
-            <div class="health-bmi-value">
-                {bmi:.1f}
+            <!-- ── Scale ── -->
+            <div class="health-bmi-scale-wrap">
+                <div class="health-bmi-scale">
+                    <div class="health-bmi-marker" style="left:{bmi_position:.1f}%;">
+                        <div class="health-bmi-marker-tip"></div>
+                    </div>
+                    <div class="health-bmi-seg seg-underweight"></div>
+                    <div class="health-bmi-seg seg-normal"></div>
+                    <div class="health-bmi-seg seg-overweight"></div>
+                    <div class="health-bmi-seg seg-obesity"></div>
+                </div>
+                <div class="health-bmi-scale-labels">
+                    <span>10</span>
+                    <span>18.5</span>
+                    <span>25</span>
+                    <span>30</span>
+                    <span>45</span>
+                </div>
             </div>
 
-            <div class="health-bmi-unit">
-                kg/m²
-            </div>
-
-            {scale_html}
-
-
-            <div class="health-bmi-details">
-
-                Calculated from
-                <strong>
-                    {height:.2f} m
-                </strong>
-                and
-                <strong>
-                    {weight:.1f} kg
-                </strong>.
-
-            </div>
-
-
+            <!-- ── Footer notice ── -->
             <div class="health-bmi-notice">
-
-                BMI is shown as supporting
-                information only and is not
-                added to the model input by
-                this interface.
-
-                {bmi_notice_extra}
-
+                <span class="health-bmi-notice-icon">ⓘ</span>
+                BMI is shown as supporting information only — it is not passed to the
+                classification model.{bmi_notice_extra}
             </div>
 
         </section>
         """
-    )
+    )

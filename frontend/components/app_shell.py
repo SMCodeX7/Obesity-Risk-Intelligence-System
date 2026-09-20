@@ -76,105 +76,80 @@ def render_hero(
         <section class="health-hero">
 
             <div class="health-eyebrow">
-
-                <span
-                    class="health-eyebrow-dot">
-                </span>
-
-                AI-Powered
-                · Health Risk Assessment
-
+                <span class="health-eyebrow-dot"></span>
+                <span>AI-Powered · Health Risk Assessment</span>
+                <span class="health-eyebrow-badge">Live ML</span>
             </div>
 
-
             <h1 class="health-hero-title">
-
                 Understand your
-                <span>
+                <span class="health-hero-gradient">
                     health risk profile
                 </span>
-
             </h1>
 
-
             <p class="health-hero-description">
-
-                Analyze physical characteristics,
-                nutrition behaviour, and lifestyle
-                patterns using an AI-powered
-                obesity-risk classification system.
-
-                Receive prediction confidence,
-                probability insights, assessment
-                history, and downloadable reports
-                through an interactive health
+                Analyze physical characteristics, nutrition behaviour, and lifestyle
+                patterns using an AI-powered obesity-risk classification system.
+                Receive prediction confidence, probability insights, assessment
+                history, and downloadable reports through an interactive health
                 analytics experience.
-
             </p>
-
 
             <div class="health-stats">
 
                 <div class="health-stat">
-
-                    <span
-                        class="health-stat-value">
-
-                        {
-                            _safe_text(
-                                accuracy_text
-                            )
-                        }
-
-                    </span>
-
-                    <span
-                        class="health-stat-label">
-                        Model Accuracy
-                    </span>
-
+                    <div class="health-stat-header">
+                        <span class="health-stat-tag tag-accent-blue">Calibrated ML</span>
+                        <div class="health-stat-icon icon-blue icon-target"></div>
+                    </div>
+                    <div class="health-stat-body">
+                        <span class="health-stat-value">
+                            {_safe_text(accuracy_text)}
+                        </span>
+                        <span class="health-stat-label">
+                            Model Accuracy
+                        </span>
+                    </div>
+                    <div class="health-stat-footer">
+                        <span class="health-stat-desc">Validated on holdout test set</span>
+                    </div>
                 </div>
 
-
                 <div class="health-stat">
-
-                    <span
-                        class="health-stat-value">
-
-                        {
-                            _safe_text(
-                                feature_count
-                            )
-                        }
-
-                    </span>
-
-                    <span
-                        class="health-stat-label">
-                        Health Signals
-                    </span>
-
+                    <div class="health-stat-header">
+                        <span class="health-stat-tag tag-accent-teal">Multi-Factor</span>
+                        <div class="health-stat-icon icon-teal icon-pulse"></div>
+                    </div>
+                    <div class="health-stat-body">
+                        <span class="health-stat-value">
+                            {_safe_text(feature_count)}
+                        </span>
+                        <span class="health-stat-label">
+                            Health Signals
+                        </span>
+                    </div>
+                    <div class="health-stat-footer">
+                        <span class="health-stat-desc">Biometric, dietary & lifestyle data</span>
+                    </div>
                 </div>
 
-
                 <div class="health-stat">
-
-                    <span
-                        class="health-stat-value">
-
-                        {
-                            _safe_text(
-                                target_count
-                            )
-                        }
-
-                    </span>
-
-                    <span
-                        class="health-stat-label">
-                        Risk Categories
-                    </span>
-
+                    <div class="health-stat-header">
+                        <span class="health-stat-tag tag-accent-indigo">Clinical Spectrum</span>
+                        <div class="health-stat-icon icon-indigo icon-shield"></div>
+                    </div>
+                    <div class="health-stat-body">
+                        <span class="health-stat-value">
+                            {_safe_text(target_count)}
+                        </span>
+                        <span class="health-stat-label">
+                            Risk Categories
+                        </span>
+                    </div>
+                    <div class="health-stat-footer">
+                        <span class="health-stat-desc">Stratified WHO classification tiers</span>
+                    </div>
                 </div>
 
             </div>
