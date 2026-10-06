@@ -27,10 +27,8 @@ from frontend.components.report_download import (
 from frontend.config import (
     is_history_ui_enabled,
 )
-from frontend.services.api_client import (
-    APIClient,
-    APIClientError,
-)
+from frontend.services.api_client import APIClientError
+from frontend.services.local_client import LocalAPIClient
 from frontend.styles import (
     load_app_styles,
 )
@@ -47,7 +45,7 @@ st.set_page_config(
 load_app_styles()
 
 
-api_client = APIClient()
+api_client = LocalAPIClient()
 
 
 if (
